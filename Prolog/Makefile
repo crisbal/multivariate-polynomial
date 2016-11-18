@@ -7,7 +7,7 @@ all: repl
 .PHONY: test
 test:
 	@ echo "+++ Run tests and exit +++"
-	$(PROLOG) -s $(FILENAME) -g $(FILENAME):$(FILENAME)_test -t halt
+	$(PROLOG) -s $(FILENAME) -g $(FILENAME)_test -t halt
 
 .PHONY: repl
 repl:
