@@ -12,10 +12,21 @@ as_var_power(Variable, v(1, Variable)) :- !.
 
 %% as_monomial/2
 % this is a wrapper for the engine that will parse as_monomial
-% TODO: Sort VarsPowers
-as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
+% FIXME: HACK: we have to check if expression is a var or not, because if it is
+% a var the program will go out of stack (thanks to the sort), how could we fix?
+% doing this is not so good but at least it does not break two-way unification
+% we know it is sort/2's fault because you can't `sort(R, [1,2,3]).`
+as_monomial(Expression, m(Coefficient, TotalDegree, SortedVPs)) :-
+	nonvar(Expression),
+	!,
 	as_monomial(Expression, Coefficient, VarsPowers),
-	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree).
+	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
+	reverse_sort(VarsPowers, SortedVPs).
+as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
+	var(Expression),
+	as_monomial(Expression, Coefficient, VarsPowers),
+	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
+	!.
 
 % using the power of prolog we can write this parse function without
 % doing too much parsing (as long as the input rules are respected)
@@ -43,7 +54,7 @@ as_monomial(HeadVarPower, 1, [VarPower]) :-
 
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
-% TODO: sort monomial
+% TODO: sort monomials
 as_polynomial(Expression, p(Monomials)) :-
 	as_polynomial_parse(Expression, Monomials).
 
@@ -71,6 +82,15 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 	compute_total_degree_for_vars_powers(Other, OtherTotalDegree),
 	TotalDegree is OtherTotalDegree+Power,
 	!.
+
+%% rsort/2
+% reverse sort a list
+% http://stackoverflow.com/questions/4187632/fast-reverse-sort-in-swi-prolog
+% ^ link above for more efficient solutions that we don't really need
+reverse_sort(List, ReverseSorted) :-
+    sort(List, Tmp),
+    reverse(Tmp, ReverseSorted).
+
 
 mvpoli_test :-
 	load_test_files([]),
