@@ -1,6 +1,25 @@
 %%%% NUMBER SURNAME NAME
 %%%% COLLABORATORS
 
+%% as_polynomial/2
+as_polynomial(Expression, p(Monomials)) :-
+	as_polynomial_parse(Expression, Monomials).
+
+as_polynomial_parse(OtherMonExp + MonExp, [Mon|OtherMon]) :-
+	as_monomial(MonExp, Mon),
+	as_polynomial_parse(OtherMonExp, OtherMon),
+	!.
+
+as_polynomial_parse(OtherMonExp - MonExp, [m(NegCoeff, TotDeg, VPs) | OtherMon]) :-
+	as_monomial(MonExp, m(Coeff, TotDeg, VPs)),
+	NegCoeff is Coeff*(-1),
+	!,
+	as_polynomial_parse(OtherMonExp, OtherMon).
+
+as_polynomial_parse(MonExp, [Mon]) :-
+	as_monomial(MonExp, Mon),
+	!.
+
 %% as_monomial/2
 % this is a wrapper for the engine that will parse as_monomial
 % TODO: Sort VarsPowers
