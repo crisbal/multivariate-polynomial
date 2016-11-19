@@ -16,6 +16,9 @@ as_var_power(Variable, v(1, Variable)) :- !.
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
 % we know it is sort/2's fault because you can't `sort(R, [1,2,3]).`
+% FIXME: it sort VPs of the same power backward, if we use sort there is nothing
+% we can change without reinventing the wheel, one option would be to use
+% predsort/3 but it is now ISO prolog but only swi built-in.
 as_monomial(Expression, m(Coefficient, TotalDegree, SortedVPs)) :-
 	nonvar(Expression),
 	!,
