@@ -4,6 +4,7 @@
 %% as_var_power/2
 % this will parse a variable or variable^exponent expression and produce
 % the correct representation v(exponent, variable)
+% TODO add checks for atomic variable and exponent
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
 	number(Exponent),
 	!.
@@ -36,10 +37,8 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 % basically in this way we parse the polinomial backward from the end
 % to the start, since order does not matter at this point we can do it!
 % it works "backward" because of how the unificator works in prolog
-
-% we handle coefficients that are in the middle of the monomial!
-% (this is beautiful!)
 as_monomial(OtherVars * CoefficientInTheMiddle, Coefficient, VarsPowers) :-
+	% we handle coefficients that are in the middle of the monomial!
 	number(CoefficientInTheMiddle),
 	!,
 	as_monomial(OtherVars, OtherCoefficient, VarsPowers),
@@ -48,6 +47,7 @@ as_monomial(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial(OtherVars, Coefficient, OtherVarPowers),
 	!.
+% TODO: add chacks for atomic coefficients
 as_monomial(Coefficient, Coefficient, []) :-
 	number(Coefficient),
 	!.
@@ -93,6 +93,16 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 reverse_sort(List, ReverseSorted) :-
 	sort(List, Tmp),
 	reverse(Tmp, ReverseSorted).
+
+compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
+        E1>E2,
+        !.
+compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
+        E1<E2,
+        !.
+compare_vars_powers(=, v(E1, V1),v(E2, V2)) :-
+        E1=E2,
+        !.
 
 %% sort_vars_powers/2
 % sort powers by the exponent, this the public interface
