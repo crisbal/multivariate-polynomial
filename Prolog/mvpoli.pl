@@ -25,7 +25,7 @@ as_monomial(Expression, m(Coefficient, TotalDegree, SortedVPs)) :-
 	!,
 	as_monomial(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
-	sort_vars_powers(VarsPowers, SortedVPs).
+	predsort(compare_vars_powers, VarsPowers, SortedVPs).
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	as_monomial(Expression, Coefficient, VarsPowers),
@@ -94,66 +94,24 @@ reverse_sort(List, ReverseSorted) :-
 	sort(List, Tmp),
 	reverse(Tmp, ReverseSorted).
 
-compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
+compare_vars_powers(<, v(E1, _V1),v(E2, _V2)) :-
         E1>E2,
         !.
-compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
+compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
+        E1=E2,
+        V1@<V2,
+        !.
+compare_vars_powers(>, v(E1, _V1),v(E2, _V2)) :-
         E1<E2,
+        !.
+compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
+        E1=E2,
+        V1@>V2,
         !.
 compare_vars_powers(=, v(E1, V1),v(E2, V2)) :-
         E1=E2,
+        V1=V2,
         !.
-
-%% sort_vars_powers/2
-% sort powers by the exponent, this the public interface
-% The first argument is the input list of powers in the
-%  format of [v(Power,Variable),...]
-% The second argument is the output list sorted
-sort_vars_powers(In, Out) :-
-	sort_vars_powers(In, NewList, C),
-	C=0,
-	Out=NewList.
-sort_vars_powers(In, Out) :-
-	sort_vars_powers(In, NewList, C),
-	C\=0,
-	sort_vars_powers(NewList, Out).
-
-%% sort_vars_powers/3
-% sort powers by the exponent and returns also how many swap has done
-% The first argument is the input list of powers in the format
-%  of [v(Power,Variable),...]
-% The second argument is the output list sorted
-% The third argument is the counter ot changes done
-sort_vars_powers([], [], 0).
-sort_vars_powers([Power], [Power], 0).
-sort_vars_powers([First|Tail], [First|OtherOutput], OtherC) :-
-	Tail = [Second|Other],
-	First = v(FirstExponent, _FirstSymbol),
-	Second = v(SecondExponent, _SecondSymbol),
-	FirstExponent > SecondExponent,
-	sort_vars_powers([Second|Other], OtherOutput, OtherC).
-sort_vars_powers([First|Tail], [Second|OtherOutput], C) :-
-	Tail = [Second|Other],
-	First = v(FirstExponent, _FirstSymbol),
-	Second = v(SecondExponent, _SecondSymbol),
-	FirstExponent < SecondExponent,
-	sort_vars_powers([First|Other], OtherOutput, OtherC),
-	C is OtherC + 1.
-sort_vars_powers([First|Tail], [First|OtherOutput], OtherC) :-
-	Tail = [Second|Other],
-	First = v(FirstExponent, FirstSymbol),
-	Second = v(SecondExponent, SecondSymbol),
-	FirstExponent = SecondExponent,
-	FirstSymbol @< SecondSymbol,
-	sort_vars_powers([Second|Other], OtherOutput, OtherC).
-sort_vars_powers([First|Tail], [Second|OtherOutput], C) :-
-	Tail = [Second|Other],
-	First = v(FirstExponent, FirstSymbol),
-	Second = v(SecondExponent, SecondSymbol),
-	FirstExponent = SecondExponent,
-	FirstSymbol @>= SecondSymbol,
-	sort_vars_powers([First|Other], OtherOutput, OtherC),
-	C is OtherC + 1.
 
 mvpoli_test :-
 	load_test_files([]),
