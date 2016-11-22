@@ -26,18 +26,4 @@ test(compute_total_degree_for_vars_powers) :-
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x)], 2),
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x), v(3, y)], 5).
 
-test(sort_vars_powers) :-
-	mvpoli:sort_vars_powers([], [], 0),
-	mvpoli:sort_vars_powers([], []),
-	mvpoli:sort_vars_powers([v(2, x)], [v(2, x)], 0),
-	mvpoli:sort_vars_powers([v(2, x)], [v(2, x)]),
-	mvpoli:sort_vars_powers([v(2, x), v(2, y)], [v(2, x), v(2, y)]),
-	mvpoli:sort_vars_powers([v(2, b), v(2, a)], [v(2, a), v(2, b)]),
-	mvpoli:sort_vars_powers([v(2, a), v(2, b)], [v(2, a), v(2, b)]),
-	mvpoli:sort_vars_powers([v(2, x), v(3, y)], [v(3, y), v(2, x)]),
-	mvpoli:sort_vars_powers([v(2, x), v(3, y), v(4, z)], [v(4, z), v(3, y), v(2, x)]),
-	mvpoli:sort_vars_powers([v(2, x), v(3, y), v(4, z), v(5, q)], [v(5, q), v(4, z), v(3, y), v(2, x)]),
-	mvpoli:sort_vars_powers([v(3, x), v(2, y), v(4, z), v(5, q)], [v(5, q), v(4, z), v(3, x), v(2, y)]).
-
-
 :- end_tests(mvpoli).
