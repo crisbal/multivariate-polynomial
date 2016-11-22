@@ -86,14 +86,6 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 	TotalDegree is OtherTotalDegree+Power,
 	!.
 
-%% rsort/2
-% reverse sort a list
-% http://stackoverflow.com/questions/4187632/fast-reverse-sort-in-swi-prolog
-% ^ link above for more efficient solutions that we don't really need
-reverse_sort(List, ReverseSorted) :-
-	sort(List, Tmp),
-	reverse(Tmp, ReverseSorted).
-
 compare_vars_powers(<, v(E1, _V1),v(E2, _V2)) :-
         E1>E2,
         !.
