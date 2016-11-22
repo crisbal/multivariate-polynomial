@@ -17,15 +17,16 @@ as_var_power(Variable, v(1, Variable)) :- !.
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
 % we know it is sort/2's fault because you can't `sort(R, [1,2,3]).`
-% FIXME: it sort VPs of the same power backward, if we use sort there is nothing
-% we can change without reinventing the wheel, one option would be to use
-% predsort/3 but it is not ISO prolog but only swi built-in.
-as_monomial(Expression, m(Coefficient, TotalDegree, SortedVPs)) :-
+% TODO: optimize so you don't predsort two times if SortedVPs==CompressedAndSortedVPs, after compress
+as_monomial(Expression, m(Coefficient, TotalDegree, PerfectVarsPowers)) :-
 	nonvar(Expression),
 	!,
 	as_monomial(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
-	predsort(compare_vars_powers, VarsPowers, SortedVPs).
+	predsort(compare_vars_powers, VarsPowers, SortedVPs),
+	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs), 
+	%sort again because of changes in the exponents in the join procedure
+	predsort(compare_vars_powers, CompressedAndSortedVPs, PerfectVarsPowers). 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	as_monomial(Expression, Coefficient, VarsPowers),
@@ -79,6 +80,17 @@ as_polynomial_parse(MonExp, [Mon]) :-
 
 %%% "helper"/not core rules
 
+compress_sorted_vps([], []) :- !.
+compress_sorted_vps([v(E,B)], [v(E,B)]) :- !.
+compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :- 
+	NewExp is E1+E2,
+	compress_sorted_vps([v(NewExp, B) | RestOfVps], Result), 
+	!.
+compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :- 
+	compress_sorted_vps([v(E2, B2) | RestOfVps], Result), 
+	!.
+
+
 compute_total_degree_for_vars_powers([], 0) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)], Power) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
@@ -86,23 +98,20 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 	TotalDegree is OtherTotalDegree+Power,
 	!.
 
+
 compare_vars_powers(<, v(E1, _V1),v(E2, _V2)) :-
         E1>E2,
         !.
 compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
         E1=E2,
-        V1@<V2,
+        V1@=<V2, %<equals so we keep duplicates of the same variable
         !.
 compare_vars_powers(>, v(E1, _V1),v(E2, _V2)) :-
         E1<E2,
         !.
 compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
         E1=E2,
-        V1@>V2,
-        !.
-compare_vars_powers(=, v(E1, V1),v(E2, V2)) :-
-        E1=E2,
-        V1=V2,
+        V1@>=V2, %>equals so we keep duplicates of the same variable
         !.
 
 mvpoli_test :-
