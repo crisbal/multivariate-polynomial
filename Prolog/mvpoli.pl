@@ -58,11 +58,14 @@ as_monomial(HeadVarPower, 1, [VarPower]) :-
 
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
+% TODO: sort monomials
+% TODO: two way
 as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	as_polynomial_parse(Expression, Monomials),
 	!,
 	predsort(compare_monomials, Monomials, SortedMonomials),
-	compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
+    compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
+	!.
 
 %% as_polynomial_parse/2
 % as for the monomials we work on this
@@ -93,6 +96,7 @@ compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :-
 	!.
 
 
+
 compute_total_degree_for_vars_powers([], 0) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)], Power) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
@@ -100,21 +104,40 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 	TotalDegree is OtherTotalDegree+Power,
 	!.
 
-
+% this delta predicate is used by predsort/3 to sort vars powers
+% this is really really useful since it takes away the need to write a sorting/looping algorithm
+% and let us focus on the logic
+% we don't provide an equality delta predicate (= is always false) since we cover all the cases with < and >
+% This is so we keep duplicates, which are usually deleted by predsort  
 compare_vars_powers(<, v(E1, _V1),v(E2, _V2)) :-
-        E1>E2,
-        !.
+	E1>E2,
+	!.
 compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
-        E1=E2,
-        V1@=<V2, %<equals so we keep duplicates of the same variable
-        !.
+	E1=E2,
+	V1@=<V2, %<equals so we keep duplicates of the same variable, predosort usually deletes equals elements
+	!.
 compare_vars_powers(>, v(E1, _V1),v(E2, _V2)) :-
-        E1<E2,
-        !.
+	E1<E2,
+	!.
 compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
-        E1=E2,
-        V1@>=V2, %>equals so we keep duplicates of the same variable
-        !.
+	E1=E2,
+	V1@>=V2, %>equals so we keep duplicates of the same variable
+	!.
+
+
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1>D2,
+	!.
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1<D2,
+	!.
+% TODO: handle comparison of polys of same degree by comparing VPs
+compare_monomials(=, m(C1, D1, VPs1), m(C2, D2, VPs2)) :-
+	D1=D2,
+	!.
+
+
+%%% tests
 
 compress_sorted_monomials([], []) :- !.
 compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
