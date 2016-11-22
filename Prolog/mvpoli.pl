@@ -83,6 +83,17 @@ as_polynomial_parse(MonExp, [Mon]) :-
 	!.
 
 
+coefficients(p(Monomials), Coefficients) :-
+	coefficients_worker(Monomials, Coefficients).
+coefficients_worker([], []).
+coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [Coefficient | RestOfCoefficients]) :-
+	% TODO: add check for is_monomial
+	coefficients_worker(RestOfMonomials, RestOfCoefficients).	
+
+% TODO: improve checks to really be sure that this is a list of monomials
+monomials(p(Monomials), Monomials).
+
+
 %%% "helper"/not core rules
 
 compress_sorted_vps([], []) :- !.
