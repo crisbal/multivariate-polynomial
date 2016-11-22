@@ -14,7 +14,11 @@ test(as_monomial) :-
 	mvpoli:as_monomial(x^2, m(1, 2, [v(2,x)])),
 	mvpoli:as_monomial(x^2*y^3, m(1, 5, [v(3,y), v(2,x)])),
 	mvpoli:as_monomial(69*x^2*y^3, m(69, 5, [v(3,y), v(2,x)])),
-	mvpoli:as_monomial(69*y^3*x^2, m(69, 5, [v(3,y), v(2,x)])).
+	mvpoli:as_monomial(69*y^3*x^2, m(69, 5, [v(3,y), v(2,x)])),
+	mvpoli:as_monomial(69*y^3*x^2*a^3, m(69, 8, [v(3,a), v(3,y), v(2,x)])),
+	mvpoli:as_monomial(y^3*a^3*ab^3, m(1, 9, [v(3,a), v(3,ab), v(3,y)])).
+
+
 
 test(as_polynomial) :-
 	mvpoli:as_polynomial(42, p([m(42, 0, [])])),
