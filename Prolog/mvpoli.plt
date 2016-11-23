@@ -20,6 +20,8 @@ test(as_monomial) :-
 
 test(as_polynomial) :-
 	mvpoli:as_polynomial(42, p([m(42, 0, [])])),
+	mvpoli:as_polynomial(21+21, p([m(42, 0, [])])),
+	mvpoli:as_polynomial(21+x+21+x+x, p([m(3, 1, [v(1, x)]),m(42, 0, [])])),
 	mvpoli:as_polynomial(-21*(-2), p([m(42, 0, [])])),
 	mvpoli:as_polynomial(3*x-4*x+1, p([m(3, 1, [v(1, x)]), m(-4, 1, [v(1, x)]), m(1, 0, [])])),
 	mvpoli:as_polynomial(3*x-4*x^2+1, p([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])])),

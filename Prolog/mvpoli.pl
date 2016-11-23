@@ -58,10 +58,11 @@ as_monomial(HeadVarPower, 1, [VarPower]) :-
 
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
-as_polynomial(Expression, p(SortedMonomials)) :-
+as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	as_polynomial_parse(Expression, Monomials),
 	!,
-	predsort(compare_monomials, Monomials, SortedMonomials).
+	predsort(compare_monomials, Monomials, SortedMonomials),
+	compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
 
 %% as_polynomial_parse/2
 % as for the monomials we work on this
@@ -114,6 +115,16 @@ compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
         E1=E2,
         V1@>=V2, %>equals so we keep duplicates of the same variable
         !.
+
+compress_sorted_monomials([], []) :- !.
+compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
+compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMonomials], Result) :-
+		NewC is C1+C2,
+		compress_sorted_monomials([m(NewC,T,V)|RestOfMonomials],Result),
+		!.
+compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMonomials], [m(C1, T1, V1)|Result]) :-
+		compress_sorted_monomials([ m(C2, T2, V2) | RestOfMonomials],Result),
+		!.
 
 compare_monomials(>, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
 				TotalDegree1 < TotalDegree2,
