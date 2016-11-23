@@ -24,7 +24,7 @@ as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	predsort(compare_vars_powers, VarsPowers, SortedVPs),
 	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs).
-    
+
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	as_monomial(Expression, Coefficient, VarsPowers),
@@ -62,7 +62,7 @@ as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	as_polynomial_parse(Expression, Monomials),
 	!,
 	predsort(compare_monomials, Monomials, SortedMonomials),
-    compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
+	compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
 
 %% as_polynomial_parse/2
 % as for the monomials we work on this
@@ -103,6 +103,15 @@ compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :-
 	compress_sorted_vps([v(E2, B2) | RestOfVps], Result),
 	!.
 
+compress_sorted_monomials([], []) :- !.
+compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
+compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMonomials], Result) :-
+	NewC is C1+C2,
+	compress_sorted_monomials([m(NewC,T,V)|RestOfMonomials],Result),
+	!.
+compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMonomials], [m(C1, T1, V1)|Result]) :-
+	compress_sorted_monomials([ m(C2, T2, V2) | RestOfMonomials],Result),
+	!.
 
 
 compute_total_degree_for_vars_powers([], 0) :- !.
@@ -125,33 +134,22 @@ compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
 	V1@>=V2, %>equals so we keep duplicates of the same variable
 	!.
 
-%%% tests
-
-compress_sorted_monomials([], []) :- !.
-compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
-compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMonomials], Result) :-
-		NewC is C1+C2,
-		compress_sorted_monomials([m(NewC,T,V)|RestOfMonomials],Result),
-		!.
-compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMonomials], [m(C1, T1, V1)|Result]) :-
-		compress_sorted_monomials([ m(C2, T2, V2) | RestOfMonomials],Result),
-		!.
-
 compare_monomials(>, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
-				TotalDegree1 < TotalDegree2,
-				!.
+	TotalDegree1 < TotalDegree2,
+	!.
 compare_monomials(>, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
-				TotalDegree1 = TotalDegree2,
-				Coefficient1 < Coefficient2,
-				!.
+	TotalDegree1 = TotalDegree2,
+	Coefficient1 < Coefficient2,
+	!.
 compare_monomials(<, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
-				TotalDegree1 >= TotalDegree2,
-				!.
+	TotalDegree1 >= TotalDegree2,
+	!.
 compare_monomials(<, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
-				TotalDegree1 = TotalDegree2,
-				Coefficient1 >= Coefficient2,
-				!.
+	TotalDegree1 = TotalDegree2,
+	Coefficient1 >= Coefficient2,
+	!.
 
+%%% tests
 mvpoli_test :-
 	load_test_files([]),
 	run_tests.
