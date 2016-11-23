@@ -20,14 +20,14 @@ as_var_power(Variable, v(1, Variable)) :- !.
 as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	nonvar(Expression),
 	!,
-	as_monomial(Expression, Coefficient, VarsPowers),
+	as_monomial_parse(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
-	predsort(compare_vars_powers, VarsPowers, SortedVPs),
+	predsort(compare_vars_powers, VarsPowers, SortedVPs), 
 	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs).
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
-	as_monomial(Expression, Coefficient, VarsPowers),
+	as_monomial_parse(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	!.
 
@@ -36,27 +36,26 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 % basically in this way we parse the polinomial backward from the end
 % to the start, since order does not matter at this point we can do it!
 % it works "backward" because of how the unificator works in prolog
-as_monomial(OtherVars * CoefficientInTheMiddle, Coefficient, VarsPowers) :-
+as_monomial_parse(OtherVars * CoefficientInTheMiddle, Coefficient, VarsPowers) :-
 	% we handle coefficients that are in the middle of the monomial!
 	number(CoefficientInTheMiddle),
 	!,
-	as_monomial(OtherVars, OtherCoefficient, VarsPowers),
+	as_monomial_parse(OtherVars, OtherCoefficient, VarsPowers),
 	Coefficient is CoefficientInTheMiddle*OtherCoefficient.
-as_monomial(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
+as_monomial_parse(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
-	as_monomial(OtherVars, Coefficient, OtherVarPowers),
+	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
 	!.
 % TODO: add checks for atomic coefficients
-as_monomial(Coefficient, Coefficient, []) :-
+as_monomial_parse(Coefficient, Coefficient, []) :-
 	number(Coefficient),
 	!.
-as_monomial(HeadVarPower, 1, [VarPower]) :-
+as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
 	!.
 
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
-% TODO: sort monomials
 % TODO: two way
 as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	as_polynomial_parse(Expression, Monomials),
@@ -65,8 +64,8 @@ as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
 
 %% as_polynomial_parse/2
-% as for the monomials we work on this
-as_polynomial_parse(OtherMonExp + MonExp, [Mon|OtherMon]) :-
+% just like the monomials we parse, this time splitting by + and -
+as_polynomial_parse(OtherMonExp + MonExp, [Mon | OtherMon]) :-
 	as_monomial(MonExp, Mon),
 	as_polynomial_parse(OtherMonExp, OtherMon),
 	!.
@@ -93,6 +92,12 @@ monomials(p(Monomials), Monomials).
 
 %%% "helper"/not core rules
 
+%% compress_sorted_vps/2
+% the following rules "compress" a list of Vps. if there are two powers for the 
+% same variable one next to the other they will be merged together. It is sure
+% that same variables will be one next to the other because we predsort the list
+% before calling this 
+% TODO: disallow two-way
 compress_sorted_vps([], []) :- !.
 compress_sorted_vps([v(E,B)], [v(E,B)]) :- !.
 compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :-
@@ -103,17 +108,23 @@ compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :-
 	compress_sorted_vps([v(E2, B2) | RestOfVps], Result),
 	!.
 
+%% compress_sorted_monomials/2
+% same as compress_sorted_vps/2. but for the monomials
+% TODO: disallow two-way
 compress_sorted_monomials([], []) :- !.
 compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
-compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMonomials], Result) :-
-	NewC is C1+C2,
-	compress_sorted_monomials([m(NewC,T,V)|RestOfMonomials],Result),
+compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMons], Result) :-
+	NewCoeff is C1+C2,
+	compress_sorted_monomials([m(NewCoeff,T,V) | RestOfMons], Result),
 	!.
-compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMonomials], [m(C1, T1, V1)|Result]) :-
-	compress_sorted_monomials([ m(C2, T2, V2) | RestOfMonomials],Result),
+compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons], [m(C1, T1, V1)|Result]) :-
+	compress_sorted_monomials([ m(C2, T2, V2) | RestOfMons], Result),
 	!.
 
 
+%% compute_total_degree_for_vars_powers/2
+% this calculates the total degree of a monomial by passing the list of vps 
+% TODO: disallow two-way
 compute_total_degree_for_vars_powers([], 0) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)], Power) :- !.
 compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
@@ -121,19 +132,25 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 	TotalDegree is OtherTotalDegree+Power,
 	!.
 
+%% compare_vars_powers/3
 % this delta predicate is used by predsort/3 to sort vars powers
-% this is really really useful since it takes away the need to write a sorting/looping algorithm
-% and let us focus on the logic
-% we don't provide an equality delta predicate (= is always false) since we cover all the cases with < and >
-% This is so we keep duplicates, which are usually deleted by predsort  
-% compress_sorted_vps/3 will take care of the rest
+% this is really really useful since it takes away the need to write a 
+% sorting/looping algorithm and let us focus on the logic
+% we don't provide an equality delta predicate (= is always false) since we 
+% cover all the cases with < and >. This is so we keep duplicates, which are 
+% usually deleted by predsort. compress_sorted_vps/3 will take care of the rest
 compare_vars_powers(<, v(_E1, V1),v(_E2, V2)) :-
-	V1@=<V2, %<equals so we keep duplicates of the same variable, predosort usually deletes equals elements
+	V1@=<V2, %<equals so we keep duplicates of the same variable
 	!.
 compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
 	V1@>=V2, %>equals so we keep duplicates of the same variable
 	!.
 
+%% compare_monomials/3
+% this delta predicate is used by predsort/3 in as_polynomial, monomials are
+% first compared by degree and then by their list of VPs. No comparison for 
+% coefficients is needed since we will take care of joining them with 
+% compress_sorted_monomials/3 
 compare_monomials(<, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1>D2,
 	!.
@@ -149,6 +166,11 @@ compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	is_vp_lesser(VPs2, VPs1),
 	!.
 
+%% is_vp_lesser/2
+% this helper predicate is used by compare_monomials/3 and "returns true" if the
+% first list is "smaller" by comparing first by Variable ("smaller" first) and
+% then by exponent (bigger first)
+% TODO: disallow two-way
 is_vp_lesser([], [v(_E, _V)]) :-
 	!.
 is_vp_lesser([v(_E1, V1) | _RestOfVps1], [v(_E2, V2) | _RestOfVps2]) :-
