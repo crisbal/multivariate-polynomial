@@ -158,12 +158,20 @@ compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1=D2,
 	is_vp_lesser(VPs1, VPs2),
 	!.
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %for equality checks
+	D1=D2,
+	VPs1 = VPs2,
+	!.
 compare_monomials(>, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1<D2,
 	!.
 compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1=D2,
 	is_vp_lesser(VPs2, VPs1),
+	!.
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %for equality checks
+	D1=D2,
+	VPs1 = VPs2,
 	!.
 
 %% is_vp_lesser/2
