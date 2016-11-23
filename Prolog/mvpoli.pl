@@ -24,9 +24,9 @@ as_monomial(Expression, m(Coefficient, TotalDegree, PerfectVarsPowers)) :-
 	as_monomial(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	predsort(compare_vars_powers, VarsPowers, SortedVPs),
-	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs), 
+	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs),
 	%sort again because of changes in the exponents in the join procedure
-	predsort(compare_vars_powers, CompressedAndSortedVPs, PerfectVarsPowers). 
+	predsort(compare_vars_powers, CompressedAndSortedVPs, PerfectVarsPowers).
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	as_monomial(Expression, Coefficient, VarsPowers),
@@ -58,9 +58,10 @@ as_monomial(HeadVarPower, 1, [VarPower]) :-
 
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
-% TODO: sort monomials
-as_polynomial(Expression, p(Monomials)) :-
-	as_polynomial_parse(Expression, Monomials).
+as_polynomial(Expression, p(SortedMonomials)) :-
+	as_polynomial_parse(Expression, Monomials),
+	!,
+	predsort(compare_monomials, Monomials, SortedMonomials).
 
 %% as_polynomial_parse/2
 % as for the monomials we work on this
@@ -82,12 +83,12 @@ as_polynomial_parse(MonExp, [Mon]) :-
 
 compress_sorted_vps([], []) :- !.
 compress_sorted_vps([v(E,B)], [v(E,B)]) :- !.
-compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :- 
+compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :-
 	NewExp is E1+E2,
-	compress_sorted_vps([v(NewExp, B) | RestOfVps], Result), 
+	compress_sorted_vps([v(NewExp, B) | RestOfVps], Result),
 	!.
-compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :- 
-	compress_sorted_vps([v(E2, B2) | RestOfVps], Result), 
+compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :-
+	compress_sorted_vps([v(E2, B2) | RestOfVps], Result),
 	!.
 
 
@@ -113,6 +114,21 @@ compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
         E1=E2,
         V1@>=V2, %>equals so we keep duplicates of the same variable
         !.
+
+compare_monomials(>, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
+				TotalDegree1 < TotalDegree2,
+				!.
+compare_monomials(>, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
+				TotalDegree1 = TotalDegree2,
+				Coefficient1 < Coefficient2,
+				!.
+compare_monomials(<, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
+				TotalDegree1 >= TotalDegree2,
+				!.
+compare_monomials(<, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
+				TotalDegree1 = TotalDegree2,
+				Coefficient1 >= Coefficient2,
+				!.
 
 mvpoli_test :-
 	load_test_files([]),
