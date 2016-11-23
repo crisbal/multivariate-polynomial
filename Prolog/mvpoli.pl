@@ -17,16 +17,14 @@ as_var_power(Variable, v(1, Variable)) :- !.
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
 % we know it is sort/2's fault because you can't `sort(R, [1,2,3]).`
-% TODO: optimize so you don't predsort two times if SortedVPs==CompressedAndSortedVPs, after compress
-as_monomial(Expression, m(Coefficient, TotalDegree, PerfectVarsPowers)) :-
+as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	nonvar(Expression),
 	!,
 	as_monomial(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	predsort(compare_vars_powers, VarsPowers, SortedVPs),
-	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs),
-	%sort again because of changes in the exponents in the join procedure
-	predsort(compare_vars_powers, CompressedAndSortedVPs, PerfectVarsPowers).
+	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs).
+    
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	as_monomial(Expression, Coefficient, VarsPowers),
@@ -48,7 +46,7 @@ as_monomial(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial(OtherVars, Coefficient, OtherVarPowers),
 	!.
-% TODO: add chacks for atomic coefficients
+% TODO: add checks for atomic coefficients
 as_monomial(Coefficient, Coefficient, []) :-
 	number(Coefficient),
 	!.
@@ -65,7 +63,6 @@ as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	!,
 	predsort(compare_monomials, Monomials, SortedMonomials),
     compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
-	!.
 
 %% as_polynomial_parse/2
 % as for the monomials we work on this
@@ -120,33 +117,12 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 % and let us focus on the logic
 % we don't provide an equality delta predicate (= is always false) since we cover all the cases with < and >
 % This is so we keep duplicates, which are usually deleted by predsort  
-compare_vars_powers(<, v(E1, _V1),v(E2, _V2)) :-
-	E1>E2,
-	!.
-compare_vars_powers(<, v(E1, V1),v(E2, V2)) :-
-	E1=E2,
+compare_vars_powers(<, v(_E1, V1),v(_E2, V2)) :-
 	V1@=<V2, %<equals so we keep duplicates of the same variable, predosort usually deletes equals elements
 	!.
-compare_vars_powers(>, v(E1, _V1),v(E2, _V2)) :-
-	E1<E2,
-	!.
-compare_vars_powers(>, v(E1, V1),v(E2, V2)) :-
-	E1=E2,
+compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
 	V1@>=V2, %>equals so we keep duplicates of the same variable
 	!.
-
-
-compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
-	D1>D2,
-	!.
-compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
-	D1<D2,
-	!.
-% TODO: handle comparison of polys of same degree by comparing VPs
-compare_monomials(=, m(C1, D1, VPs1), m(C2, D2, VPs2)) :-
-	D1=D2,
-	!.
-
 
 %%% tests
 
