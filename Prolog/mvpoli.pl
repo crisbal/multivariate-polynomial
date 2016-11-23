@@ -134,19 +134,34 @@ compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
 	V1@>=V2, %>equals so we keep duplicates of the same variable
 	!.
 
-compare_monomials(>, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
-	TotalDegree1 < TotalDegree2,
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1>D2,
 	!.
-compare_monomials(>, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
-	TotalDegree1 = TotalDegree2,
-	Coefficient1 < Coefficient2,
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1=D2,
+	is_vp_lesser(VPs1, VPs2),
 	!.
-compare_monomials(<, m(_, TotalDegree1, _), m(_, TotalDegree2, _)) :-
-	TotalDegree1 >= TotalDegree2,
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1<D2,
 	!.
-compare_monomials(<, m(Coefficient1, TotalDegree1, _), m(Coefficient2, TotalDegree2, _)) :-
-	TotalDegree1 = TotalDegree2,
-	Coefficient1 >= Coefficient2,
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1=D2,
+	is_vp_lesser(VPs2, VPs1),
+	!.
+
+is_vp_lesser([], [v(E, V)]) :-
+	!.
+is_vp_lesser([v(E1, V1) | RestOfVps1], [v(E2, V2) | RestOfVps2]) :-
+	V1 @< V2,
+	!.
+is_vp_lesser([v(E1, V1) | RestOfVps1], [v(E2, V2) | RestOfVps2]) :-
+	V1 = V2,
+	E1 > E2,
+	!.
+is_vp_lesser([v(E1, V1) | RestOfVps1], [v(E2, V2) | RestOfVps2]) :-
+	V1 = V2,
+	E1 = E2,
+	is_vp_lesser(RestOfVps1, RestOfVps2),
 	!.
 
 %%% tests
