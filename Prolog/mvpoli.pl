@@ -86,9 +86,23 @@ coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [C
 	% TODO: add check for is_monomial
 	coefficients_worker(RestOfMonomials, RestOfCoefficients).	
 
+
+variables(p(Monomials), UniqueAndSorted) :- 
+	variables_worker(Monomials, [], Variables),
+	sort(Variables, UniqueAndSorted).
+variables_worker([], CurrentVars, CurrentVars).
+variables_worker([m(_Coefficient, _Degree, VarsPowers) | RestOfMonomials], CurrentVars, Answer) :-
+	% TODO: add check for is_monomial
+	extract_vars(VarsPowers, CurrentVars, NewCurrentVars),
+	variables_worker(RestOfMonomials, NewCurrentVars, Answer).	
+
+extract_vars([], CurrentVars, CurrentVars).
+extract_vars([v(_E, V) | RestOfVPs], CurrentVars, Answer) :-
+	extract_vars(RestOfVPs, [V | CurrentVars], Answer).
+
+
 % TODO: improve checks to really be sure that this is a list of monomials
 monomials(p(Monomials), Monomials).
-
 
 %%% "helper"/not core rules
 
@@ -158,7 +172,7 @@ compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1=D2,
 	is_vp_lesser(VPs1, VPs2),
 	!.
-compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %for equality checks
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1=D2,
 	VPs1 = VPs2,
 	!.
@@ -169,7 +183,7 @@ compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1=D2,
 	is_vp_lesser(VPs2, VPs1),
 	!.
-compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %for equality checks
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1=D2,
 	VPs1 = VPs2,
 	!.
