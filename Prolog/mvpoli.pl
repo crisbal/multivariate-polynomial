@@ -5,9 +5,11 @@
 % this will parse a variable or variable^exponent expression and produce
 % the correct representation v(exponent, variable)
 % TODO add checks for atomic variable and exponent
+% FIXME? do we really have to check if the exponent is negative?? 
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
 	number(Exponent),
 	!.
+	% Exponent >= 0.
 as_var_power(Variable, v(1, Variable)) :- !.
 
 
@@ -16,7 +18,7 @@ as_var_power(Variable, v(1, Variable)) :- !.
 % FIXME: HACK: we have to check if expression is a var or not, because if it is
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
-% we know it is sort/2's fault because you can't `sort(R, [1,2,3]).`
+% we know it is sort/2's fault because you can't `sort(R, [1, 2, 3]).`
 as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	nonvar(Expression),
 	!,
@@ -61,7 +63,7 @@ as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
 	as_polynomial_parse(Expression, Monomials),
 	!,
 	predsort(compare_monomials, Monomials, SortedMonomials),
-	compress_sorted_monomials(SortedMonomials,SortedAndCompressedMonomials).
+	compress_sorted_monomials(SortedMonomials, SortedAndCompressedMonomials).
 
 %% as_polynomial_parse/2
 % just like the monomials we parse, this time splitting by + and -
@@ -112,7 +114,7 @@ monomials(p(Monomials), Monomials).
 % before calling this 
 % TODO: disallow two-way
 compress_sorted_vps([], []) :- !.
-compress_sorted_vps([v(E,B)], [v(E,B)]) :- !.
+compress_sorted_vps([v(E, B)], [v(E, B)]) :- !.
 compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :-
 	NewExp is E1+E2,
 	compress_sorted_vps([v(NewExp, B) | RestOfVps], Result),
@@ -128,9 +130,9 @@ compress_sorted_monomials([], []) :- !.
 compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
 compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMons], Result) :-
 	NewCoeff is C1+C2,
-	compress_sorted_monomials([m(NewCoeff,T,V) | RestOfMons], Result),
+	compress_sorted_monomials([m(NewCoeff, T, V) | RestOfMons], Result),
 	!.
-compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons], [m(C1, T1, V1)|Result]) :-
+compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons], [m(C1, T1, V1) | Result]) :-
 	compress_sorted_monomials([ m(C2, T2, V2) | RestOfMons], Result),
 	!.
 
@@ -139,8 +141,8 @@ compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons], [m(C1, T1
 % this calculates the total degree of a monomial by passing the list of vps 
 % TODO: disallow two-way
 compute_total_degree_for_vars_powers([], 0) :- !.
-compute_total_degree_for_vars_powers([v(Power,_)], Power) :- !.
-compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
+compute_total_degree_for_vars_powers([v(Power, _)], Power) :- !.
+compute_total_degree_for_vars_powers([v(Power, _) | Other], TotalDegree) :-
 	compute_total_degree_for_vars_powers(Other, OtherTotalDegree),
 	TotalDegree is OtherTotalDegree+Power,
 	!.
@@ -152,11 +154,11 @@ compute_total_degree_for_vars_powers([v(Power,_)|Other], TotalDegree) :-
 % we don't provide an equality delta predicate (= is always false) since we 
 % cover all the cases with < and >. This is so we keep duplicates, which are 
 % usually deleted by predsort. compress_sorted_vps/3 will take care of the rest
-compare_vars_powers(<, v(_E1, V1),v(_E2, V2)) :-
-	V1@=<V2, %<equals so we keep duplicates of the same variable
+compare_vars_powers(<, v(_E1, V1), v(_E2, V2)) :-
+	V1 @=< V2, %=< so we keep duplicates of the same variable
 	!.
-compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
-	V1@>=V2, %>equals so we keep duplicates of the same variable
+compare_vars_powers(>, v(_E1, V1), v(_E2, V2)) :-
+	V1 @>= V2, %>= so we keep duplicates of the same variable
 	!.
 
 %% compare_monomials/3
@@ -165,25 +167,25 @@ compare_vars_powers(>, v(_E1, V1),v(_E2, V2)) :-
 % coefficients is needed since we will take care of joining them with 
 % compress_sorted_monomials/3 
 compare_monomials(<, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
-	D1>D2,
+	D1 > D2,
 	!.
 compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
-	D1=D2,
+	D1 = D2,
 	is_vp_lesser(VPs1, VPs2),
 	!.
 compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
-	D1=D2,
+	D1 = D2,
 	VPs1 = VPs2,
 	!.
 compare_monomials(>, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
-	D1<D2,
+	D1 < D2,
 	!.
 compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
-	D1=D2,
+	D1 = D2,
 	is_vp_lesser(VPs2, VPs1),
 	!.
 compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
-	D1=D2,
+	D1 = D2,
 	VPs1 = VPs2,
 	!.
 
