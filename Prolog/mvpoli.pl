@@ -86,10 +86,9 @@ coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [C
 	% TODO: add check for is_monomial
 	coefficients_worker(RestOfMonomials, RestOfCoefficients).	
 
-
 variables(p(Monomials), UniqueAndSorted) :- 
 	variables_worker(Monomials, [], Variables),
-	sort(Variables, UniqueAndSorted).
+	sort(Variables, UniqueAndSorted). %sort already removes duplicates, so we are good
 variables_worker([], CurrentVars, CurrentVars).
 variables_worker([m(_Coefficient, _Degree, VarsPowers) | RestOfMonomials], CurrentVars, Answer) :-
 	% TODO: add check for is_monomial
