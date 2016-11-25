@@ -5,7 +5,7 @@
 % this will parse a variable or variable^exponent expression and produce
 % the correct representation v(exponent, variable)
 % TODO add checks for atomic variable and exponent
-% FIXME? do we really have to check if the exponent is negative?? 
+% FIXME? do we really have to check if the exponent is negative??
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
 	number(Exponent),
 	!.
@@ -24,7 +24,7 @@ as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	!,
 	as_monomial_parse(Expression, Coefficient, VarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
-	predsort(compare_vars_powers, VarsPowers, SortedVPs), 
+	predsort(compare_vars_powers, VarsPowers, SortedVPs),
 	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs).
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
@@ -80,27 +80,52 @@ as_polynomial_parse(MonExp, [Mon]) :-
 	as_monomial(MonExp, Mon),
 	!.
 
+pprint_polynomial(p(Monomials)) :-
+	pprint_polynomial_worker(Monomials).
+pprint_polynomial_worker([]) :- !.
+pprint_polynomial_worker([Monomial | OtherMonomials]) :-
+	pprint_monomial(Monomial),
+	pprint_polynomial_worker(OtherMonomials),
+	!.
+
+pprint_monomial(m(Coefficient, _TD, VarsPowers)) :-
+	write(" + "),
+	write(Coefficient),
+	pprint_vars_powers(VarsPowers),
+	!.
+
+pprint_vars_powers([]).
+pprint_vars_powers([v(1, Variable) | OtherVarPowers]) :-
+	write(" * "),
+	write(Variable),
+	pprint_vars_powers(OtherVarPowers).
+pprint_vars_powers([v(Exponent, Variable) | OtherVarPowers]) :-
+	write(" * "),
+	write(Variable),
+	write("^"),
+	write(Exponent),
+	pprint_vars_powers(OtherVarPowers).
+
 
 coefficients(p(Monomials), Coefficients) :-
 	coefficients_worker(Monomials, Coefficients).
 coefficients_worker([], []).
 coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [Coefficient | RestOfCoefficients]) :-
 	% TODO: add check for is_monomial
-	coefficients_worker(RestOfMonomials, RestOfCoefficients).	
+	coefficients_worker(RestOfMonomials, RestOfCoefficients).
 
-variables(p(Monomials), UniqueAndSorted) :- 
+variables(p(Monomials), UniqueAndSorted) :-
 	variables_worker(Monomials, [], Variables),
 	sort(Variables, UniqueAndSorted). %sort already removes duplicates, so we are good
 variables_worker([], CurrentVars, CurrentVars).
 variables_worker([m(_Coefficient, _Degree, VarsPowers) | RestOfMonomials], CurrentVars, Answer) :-
 	% TODO: add check for is_monomial
 	extract_vars(VarsPowers, CurrentVars, NewCurrentVars),
-	variables_worker(RestOfMonomials, NewCurrentVars, Answer).	
+	variables_worker(RestOfMonomials, NewCurrentVars, Answer).
 
 extract_vars([], CurrentVars, CurrentVars).
 extract_vars([v(_E, V) | RestOfVPs], CurrentVars, Answer) :-
 	extract_vars(RestOfVPs, [V | CurrentVars], Answer).
-
 
 % TODO: improve checks to really be sure that this is a list of monomials
 monomials(p(Monomials), Monomials).
@@ -108,10 +133,10 @@ monomials(p(Monomials), Monomials).
 %%% "helper"/not core rules
 
 %% compress_sorted_vps/2
-% the following rules "compress" a list of Vps. if there are two powers for the 
+% the following rules "compress" a list of Vps. if there are two powers for the
 % same variable one next to the other they will be merged together. It is sure
 % that same variables will be one next to the other because we predsort the list
-% before calling this 
+% before calling this
 % TODO: disallow two-way
 compress_sorted_vps([], []) :- !.
 compress_sorted_vps([v(E, B)], [v(E, B)]) :- !.
@@ -138,7 +163,7 @@ compress_sorted_monomials([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons], [m(C1, T1
 
 
 %% compute_total_degree_for_vars_powers/2
-% this calculates the total degree of a monomial by passing the list of vps 
+% this calculates the total degree of a monomial by passing the list of vps
 % TODO: disallow two-way
 compute_total_degree_for_vars_powers([], 0) :- !.
 compute_total_degree_for_vars_powers([v(Power, _)], Power) :- !.
@@ -149,10 +174,10 @@ compute_total_degree_for_vars_powers([v(Power, _) | Other], TotalDegree) :-
 
 %% compare_vars_powers/3
 % this delta predicate is used by predsort/3 to sort vars powers
-% this is really really useful since it takes away the need to write a 
+% this is really really useful since it takes away the need to write a
 % sorting/looping algorithm and let us focus on the logic
-% we don't provide an equality delta predicate (= is always false) since we 
-% cover all the cases with < and >. This is so we keep duplicates, which are 
+% we don't provide an equality delta predicate (= is always false) since we
+% cover all the cases with < and >. This is so we keep duplicates, which are
 % usually deleted by predsort. compress_sorted_vps/3 will take care of the rest
 compare_vars_powers(<, v(_E1, V1), v(_E2, V2)) :-
 	V1 @=< V2, %=< so we keep duplicates of the same variable
@@ -163,26 +188,35 @@ compare_vars_powers(>, v(_E1, V1), v(_E2, V2)) :-
 
 %% compare_monomials/3
 % this delta predicate is used by predsort/3 in as_polynomial, monomials are
-% first compared by degree and then by their list of VPs. No comparison for 
-% coefficients is needed since we will take care of joining them with 
-% compress_sorted_monomials/3 
+% first compared by degree then by alphabetical order and then by power on a single letter. No comparison for
+% coefficients is needed since we will take care of joining them with
+% compress_sorted_monomials/3
 compare_monomials(<, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1 > D2,
 	!.
 compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1 = D2,
-	is_vp_lesser(VPs1, VPs2),
+	is_vp_less_by_alphabetical_order(VPs1, VPs2),
+	!.
+compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1 = D2,
+	is_vp_more_by_power_on_same_letter(VPs1, VPs2),
 	!.
 compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1 = D2,
 	VPs1 = VPs2,
 	!.
+
 compare_monomials(>, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1 < D2,
 	!.
 compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
 	D1 = D2,
-	is_vp_lesser(VPs2, VPs1),
+	is_vp_less_by_alphabetical_order(VPs2, VPs1),
+	!.
+compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :-
+	D1 = D2,
+	is_vp_more_by_power_on_same_letter(VPs2, VPs1),
 	!.
 compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1 = D2,
@@ -194,19 +228,24 @@ compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 % first list is "smaller" by comparing first by Variable ("smaller" first) and
 % then by exponent (bigger first)
 % TODO: disallow two-way
-is_vp_lesser([], [v(_E, _V)]) :-
+is_vp_less_by_alphabetical_order([], [v(_E, _V)]) :-
 	!.
-is_vp_lesser([v(_E1, V1) | _RestOfVps1], [v(_E2, V2) | _RestOfVps2]) :-
+is_vp_less_by_alphabetical_order([v(_E1, V1) | _RestOfVps1], [v(_E2, V2) | _RestOfVps2]) :-
 	V1 @< V2,
 	!.
-is_vp_lesser([v(E1, V1) | _RestOfVps1], [v(E2, V2) | _RestOfVps2]) :-
+is_vp_less_by_alphabetical_order([v(_E1, V1) | RestOfVps1], [v(_E2, V2) | RestOfVps2]) :-
+	V1 = V2,
+	is_vp_less_by_alphabetical_order(RestOfVps1, RestOfVps2),
+	!.
+
+is_vp_more_by_power_on_same_letter([v(E1, V1) | _RestOfVps1], [v(E2, V2) | _RestOfVps2]) :-
 	V1 = V2,
 	E1 > E2,
 	!.
-is_vp_lesser([v(E1, V1) | RestOfVps1], [v(E2, V2) | RestOfVps2]) :-
+is_vp_more_by_power_on_same_letter([v(E1, V1) | RestOfVps1], [v(E2, V2) | RestOfVps2]) :-
 	V1 = V2,
 	E1 = E2,
-	is_vp_lesser(RestOfVps1, RestOfVps2),
+	is_vp_more_by_power_on_same_letter(RestOfVps1, RestOfVps2),
 	!.
 
 %%% tests
