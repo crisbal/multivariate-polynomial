@@ -59,12 +59,16 @@ as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
 % TODO: two way
-as_polynomial(Expression, p(SortedAndCompressedMonomials)) :-
+as_polynomial(Expression, poly(SortedAndCompressedMonomials)) :-
+	nonvar(Expression),
 	as_polynomial_parse(Expression, Monomials),
 	!,
 	predsort(compare_monomials, Monomials, SortedMonomials),
 	compress_sorted_monomials(SortedMonomials, SortedAndCompressedMonomials).
-
+as_polynomial(Expression, poly(Monomials)) :-
+	var(Expression),
+	as_polynomial_parse(Expression, Monomials),
+	!.
 %% as_polynomial_parse/2
 % just like the monomials we parse, this time splitting by + and -
 as_polynomial_parse(OtherMonExp + MonExp, [Mon | OtherMon]) :-
@@ -80,7 +84,7 @@ as_polynomial_parse(MonExp, [Mon]) :-
 	as_monomial(MonExp, Mon),
 	!.
 
-pprint_polynomial(p(Monomials)) :-
+pprint_polynomial(poly(Monomials)) :-
 	pprint_polynomial_worker(Monomials).
 pprint_polynomial_worker([]) :- !.
 pprint_polynomial_worker([Monomial | OtherMonomials]) :-
@@ -107,14 +111,14 @@ pprint_vars_powers([v(Exponent, Variable) | OtherVarPowers]) :-
 	pprint_vars_powers(OtherVarPowers).
 
 
-coefficients(p(Monomials), Coefficients) :-
+coefficients(poly(Monomials), Coefficients) :-
 	coefficients_worker(Monomials, Coefficients).
 coefficients_worker([], []).
 coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [Coefficient | RestOfCoefficients]) :-
 	% TODO: add check for is_monomial
 	coefficients_worker(RestOfMonomials, RestOfCoefficients).
 
-variables(p(Monomials), UniqueAndSorted) :-
+variables(poly(Monomials), UniqueAndSorted) :-
 	variables_worker(Monomials, [], Variables),
 	sort(Variables, UniqueAndSorted). %sort already removes duplicates, so we are good
 variables_worker([], CurrentVars, CurrentVars).
@@ -128,7 +132,7 @@ extract_vars([v(_E, V) | RestOfVPs], CurrentVars, Answer) :-
 	extract_vars(RestOfVPs, [V | CurrentVars], Answer).
 
 % TODO: improve checks to really be sure that this is a list of monomials
-monomials(p(Monomials), Monomials).
+monomials(poly(Monomials), Monomials).
 
 %%% "helper"/not core rules
 
