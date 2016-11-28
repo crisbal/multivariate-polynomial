@@ -24,6 +24,16 @@ as_var_power(Variable, v(1, Variable)) :-
 	!.
 */
 
+%% is_monomial/1
+% TODO: add tests
+is_monomial(m(C, TD, VPs)) :-
+	integer(TD),
+	TD>=0, %TODO: why?
+	compute_total_degree_for_vars_powers(VPs, TD), %TODO: is needed?
+	is_list(VPs),
+	predsort(compare_vars_powers, VPs, VPs), %TODO: is needed?
+	compress_sorted_vps(VPs, VPs), %TODO: is needed
+	!. %TODO: is needed?
 
 %% as_monomial/2
 % this is a wrapper for the engine that will parse as_monomial
