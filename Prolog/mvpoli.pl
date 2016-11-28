@@ -14,7 +14,7 @@ is_var_power(v(Exponent, Variable)) :-
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
 	is_var_power(v(Exponent, Variable)),
 	!.
-as_var_power(Variable, v(1, Variable)) :- 
+as_var_power(Variable, v(1, Variable)) :-
 	is_var_power(v(1, Variable)),
 	!.
 /*as_var_power(Base^Other, v(NewExponent, BaseVariable)) :-
@@ -217,8 +217,10 @@ monomials_times_minus_one([m(C, T, V)|Monomials],[m(C_R, T, V)|Monomials_R]) :-
 % that same variables will be one next to the other because we predsort the list
 % before calling this
 % TODO: disallow two-way
-% TODO: delete monomials with 0 coefficient
 compress_sorted_vps([], []) :- !.
+compress_sorted_vps([v(0, _) | RestOfVps], Result) :-
+	compress_sorted_vps(RestOfVps , Result),
+	!.
 compress_sorted_vps([v(E, B)], [v(E, B)]) :- !.
 compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :-
 	NewExp is E1+E2,
@@ -232,6 +234,9 @@ compress_sorted_vps([v(E1, B1), v(E2, B2) | RestOfVps], [v(E1, B1) | Result]) :-
 % same as compress_sorted_vps/2. but for the monomials
 % TODO: disallow two-way
 compress_sorted_monomials([], []) :- !.
+compress_sorted_monomials([m(0, _, _)| RestOfMons], Result) :-
+	compress_sorted_monomials(RestOfMons, Result),
+	!.
 compress_sorted_monomials([m(C, T, V)], [m(C, T, V)]) :- !.
 compress_sorted_monomials([m(C1, T, V), m(C2, T, V) | RestOfMons], Result) :-
 	NewCoeff is C1+C2,

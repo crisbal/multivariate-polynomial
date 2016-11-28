@@ -160,4 +160,13 @@ test(polytimes_5) :-
 	mvpoli:as_polynomial(y*x^3+y*x^5+x^8+y^2+z*x^5+z*y, PR),
 	mvpoli:polytimes(P1, P2, PR).
 
+test(compress_sorted_vps_1) :-
+	mvpoli:as_polynomial(3*x, P1),
+	mvpoli:as_polynomial(3*x, P2),
+	mvpoli:polyminus(P1, P2, poly(PR)),
+	mvpoli:compress_sorted_vps(PR,[]).
+test(compress_sorted_monomials_1) :-
+	mvpoli:as_polynomial(3*x-3*x, poly(M)),
+	M=[].
+
 :- end_tests(mvpoli).
