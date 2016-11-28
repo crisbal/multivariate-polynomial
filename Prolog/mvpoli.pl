@@ -1,24 +1,36 @@
 %%%% NUMBER SURNAME NAME
 %%%% COLLABORATORS
 
+%% is_var_power/1
+% FIXME? do we really have to check if the exponent is negative??
+is_var_power(v(Exponent, Variable)) :-
+	integer(Exponent),
+	Exponent >= 0, %TODO: why?
+	atomic(Variable).
+
 %% as_var_power/2
 % this will parse a variable or variable^exponent expression and produce
 % the correct representation v(exponent, variable)
-% TODO add checks for atomic variable and exponent
-% FIXME? do we really have to check if the exponent is negative??
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
-	number(Exponent),
+	is_var_power(v(Exponent, Variable)),
 	!.
-	% Exponent >= 0.
-as_var_power(Variable, v(1, Variable)) :- !.
+as_var_power(Variable, v(1, Variable)) :- 
+	is_var_power(v(1, Variable)),
+	!.
+/*as_var_power(Base^Other, v(NewExponent, BaseVariable)) :-
+	integer(Exponent),
+	as_var_power(Other, v(OtherExponent, BaseVariable)),
+	NewExponent is Exponent*OtherExponent,
+	!.
+*/
 
 
 %% as_monomial/2
 % this is a wrapper for the engine that will parse as_monomial
-% FIXME: HACK: we have to check if expression is a var or not, because if it is
+% NOTE: we have to check if expression is a var or not, because if it is
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
-% we know it is sort/2's fault because you can't `sort(R, [1, 2, 3]).`
+% we know it is sort/2's (or predsort) fault because you can't `sort(R, [1, 2, 3]).`
 as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	nonvar(Expression),
 	!,
