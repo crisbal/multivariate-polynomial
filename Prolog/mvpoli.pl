@@ -26,7 +26,7 @@ as_var_power(Variable, v(1, Variable)) :-
 
 %% is_monomial/1
 % TODO: add tests
-is_monomial(m(C, TD, VPs)) :-
+is_monomial(m(_C, TD, VPs)) :-
 	integer(TD),
 	TD>=0, %TODO: why?
 	compute_total_degree_for_vars_powers(VPs, TD), %TODO: is needed?
@@ -76,6 +76,14 @@ as_monomial_parse(Coefficient, Coefficient, []) :-
 	!.
 as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
+	!.
+
+
+%% is_polynomial/1
+% TODO: add tests
+is_polynomial(poly(Monomials)) :-
+	is_list(Monomials),
+	foreach(member(M, Monomials), is_monomial(M)),
 	!.
 
 %% as_polynomial/2
