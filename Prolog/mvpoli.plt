@@ -124,15 +124,33 @@ test(monotimes_2) :-
 test(monotimespoly_1) :-
 	mvpoli:as_monomial(3, M),
 	mvpoli:as_polynomial(-3*x+3*y, P),
-	mvpoli:as_polynomial(-9*x+9*y, PR),
+	mvpoli:as_polynomial(9*y-9*x, PR),
 	mvpoli:monotimespoly(M, P, PR).
 
-
-test(monotimespoly_1) :-
+test(polytimes_1) :-
 	mvpoli:as_polynomial(x^3, P1),
 	mvpoli:as_polynomial(x, P2),
 	mvpoli:as_polynomial(x^4, PR),
 	mvpoli:polytimes(P1, P2, PR).
-
+test(polytimes_2) :-
+	mvpoli:as_polynomial(x^3, P1),
+	mvpoli:as_polynomial(x^5, P2),
+	mvpoli:as_polynomial(x^8, PR),
+	mvpoli:polytimes(P1, P2, PR).
+test(polytimes_3) :-
+	mvpoli:as_polynomial(x^3+y, P1),
+	mvpoli:as_polynomial(x^5, P2),
+	mvpoli:as_polynomial(x^8+x^5*y, PR),
+	mvpoli:polytimes(P1, P2, PR).
+test(polytimes_4) :-
+	mvpoli:as_polynomial(x^3+y, P1),
+	mvpoli:as_polynomial(x^5+y, P2),
+	mvpoli:as_polynomial(y*x^3+y*x^5+x^8+y^2, PR),
+	mvpoli:polytimes(P1, P2, PR).
+test(polytimes_5) :-
+	mvpoli:as_polynomial(x^3+y+z, P1),
+	mvpoli:as_polynomial(x^5+y, P2),
+	mvpoli:as_polynomial(y*x^3+y*x^5+x^8+y^2+z*x^5+z*y, PR),
+	mvpoli:polytimes(P1, P2, PR).
 
 :- end_tests(mvpoli).
