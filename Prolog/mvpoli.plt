@@ -49,4 +49,25 @@ test(compute_total_degree_for_vars_powers) :-
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x)], 2),
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x), v(3, y)], 5).
 
+test(polyplus_1) :-
+	mvpoli:as_polynomial(3*x, P1),
+	mvpoli:as_polynomial(4*x, P2),
+	mvpoli:as_polynomial(7*x, PR),
+	mvpoli:polyplus(P1, P2, PR).
+test(polyplus_2) :-
+	mvpoli:as_polynomial(3*x, P1),
+	mvpoli:as_polynomial(3*y, P2),
+	mvpoli:as_polynomial(3*x+3*y, PR),
+	mvpoli:polyplus(P1, P2, PR).
+test(polyplus_3) :-
+	mvpoli:as_polynomial(3*x+4*y, P1),
+	mvpoli:as_polynomial(3*y ,P2),
+	mvpoli:as_polynomial(3*x+7*y, PR),
+	mvpoli:polyplus(P1, P2, PR).
+test(polyplus_4) :-
+	mvpoli:as_polynomial(3, P1),
+	mvpoli:as_polynomial(39, P2),
+	mvpoli:as_polynomial(42, PR),
+	mvpoli:polyplus(P1, P2, PR).
+
 :- end_tests(mvpoli).

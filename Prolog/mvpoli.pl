@@ -134,6 +134,12 @@ extract_vars([v(_E, V) | RestOfVPs], CurrentVars, Answer) :-
 % TODO: improve checks to really be sure that this is a list of monomials
 monomials(poly(Monomials), Monomials).
 
+% FIXME: add comments
+polyplus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
+	append(Monomials1, Monomials2, MonomialsAppend),
+	predsort(compare_monomials, MonomialsAppend, SortedMonomials),
+	compress_sorted_monomials(SortedMonomials, MonomialsResult).
+
 %%% "helper"/not core rules
 
 %% compress_sorted_vps/2
@@ -142,6 +148,7 @@ monomials(poly(Monomials), Monomials).
 % that same variables will be one next to the other because we predsort the list
 % before calling this
 % TODO: disallow two-way
+% TODO: delete monomials with 0 coefficient
 compress_sorted_vps([], []) :- !.
 compress_sorted_vps([v(E, B)], [v(E, B)]) :- !.
 compress_sorted_vps([v(E1, B), v(E2, B) | RestOfVps], Result) :-
