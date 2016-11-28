@@ -4,8 +4,9 @@
 %%%% Tests for mvpoli module
 :- begin_tests(mvpoli).
 
-test(as_var_power) :-
-	mvpoli:as_var_power(x, v(1, x)),
+test(as_var_power_1) :-
+	mvpoli:as_var_power(x, v(1, x)).
+test(as_var_power_2) :-
 	mvpoli:as_var_power(x^2, v(2, x)).
 
 test(as_monomial) :-
@@ -28,6 +29,20 @@ test(as_polynomial) :-
 	mvpoli:as_polynomial(3*x - 4*x^2 + 1, poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])])),
 	mvpoli:as_polynomial(a^2 + a^3, poly([m(1, 3, [v(3, a)]), m(1, 2, [v(2, a)])])),
 	mvpoli:as_polynomial(x*y^2 + x^2*y + x^3, poly([m(1, 3, [v(3, x)]), m(1, 3, [v(2, x), v(1, y)]), m(1, 3, [v(1, x), v(2, y)])])).
+
+test(coefficients) :-
+	mvpoli:coefficients(poly([m(42, 0, [])]), [42]),
+	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]),m(42, 0, [])]), [3,42]),
+	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]), m(-4, 1, [v(1, x)]), m(1, 0, [])]), [3, -4, 1]),
+	mvpoli:coefficients(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [-4 ,3, 1]),
+	mvpoli:coefficients(poly([m(1, 8, [v(5, y), v(2, x), v(1, z)]), m(1, 5, [v(3, z), v(1, x), v(1, y)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [1, 1, 1]).
+
+test(variables) :-
+	mvpoli:variables(poly([m(42, 0, [])]), []),
+	mvpoli:variables(poly([m(3, 1, [v(1, x)]),m(42, 0, [])]), [x]),
+	mvpoli:variables(poly([m(3, 1, [v(1, x)]), m(-4, 1, [v(1, x)]), m(1, 0, [])]), [x]),
+	mvpoli:variables(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [x]),
+	mvpoli:variables(poly([m(1, 8, [v(5, y), v(2, x), v(1, z)]), m(1, 5, [v(3, z), v(1, x), v(1, y)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [x, y, z]).
 
 test(compute_total_degree_for_vars_powers) :-
 	mvpoli:compute_total_degree_for_vars_powers([], 0),
