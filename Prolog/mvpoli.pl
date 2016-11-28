@@ -145,7 +145,36 @@ polyminus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
 	monomials_times_minus_one(Monomials2,Monomials2_tmp),
 	polyplus(poly(Monomials1),poly(Monomials2_tmp),poly(MonomialsResult)).
 
+% FIXME: add comments
+polytimes(poly(M1), poly(M2), poly(MonomialsResult)) :-
+	polytimes_worker(M1,M2,Unsorted),
+	predsort(compare_monomials, Unsorted, SortedMonomials),
+	compress_sorted_monomials(SortedMonomials, MonomialsResult).
+
+% FIXME: add comments
+polytimes_worker([], _, []) :- !.
+polytimes_worker([MonHead|Monomials1], Monomials2, MonomialsR) :-
+	monotimespoly(MonHead, poly(Monomials2), poly(MR)),
+	polytimes_worker(Monomials1, Monomials2, MonomialsWorker),
+	append(MR,MonomialsWorker,MonomialsR).
+
 %%% "helper"/not core rules
+% FIXME: add comments
+monotimespoly(m(_, _, _), poly([]),	poly([])) :- !.
+monotimespoly(m(C1, T1, V1), poly([m(C2, T2, V2)|Monomials]),
+	poly([Monomial|MonomialsR])) :-
+		monotimes(m(C1, T1, V1), m(C2, T2, V2), Monomial),
+		monotimespoly(m(C1, T1, V1), poly(Monomials), poly(MonomialsR)).
+
+% FIXME: add comments
+monotimes(m(C1, T1, V1), m(C2, T2, V2), m(CR, TR, VR)) :-
+	CR is C1*C2,
+	TR is T1+T2,
+	append(V1, V2, VarsPowers),
+	predsort(compare_vars_powers, VarsPowers, SortedVPs),
+	compress_sorted_vps(SortedVPs, VR).
+
+% FIXME: add comments
 monomials_times_minus_one([],[]) :-	!.
 monomials_times_minus_one([m(C, T, V)|Monomials],[m(C_R, T, V)|Monomials_R]) :-
 	C_R is -1*C,
