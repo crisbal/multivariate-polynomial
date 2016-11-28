@@ -140,7 +140,17 @@ polyplus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
 	predsort(compare_monomials, MonomialsAppend, SortedMonomials),
 	compress_sorted_monomials(SortedMonomials, MonomialsResult).
 
+% FIXME: add comments
+polyminus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
+	monomials_times_minus_one(Monomials2,Monomials2_tmp),
+	polyplus(poly(Monomials1),poly(Monomials2_tmp),poly(MonomialsResult)).
+
 %%% "helper"/not core rules
+monomials_times_minus_one([],[]) :-	!.
+monomials_times_minus_one([m(C, T, V)|Monomials],[m(C_R, T, V)|Monomials_R]) :-
+	C_R is -1*C,
+	monomials_times_minus_one(Monomials,Monomials_R),
+	!.
 
 %% compress_sorted_vps/2
 % the following rules "compress" a list of Vps. if there are two powers for the

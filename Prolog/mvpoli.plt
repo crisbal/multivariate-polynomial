@@ -70,4 +70,19 @@ test(polyplus_4) :-
 	mvpoli:as_polynomial(42, PR),
 	mvpoli:polyplus(P1, P2, PR).
 
+test(polyminus_1) :-
+	mvpoli:as_polynomial(3*x, P1),
+	mvpoli:as_polynomial(4*x, P2),
+	mvpoli:as_polynomial(-1*x, PR),
+	mvpoli:polyminus(P1, P2, PR).
+
+test(monomials_times_minus_one_1) :-
+	mvpoli:as_polynomial(3*x, poly(M1)),
+	mvpoli:as_polynomial(-3*x, poly(M2)),
+	mvpoli:monomials_times_minus_one(M1, M2).
+test(monomials_times_minus_one_2) :-
+	mvpoli:as_polynomial(3, poly(M1)),
+	mvpoli:as_polynomial(-3, poly(M2)),
+	mvpoli:monomials_times_minus_one(M1, M2).
+
 :- end_tests(mvpoli).
