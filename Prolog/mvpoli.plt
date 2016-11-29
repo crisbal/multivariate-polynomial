@@ -165,8 +165,12 @@ test(compress_sorted_vps_1) :-
 	mvpoli:as_polynomial(3*x, P2),
 	mvpoli:polyminus(P1, P2, poly(PR)),
 	mvpoli:compress_sorted_vps(PR,[]).
+
 test(compress_sorted_monomials_1) :-
 	mvpoli:as_polynomial(3*x-3*x, poly(M)),
+	M=[].
+test(compress_sorted_monomials_2) :-
+	mvpoli:as_polynomial(3*x-y-3*x+y, poly(M)),
 	M=[].
 
 :- end_tests(mvpoli).
