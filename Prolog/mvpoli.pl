@@ -40,7 +40,7 @@ is_monomial(m(_C, TD, VPs)) :-
 % NOTE: we have to check if expression is a var or not, because if it is
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
-% we know it is sort/2's (or predsort) fault because you can't `sort(R, [1, 2, 3]).`
+% it is mostly sort/2's (predsort) fault because you can't sort(R, [1, 2, 3]).
 as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 	nonvar(Expression),
 	!,
@@ -51,8 +51,10 @@ as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
-	as_monomial_parse(Expression, Coefficient, VarsPowers),
+	reverse(VarsPowers, ReversedVarsPowers), % so we print the m_vps in order
+	as_monomial_parse(Expression, Coefficient, ReversedVarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
+	is_monomial(m(Coefficient, TotalDegree, VarsPowers)), % check if all is ok
 	!.
 
 % using the power of prolog we can write this parse function without
@@ -60,12 +62,12 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 % basically in this way we parse the polinomial backward from the end
 % to the start, since order does not matter at this point we can do it!
 % it works "backward" because of how the unificator works in prolog
-as_monomial_parse(OtherVars * CoefficientInTheMiddle, Coefficient, VarsPowers) :-
+as_monomial_parse(OtherVars * CoefficientInside, Coefficient, VarsPowers) :-
 	% we handle coefficients that are in the middle of the monomial!
-	number(CoefficientInTheMiddle),
+	number(CoefficientInside),
 	!,
 	as_monomial_parse(OtherVars, OtherCoefficient, VarsPowers),
-	Coefficient is CoefficientInTheMiddle*OtherCoefficient.
+	Coefficient is CoefficientInside*OtherCoefficient.
 as_monomial_parse(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
@@ -77,7 +79,6 @@ as_monomial_parse(Coefficient, Coefficient, []) :-
 as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
 	!.
-
 
 %% is_polynomial/1
 % TODO: add tests
@@ -172,8 +173,8 @@ polyplus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
 
 % FIXME: add comments
 polyminus(poly(Monomials1), poly(Monomials2), poly(MonomialsResult)) :-
-	monomials_times_minus_one(Monomials2,Monomials2_tmp),
-	polyplus(poly(Monomials1),poly(Monomials2_tmp),poly(MonomialsResult)).
+	monomials_times_minus_one(Monomials2, InvertedMonomials),
+	polyplus(poly(Monomials1), poly(InvertedMonomials), poly(MonomialsResult)).
 
 % FIXME: add comments
 polytimes(poly(M1), poly(M2), poly(MonomialsResult)) :-
@@ -183,7 +184,7 @@ polytimes(poly(M1), poly(M2), poly(MonomialsResult)) :-
 
 % FIXME: add comments
 polytimes_worker([], _, []) :- !.
-polytimes_worker([MonHead|Monomials1], Monomials2, MonomialsR) :-
+polytimes_worker([MonHead | Monomials1], Monomials2, MonomialsR) :-
 	monotimespoly(MonHead, poly(Monomials2), poly(MR)),
 	polytimes_worker(Monomials1, Monomials2, MonomialsWorker),
 	append(MR,MonomialsWorker,MonomialsR).
@@ -191,8 +192,8 @@ polytimes_worker([MonHead|Monomials1], Monomials2, MonomialsR) :-
 %%% "helper"/not core rules
 % FIXME: add comments
 monotimespoly(m(_, _, _), poly([]),	poly([])) :- !.
-monotimespoly(m(C1, T1, V1), poly([m(C2, T2, V2)|Monomials]),
-	poly([Monomial|MonomialsR])) :-
+monotimespoly(m(C1, T1, V1), poly([m(C2, T2, V2) | Monomials]),
+	poly([Monomial | MonomialsR])) :-
 		monotimes(m(C1, T1, V1), m(C2, T2, V2), Monomial),
 		monotimespoly(m(C1, T1, V1), poly(Monomials), poly(MonomialsR)).
 
@@ -206,9 +207,9 @@ monotimes(m(C1, T1, V1), m(C2, T2, V2), m(CR, TR, VR)) :-
 
 % FIXME: add comments
 monomials_times_minus_one([],[]) :-	!.
-monomials_times_minus_one([m(C, T, V)|Monomials],[m(C_R, T, V)|Monomials_R]) :-
+monomials_times_minus_one([m(C, T, V) | Monomials], [m(C_R, T, V) | Monomials_R]) :-
 	C_R is -1*C,
-	monomials_times_minus_one(Monomials,Monomials_R),
+	monomials_times_minus_one(Monomials, Monomials_R),
 	!.
 
 %% compress_sorted_vps/2
