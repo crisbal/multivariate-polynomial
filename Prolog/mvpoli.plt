@@ -4,12 +4,12 @@
 %%%% Tests for mvpoli module
 :- begin_tests(mvpoli).
 
-test(is_var_power_1) :-
-	mvpoli:is_var_power(v(2, x)).
-test(is_var_power_2) :-
-	mvpoli:is_var_power(v(1, y)).
-test(is_var_power_2) :-
-	mvpoli:is_var_power(v(1, zzz)).
+test(is_varpower_1) :-
+	mvpoli:is_varpower(v(2, x)).
+test(is_varpower_2) :-
+	mvpoli:is_varpower(v(1, y)).
+test(is_varpower_2) :-
+	mvpoli:is_varpower(v(1, zzz)).
 
 test(as_var_power_1) :-
 	mvpoli:as_var_power(x, v(1, x)).
