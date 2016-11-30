@@ -115,7 +115,10 @@ as_polynomial_parse(OtherMonExp - MonExp, [m(NegCoeff, TotDeg, VPs) | OtherMon])
 as_polynomial_parse(MonExp, [Mon]) :-
 	as_monomial(MonExp, Mon),
 	!.
-
+as_polynomial_parse(-MonExp, [m(NegCoeff, TotDeg, VPs)]) :-
+	as_monomial(MonExp, m(Coeff, TotDeg, VPs)),
+	NegCoeff is Coeff*(-1),
+	!.
 
 %% polyval/3
 % evaluate the polynomial in the points
