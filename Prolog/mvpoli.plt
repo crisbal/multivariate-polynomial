@@ -186,5 +186,23 @@ test(is_monomial_4) :-
 	mvpoli:as_polynomial(1,P),
 	not(mvpoli:is_monomial(P)).
 
+test(is_polynomial_1) :-
+	mvpoli:as_monomial(4*x,M),
+	not(mvpoli:is_polynomial(M)).
+test(is_polynomial_2) :-
+	mvpoli:as_monomial(x,M),
+	not(mvpoli:is_polynomial(M)).
+test(is_polynomial_3) :-
+	mvpoli:as_monomial(1,M),
+	not(mvpoli:is_polynomial(M)).
+test(is_polynomial_4) :-
+	mvpoli:as_polynomial(1,P),
+	mvpoli:is_polynomial(P).
+test(is_polynomial_5) :-
+	mvpoli:as_polynomial(1+x,P),
+	mvpoli:is_polynomial(P).
+test(is_polynomial_6) :-
+	mvpoli:as_polynomial(1*x*x+4*y*x+5*y*y,P),
+	mvpoli:is_polynomial(P).
 
 :- end_tests(mvpoli).
