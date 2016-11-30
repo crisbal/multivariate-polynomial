@@ -25,7 +25,6 @@ as_var_power(Variable, v(1, Variable)) :-
 */
 
 %% is_monomial/1
-% TODO: add tests
 is_monomial(m(_C, TD, VPs)) :-
 	integer(TD),
 	TD>=0, %TODO: why?
@@ -51,7 +50,7 @@ as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
-	compress_sorted_vps(VarsPowers, CompressedVPs), 
+	compress_sorted_vps(VarsPowers, CompressedVPs),
 	reverse(CompressedVPs, ReversedVarsPowers), % so we print the m_vps in order
 	as_monomial_parse(Expression, Coefficient, ReversedVarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
