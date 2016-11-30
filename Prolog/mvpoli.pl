@@ -110,8 +110,8 @@ as_polynomial_parse(OtherMonExp + MonExp, [Mon | OtherMon]) :-
 as_polynomial_parse(OtherMonExp - MonExp, [m(NegCoeff, TotDeg, VPs) | OtherMon]) :-
 	as_monomial(MonExp, m(Coeff, TotDeg, VPs)),
 	NegCoeff is Coeff*(-1),
-	!,
-	as_polynomial_parse(OtherMonExp, OtherMon).
+	as_polynomial_parse(OtherMonExp, OtherMon),
+	!.
 as_polynomial_parse(MonExp, [Mon]) :-
 	as_monomial(MonExp, Mon),
 	!.
@@ -122,11 +122,13 @@ as_polynomial_parse(-MonExp, [m(NegCoeff, TotDeg, VPs)]) :-
 
 %% polyval/3
 % evaluate the polynomial in the points
+% TODO: disallow two way
 polyval(Polynomial, VarValues, Result) :-
 	variables(Polynomial, VarSymbols),
 	polyval_worker(Polynomial, VarSymbols, VarValues, Result),
 	!.
 
+% TODO: disallow two way
 polyval_worker(poly([]), _, _, 0) :- !.
 polyval_worker(poly([Monomial | RestOfMonomials]), VarSymbols, VarValues, Result) :-
 	monoval(Monomial, VarSymbols, VarValues, MonomialResult),
@@ -135,11 +137,13 @@ polyval_worker(poly([Monomial | RestOfMonomials]), VarSymbols, VarValues, Result
 
 %% monoval/4
 % evaluate the monomial in the points
+% TODO: disallow two way
 monoval(m(Coefficient, _TD, VPs), VarSymbols, VarValues, Result) :-
 	varpowersval(VPs, VarSymbols, VarValues, VPsValue),
 	Result is Coefficient*VPsValue,
 	!.
 
+% TODO: disallow two way
 varpowersval([], _, _, 1) :- !.
 varpowersval([v(Exponent, Base) | OtherVPs], VarSymbols, VarValues, Value) :-
 	find_var_value(Base, VarSymbols, VarValues, BaseValue),
@@ -147,7 +151,8 @@ varpowersval([v(Exponent, Base) | OtherVPs], VarSymbols, VarValues, Value) :-
 	varpowersval(OtherVPs, VarSymbols, VarValues, OtherValue),
 	Value is CurrentValue*OtherValue.
 
-
+% TODO: disallow two way
+% TODO: investigate better solution with dictionaries
 find_var_value(Symbol, [Symbol | _], [SymbolValue | _], SymbolValue) :- !.
 find_var_value(Symbol, [NotMySymbol | OtherSymbols], [_| OtherSymbolsValue], FoundSymbolValue) :-
 	Symbol \= NotMySymbol,
