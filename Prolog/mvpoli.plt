@@ -205,4 +205,18 @@ test(is_polynomial_6) :-
 	mvpoli:as_polynomial(1*x*x+4*y*x+5*y*y,P),
 	mvpoli:is_polynomial(P).
 
+test(maxdegree_1) :-
+	mvpoli:as_polynomial(y*x^3+y*x^5+x^8+y^2+z*x^5+z*y, P),
+	mvpoli:maxdegree(P,8).
+test(maxdegree_2) :-
+	mvpoli:as_polynomial(y^128+1, P),
+	mvpoli:maxdegree(P,128).
+
+test(maxdegree_1) :-
+	mvpoli:as_polynomial(y*x^3+y*x^5+x^8+y^2+z*x^5+z*y, P),
+	mvpoli:mindegree(P,2).
+test(maxdegree_2) :-
+	mvpoli:as_polynomial(y^128+1, P),
+	mvpoli:mindegree(P,0).
+
 :- end_tests(mvpoli).

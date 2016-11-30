@@ -23,6 +23,8 @@ build:
 	@ echo '%%%% NUMBER SURNAME NAME' 												>> mvpoli.pl
 	@ echo '%%%% CO_NUMBER CO_SURNAME CO_NAME' 															>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
+	@ cat mvpoli.pl.d/maxdegree.pl 														>> mvpoli.pl
+	@ cat mvpoli.pl.d/mindegree.pl 														>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_var_power.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_var_power.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_monomial.pl 													>> mvpoli.pl
