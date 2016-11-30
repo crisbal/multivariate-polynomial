@@ -5,7 +5,7 @@ FILENAME ?= mvpoli
 all: build repl
 
 .PHONY: test
-test: build
+test: buildtest
 	@ echo "+++ Run tests and exit +++"
 	$(PROLOG) -s $(FILENAME) -g $(FILENAME)_test -t halt
 
@@ -21,7 +21,7 @@ clean:
 build:
 	@ echo -n																									>	 mvpoli.pl
 	@ echo '%%%% NUMBER SURNAME NAME' 												>> mvpoli.pl
-	@ echo '%%%% COLLABORATORS' 															>> mvpoli.pl
+	@ echo '%%%% CO_NUMBER CO_SURNAME CO_NAME' 															>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_var_power.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_var_power.pl 												>> mvpoli.pl
@@ -64,4 +64,6 @@ build:
 	@ cat mvpoli.pl.d/compare_monomials.pl 										>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_vp_less_by_alphabetical_order.pl 		>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_vp_more_by_power_on_same_letter.pl 	>> mvpoli.pl
+
+buildtest: build
 	@ cat mvpoli.pl.d/mvpoli_test.pl													>> mvpoli.pl
