@@ -51,7 +51,8 @@ as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
-	reverse(VarsPowers, ReversedVarsPowers), % so we print the m_vps in order
+	compress_sorted_vps(VarsPowers, CompressedVPs), 
+	reverse(CompressedVPs, ReversedVarsPowers), % so we print the m_vps in order
 	as_monomial_parse(Expression, Coefficient, ReversedVarsPowers),
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	is_monomial(m(Coefficient, TotalDegree, VarsPowers)), % check if all is ok
@@ -115,8 +116,48 @@ as_polynomial_parse(MonExp, [Mon]) :-
 	as_monomial(MonExp, Mon),
 	!.
 
-pprint_polynomial(poly(Monomials)) :-
-	pprint_polynomial_worker(Monomials).
+
+%% polyval/3
+% evaluate the polynomial in the points
+polyval(Polynomial, VarValues, Result) :-
+	variables(Polynomial, VarSymbols),
+	polyval_worker(Polynomial, VarSymbols, VarValues, Result),
+	!.
+
+polyval_worker(poly([]), _, _, 0) :- !.
+polyval_worker(poly([Monomial | RestOfMonomials]), VarSymbols, VarValues, Result) :-
+	monoval(Monomial, VarSymbols, VarValues, MonomialResult),
+	polyval_worker(poly(RestOfMonomials), VarSymbols, VarValues, RestOfMonomialsResult),
+	Result is MonomialResult+RestOfMonomialsResult.
+
+%% monoval/4
+% evaluate the monomial in the points
+monoval(m(Coefficient, _TD, VPs), VarSymbols, VarValues, Result) :-
+	varpowersval(VPs, VarSymbols, VarValues, VPsValue),
+	Result is Coefficient*VPsValue,
+	!.
+
+varpowersval([], _, _, 1) :- !.
+varpowersval([v(Exponent, Base) | OtherVPs], VarSymbols, VarValues, Value) :-
+	find_var_value(Base, VarSymbols, VarValues, BaseValue),
+	CurrentValue is BaseValue^Exponent,
+	varpowersval(OtherVPs, VarSymbols, VarValues, OtherValue),
+	Value is CurrentValue*OtherValue.
+
+
+find_var_value(Symbol, [Symbol | _], [SymbolValue | _], SymbolValue) :- !.
+find_var_value(Symbol, [NotMySymbol | OtherSymbols], [_| OtherSymbolsValue], FoundSymbolValue) :-
+	Symbol \= NotMySymbol,
+	find_var_value(Symbol, OtherSymbols, OtherSymbolsValue, FoundSymbolValue),
+	!.
+
+
+pprint_polynomial(poly([])) :- pprint_polynomial_worker([]), !.
+pprint_polynomial(poly([HeadMonomial | Monomials])) :-
+	pprint_head_monomial(HeadMonomial),
+	pprint_polynomial_worker(Monomials),
+	!.
+
 pprint_polynomial_worker([]) :- !.
 pprint_polynomial_worker([Monomial | OtherMonomials]) :-
 	pprint_monomial(Monomial),
@@ -125,6 +166,11 @@ pprint_polynomial_worker([Monomial | OtherMonomials]) :-
 
 pprint_monomial(m(Coefficient, _TD, VarsPowers)) :-
 	write(" + "),
+	write(Coefficient),
+	pprint_vars_powers(VarsPowers),
+	!.
+
+pprint_head_monomial(m(Coefficient, _TD, VarsPowers)) :-
 	write(Coefficient),
 	pprint_vars_powers(VarsPowers),
 	!.
