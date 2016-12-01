@@ -36,6 +36,11 @@ as_monomial_parse(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
 	!.
+as_monomial_parse(OtherVars * -Var, NegatedCoefficient, [VarPower | OtherVarPowers]) :-
+	as_var_power(Var, VarPower),
+	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
+	NegatedCoefficient is Coefficient*(-1),
+	!.
 % TODO: add checks for atomic coefficients
 as_monomial_parse(Coefficient ^ E, Coefficient_E, []) :-
 	number(Coefficient),
@@ -46,5 +51,8 @@ as_monomial_parse(Coefficient, Coefficient, []) :-
 	number(Coefficient),
 	!.
 as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
+	as_var_power(HeadVarPower, VarPower),
+	!.
+as_monomial_parse(-HeadVarPower, -1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
 	!.
