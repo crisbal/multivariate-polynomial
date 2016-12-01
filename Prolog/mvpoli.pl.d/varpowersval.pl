@@ -5,3 +5,4 @@ varpowersval([v(Exponent, Base) | OtherVPs], VarSymbols, VarValues, Value) :-
 	CurrentValue is BaseValue^Exponent,
 	varpowersval(OtherVPs, VarSymbols, VarValues, OtherValue),
 	Value is CurrentValue*OtherValue.
+

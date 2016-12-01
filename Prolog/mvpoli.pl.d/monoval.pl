@@ -5,3 +5,4 @@ monoval(m(Coefficient, _TD, VPs), VarSymbols, VarValues, Result) :-
 	varpowersval(VPs, VarSymbols, VarValues, VPsValue),
 	Result is Coefficient*VPsValue,
 	!.
+

@@ -29,30 +29,22 @@ build:
 	@ cat mvpoli.pl.d/as_var_power.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_monomial.pl 													>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_monomial.pl 													>> mvpoli.pl
-	@ cat mvpoli.pl.d/as_monomial_parse.pl 										>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_polynomial.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_polynomial.pl 												>> mvpoli.pl
-	@ cat mvpoli.pl.d/as_polynomial_parse.pl 									>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyval.pl 															>> mvpoli.pl
-	@ cat mvpoli.pl.d/polyval_worker.pl 											>> mvpoli.pl
 	@ cat mvpoli.pl.d/monoval.pl 															>> mvpoli.pl
 	@ cat mvpoli.pl.d/varpowersval.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/find_var_value.pl 											>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_polynomial.pl 										>> mvpoli.pl
-	@ cat mvpoli.pl.d/pprint_polynomial_worker.pl 						>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_monomial.pl 											>> mvpoli.pl
-	@ cat mvpoli.pl.d/pprint_head_monomial.pl 								>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_vars_powers.pl 									>> mvpoli.pl
 	@ cat mvpoli.pl.d/coefficients.pl 												>> mvpoli.pl
-	@ cat mvpoli.pl.d/coefficients_worker.pl 									>> mvpoli.pl
 	@ cat mvpoli.pl.d/variables.pl 														>> mvpoli.pl
-	@ cat mvpoli.pl.d/variables_worker.pl 										>> mvpoli.pl
 	@ cat mvpoli.pl.d/extract_vars.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/monomials.pl 														>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyplus.pl 														>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyminus.pl 														>> mvpoli.pl
 	@ cat mvpoli.pl.d/polytimes.pl 														>> mvpoli.pl
-	@ cat mvpoli.pl.d/polytimes_worker.pl 										>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ echo '%%% "helper"/not core rules'											>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl

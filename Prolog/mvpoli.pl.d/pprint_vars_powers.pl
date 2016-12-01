@@ -9,3 +9,4 @@ pprint_vars_powers([v(Exponent, Variable) | OtherVarPowers]) :-
 	write("^"),
 	write(Exponent),
 	pprint_vars_powers(OtherVarPowers).
+

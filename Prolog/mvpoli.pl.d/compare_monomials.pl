@@ -18,7 +18,6 @@ compare_monomials(<, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1 = D2,
 	VPs1 = VPs2,
 	!.
-
 compare_monomials(>, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1 < D2,
 	!.
@@ -34,3 +33,4 @@ compare_monomials(>, m(_C1, D1, VPs1), m(_C2, D2, VPs2)) :- %to keep duplicates
 	D1 = D2,
 	VPs1 = VPs2,
 	!.
+

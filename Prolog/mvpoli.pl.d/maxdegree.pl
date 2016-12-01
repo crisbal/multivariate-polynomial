@@ -10,3 +10,4 @@ maxdegree_worker([m(_, TD, _)|Monomials],CurrentMaxDegree,Degree) :-
   maxdegree_worker(Monomials,TD,Degree).
 maxdegree_worker([m(_, _, _)|Monomials],CurrentMaxDegree,Degree) :-
   maxdegree_worker(Monomials,CurrentMaxDegree,Degree).
+
