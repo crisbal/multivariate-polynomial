@@ -47,7 +47,8 @@ build:
 	@ cat mvpoli.pl.d/polytimes.pl 														>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ echo '%%% "helper"/not core rules'											>> mvpoli.pl
-	@ echo 																										>> mvpoli.pl
+	@ echo 									
+	@ cat mvpoli.pl.d/to_polynomial.pl 												>> mvpoli.pl																	>> mvpoli.pl
 	@ cat mvpoli.pl.d/monotimespoly.pl 												>> mvpoli.pl
 	@ cat mvpoli.pl.d/monotimes.pl 														>> mvpoli.pl
 	@ cat mvpoli.pl.d/monomials_times_minus_one.pl 						>> mvpoli.pl
