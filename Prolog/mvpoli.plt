@@ -34,6 +34,8 @@ test(as_monomial_8) :-
 	mvpoli:as_monomial(a*2*3*b^2, m(6, 3, [v(1, a), v(2, b)])). % two coefficients in the middle
 test(as_monomial_9) :-
 	mvpoli:as_monomial(a*b*a^2*b^2, m(1, 6, [v(3, a), v(3, b)])). % repeating variables
+test(as_monomial_10) :-
+	mvpoli:as_monomial(10^2, m(100, 0, [])).
 
 test(as_polynomial_1) :-
 	mvpoli:as_polynomial(42, poly([m(42, 0, [])])).
