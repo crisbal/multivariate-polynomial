@@ -1,0 +1,21 @@
+#!/bin/bash
+echo "Running tests..."
+TMP_PROLOG=`mktemp`
+cd Prolog
+
+{
+echo | make test > /dev/null
+}  2> $TMP_PROLOG
+
+STATUS=0
+
+
+if [[ $(cat $TMP_PROLOG | grep ^ERROR | wc -l) -gt 0 ]]
+then
+	cat $TMP_PROLOG
+	STATUS=1
+fi
+
+rm -f $TMP_PROLOG
+
+exit $STATUS
