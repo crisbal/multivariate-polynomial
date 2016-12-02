@@ -63,7 +63,7 @@ test(coefficients_3) :-
 test(coefficients_4) :-
 	mvpoli:coefficients(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [-4 ,3, 1]).
 test(coefficients_5) :-
-	mvpoli:coefficients(poly([m(1, 8, [v(5, y), v(2, x), v(1, z)]), m(1, 5, [v(3, z), v(1, x), v(1, y)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [1, 1, 1]).
+	mvpoli:coefficients(poly([m(1, 8, [v(2, x), v(5, y), v(1, z)]), m(1, 5, [v(1, x), v(1, y), v(3, z)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [1, 1, 1]).
 
 test(variables_1) :-
 	mvpoli:variables(poly([m(42, 0, [])]), []).
@@ -74,7 +74,7 @@ test(variables_3) :-
 test(variables_4) :-
 	mvpoli:variables(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [x]).
 test(variables_5) :-
-	mvpoli:variables(poly([m(1, 8, [v(5, y), v(2, x), v(1, z)]), m(1, 5, [v(3, z), v(1, x), v(1, y)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [x, y, z]).
+	mvpoli:variables(poly([m(1, 8, [v(2, x), v(5, y), v(1, z)]), m(1, 5, [v(1, x), v(1, y), v(3, z)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [x, y, z]).
 
 test(compute_total_degree_for_vars_powers_1) :-
 	mvpoli:compute_total_degree_for_vars_powers([], 0).
