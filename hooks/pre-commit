@@ -12,8 +12,11 @@ STATUS=0
 
 if [[ $(cat $TMP_PROLOG | grep ^ERROR | wc -l) -gt 0 ]]
 then
+	echo "Something is wrong! Can't commit!"
 	cat $TMP_PROLOG
 	STATUS=1
+else
+	echo "Tests passed!"
 fi
 
 rm -f $TMP_PROLOG
