@@ -27,13 +27,12 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 % to the start, since order does not matter at this point we can do it!
 % it works "backward" because of how the unificator works in prolog
 % TODO: add checks for atomic coefficients
-as_monomial_parse(Coefficient ^ E, Coefficient_E, []) :-
-	number(Coefficient),
-	number(E),
-	Coefficient_E is Coefficient^E,
-	!.
 as_monomial_parse(Coefficient, Coefficient, []) :-
 	number(Coefficient),
+	!.
+as_monomial_parse(ArithmeticCoefficient, Coefficient, []) :-
+	nonvar(ArithmeticCoefficient),
+	arithmetic_expression_value(ArithmeticCoefficient, Coefficient),
 	!.
 as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
@@ -44,6 +43,13 @@ as_monomial_parse(-HeadVarPower, -1, [VarPower]) :-
 as_monomial_parse(OtherVars * CoefficientInside, Coefficient, VarsPowers) :-
 	% we handle coefficients that are in the middle of the monomial!
 	number(CoefficientInside),
+	!,
+	as_monomial_parse(OtherVars, OtherCoefficient, VarsPowers),
+	Coefficient is CoefficientInside*OtherCoefficient.
+as_monomial_parse(OtherVars * ArithmeticCoefficientInside, Coefficient, VarsPowers) :-
+	% we handle coefficients that are in the middle of the monomial!
+	nonvar(ArithmeticCoefficientInside),
+	arithmetic_expression_value(ArithmeticCoefficientInside, CoefficientInside),
 	!,
 	as_monomial_parse(OtherVars, OtherCoefficient, VarsPowers),
 	Coefficient is CoefficientInside*OtherCoefficient.
