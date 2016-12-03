@@ -47,7 +47,6 @@ as_monomial_parse(OtherVars * CoefficientInside, Coefficient, VarsPowers) :-
 	as_monomial_parse(OtherVars, OtherCoefficient, VarsPowers),
 	Coefficient is CoefficientInside*OtherCoefficient.
 as_monomial_parse(OtherVars * ArithmeticCoefficientInside, Coefficient, VarsPowers) :-
-	% we handle coefficients that are in the middle of the monomial!
 	nonvar(ArithmeticCoefficientInside),
 	arithmetic_expression_value(ArithmeticCoefficientInside, CoefficientInside),
 	!,

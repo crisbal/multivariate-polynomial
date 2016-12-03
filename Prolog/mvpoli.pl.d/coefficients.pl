@@ -1,4 +1,6 @@
-coefficients(poly(Monomials), Coefficients) :-
+coefficients(GenericPoly, Coefficients) :-
+    nonvar(GenericPoly),
+    to_polynomial(GenericPoly, poly(Monomials)),
 	is_polynomial(poly(Monomials)),
 	coefficients_worker(Monomials, Coefficients).
 

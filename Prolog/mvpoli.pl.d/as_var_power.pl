@@ -7,9 +7,3 @@ as_var_power(Variable, v(1, Variable)) :-
 as_var_power(Variable^Exponent, v(Exponent, Variable)) :-
 	is_varpower(v(Exponent, Variable)),
 	!.
-/*as_var_power(Base^Other, v(NewExponent, BaseVariable)) :-
-	integer(Exponent),
-	as_var_power(Other, v(OtherExponent, BaseVariable)),
-	NewExponent is Exponent*OtherExponent,
-	!.
-*/

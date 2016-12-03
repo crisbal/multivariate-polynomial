@@ -1,12 +1,12 @@
 %% polyval/3
 % evaluate the polynomial in the points
-% TODO: disallow two way
-polyval(Polynomial, VarValues, Result) :-
-	variables(Polynomial, VarSymbols),
-	polyval_worker(Polynomial, VarSymbols, VarValues, Result),
+polyval(GenericPoly, VarValues, Result) :-
+    nonvar(GenericPoly),
+    to_polynomial(Polynomial, ReallyAPolynomial),
+	variables(ReallyAPolynomial, VarSymbols),
+	polyval_worker(ReallyAPolynomial, VarSymbols, VarValues, Result),
 	!.
 
-% TODO: disallow two way
 polyval_worker(poly([]), _, _, 0) :- !.
 polyval_worker(poly([Monomial | RestOfMonomials]), VarSymbols, VarValues, Result) :-
 	monoval(Monomial, VarSymbols, VarValues, MonomialResult),
