@@ -2,7 +2,7 @@
 % evaluate the polynomial in the points
 polyval(GenericPoly, VarValues, Result) :-
     nonvar(GenericPoly),
-    to_polynomial(Polynomial, ReallyAPolynomial),
+    to_polynomial(GenericPoly, ReallyAPolynomial),
 	variables(ReallyAPolynomial, VarSymbols),
 	polyval_worker(ReallyAPolynomial, VarSymbols, VarValues, Result),
 	!.
