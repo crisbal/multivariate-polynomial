@@ -221,4 +221,11 @@ test(maxdegree_2) :-
 	mvpoli:as_polynomial(y^128+1, P),
 	mvpoli:mindegree(P,0).
 
+test(polyval_1) :-
+	mvpoli:as_polynomial(y^3, P),
+	mvpoli:polyval(P, [2], 8).
+test(polyval_1) :-
+	mvpoli:as_polynomial(x^2-y^2, P),
+	mvpoli:polyval(P, [12, 12], 0).
+
 :- end_tests(mvpoli).
