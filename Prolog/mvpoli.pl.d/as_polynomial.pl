@@ -1,6 +1,5 @@
 %% as_polynomial/2
 % this is a wrapper for the function/engine that will parse the polynomial
-% TODO: two way
 as_polynomial(Expression, poly(SortedAndCompressedMonomials)) :-
 	nonvar(Expression),
 	as_polynomial_parse(Expression, Monomials),
@@ -30,4 +29,3 @@ as_polynomial_parse(-MonExp, [m(NegCoeff, TotDeg, VPs)]) :-
 	as_monomial(MonExp, m(Coeff, TotDeg, VPs)),
 	NegCoeff is Coeff*(-1),
 	!.
-

@@ -54,6 +54,32 @@ test(as_polynomial_7) :-
 test(as_polynomial_9) :-
 	mvpoli:as_polynomial(x*y^2 + x^2*y + x^3, poly([m(1, 3, [v(3, x)]), m(1, 3, [v(2, x), v(1, y)]), m(1, 3, [v(1, x), v(2, y)])])).
 
+test(as_polynomial_10) :-
+	mvpoli:as_polynomial(E, poly([m(42, 0, [])])),
+	E is 42.
+test(as_polynomial_11) :-
+	mvpoli:as_polynomial(E, poly([m(42, 0, [])])),
+	E is 42.
+test(as_polynomial_12) :-
+	mvpoli:as_polynomial(E, poly([m(3, 1, [v(1, x)]),m(42, 0, [])])),
+	E == 42 + 3*x.
+test(as_polynomial_13) :-
+	mvpoli:as_polynomial(E, poly([m(42, 0, [])])),
+	E == 42.
+test(as_polynomial_14) :-
+	mvpoli:as_polynomial(E, poly([m(-1, 1, [v(1, x)]), m(1, 0, [])])),
+	E == 1+ -x.
+test(as_polynomial_15) :-
+	mvpoli:as_polynomial(E, poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])])),
+	E == 1+3*x+ -4*x^2.
+test(as_polynomial_16) :-
+	mvpoli:as_polynomial(E, poly([m(1, 3, [v(3, a)]), m(1, 2, [v(2, a)])])),
+	E == a^2 + a^3.
+test(as_polynomial_17) :-
+	mvpoli:as_polynomial(E, poly([m(1, 3, [v(3, x)]), m(1, 3, [v(2, x), v(1, y)]), m(1, 3, [v(1, x), v(2, y)])])),
+	E == x*y^2 + x^2*y + x^3.
+
+
 test(coefficients_1) :-
 	mvpoli:coefficients(poly([m(42, 0, [])]), [42]).
 test(coefficients_2) :-
