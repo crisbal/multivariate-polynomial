@@ -4,13 +4,14 @@
 % a var the program will go out of stack (thanks to the sort), how could we fix?
 % doing this is not so good but at least it does not break two-way unification
 % it is mostly sort/2's (predsort) fault because you can't sort(R, [1, 2, 3]).
-as_monomial(Expression, m(Coefficient, TotalDegree, CompressedAndSortedVPs)) :-
+as_monomial(Expression, m(Coefficient, TotalDegree, FinalVPs)) :-
 	nonvar(Expression),
 	!,
 	as_monomial_parse(Expression, Coefficient, VarsPowers),
-	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	predsort(compare_vars_powers, VarsPowers, SortedVPs),
-	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs).
+	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs),
+	handle_zero_coefficient(Coefficient, CompressedAndSortedVPs, FinalVPs),
+	compute_total_degree_for_vars_powers(FinalVPs, TotalDegree).
 
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
