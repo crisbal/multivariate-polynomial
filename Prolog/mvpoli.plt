@@ -108,6 +108,8 @@ test(compute_total_degree_for_vars_powers_2) :-
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x)], 2).
 test(compute_total_degree_for_vars_powers_3) :-
 	mvpoli:compute_total_degree_for_vars_powers([v(2, x), v(3, y)], 5).
+test(compute_total_degree_for_vars_powers_4) :-
+	not(mvpoli:compute_total_degree_for_vars_powers(_, 5)).
 
 test(polyplus_1) :-
 	mvpoli:as_polynomial(3*x, P1),
