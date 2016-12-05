@@ -1,7 +1,17 @@
-(ql:quickload "clunit")
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
 
-(clunit:defsuite AsMonomialSuite ())
+(quicklisp:quickload "clunit")
 
-(clunit:deftest test-int1 (AsMonomialSuite)
-    (assert-true  (= 1 -1))
-    (assert-equality 4 (+ 2 2)))
+(clunit:defsuite mvpoli ())
+(clunit:defsuite as-monomial-suite (mvpoli))
+
+(clunit:deftest test-int1 (as-monomial-suite)
+  (clunit:assert-true  (= 1 1)))
+
+(defun run-tests() 
+	(clunit:run-suite 'mvpoli :report-progress T))
+
+(run-tests)
