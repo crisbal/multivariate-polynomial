@@ -205,6 +205,9 @@ test(compress_sorted_monomials_1) :-
 test(compress_sorted_monomials_2) :-
 	mvpoli:as_polynomial(3*x-y-3*x+y, poly(M)),
 	M=[].
+test(compress_sorted_monomials_3) :-
+	mvpoli:as_polynomial(3*x-y-0-3*x+y, poly(M)),
+	M=[].
 
 test(is_monomial_1) :-
 	mvpoli:as_monomial(4*x,M),
