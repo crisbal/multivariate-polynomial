@@ -1,24 +1,67 @@
 #!/bin/bash
-echo "Running tests..."
-TMP_PROLOG=`mktemp`
-cd Prolog
+STATUS=0
+PROLOG_TEST=0
+LISP_TEST=0
 
 {
-echo | make test > /dev/null
-}  2> $TMP_PROLOG
+	git diff --name-only ^HEAD | grep "^Prolog/"
+	if [[ $? -eq 0 ]]
+	then
+		PROLOG_TEST=1
+	fi
+	git diff --name-only ^HEAD | grep "^Lisp/"
+	if [[ $? -eq 0 ]]
+	then
+		LISP_TEST=1
+	fi
+} &> /dev/null
 
-STATUS=0
-
-
-if [[ $(cat $TMP_PROLOG | grep ^ERROR | wc -l) -gt 0 ]]
+if [[ $PROLOG_TEST -eq 1 ]]
 then
-	echo "Something is wrong! Can't commit!"
-	cat $TMP_PROLOG
-	STATUS=1
-else
-	echo "Tests passed!"
+	echo "Running Prolog tests..."
+	TMP_PROLOG=`mktemp`
+	cd Prolog
+
+	{
+		echo | make test > /dev/null
+	}  2> $TMP_PROLOG
+
+
+	if [[ $(cat $TMP_PROLOG | grep ^ERROR | wc -l) -gt 0 ]]
+	then
+		echo "Something is wrong! Can't commit!"
+		cat $TMP_PROLOG
+		STATUS=1
+	else
+		echo "Tests passed!"
+	fi
+
+	rm -f $TMP_PROLOG
+	cd ..
 fi
 
-rm -f $TMP_PROLOG
+if [[ $LISP_TEST -eq 1 ]]
+then
+	echo "Running Lisp tests..."
+	TMP_LISP=`mktemp`
+	cd Lisp
+
+	{
+		echo | make test
+	}  > $TMP_LISP
+
+	if [[ $(cat $TMP_LISP | grep " F"$ | wc -l) -gt 0 ]]
+	then
+		echo "Something is wrong! Can't commit!"
+		cat $TMP_LISP
+		echo
+		STATUS=1
+	else
+		echo "Tests passed!"
+	fi
+
+	rm -f $TMP_LISP
+	cd ..
+fi
 
 exit $STATUS
