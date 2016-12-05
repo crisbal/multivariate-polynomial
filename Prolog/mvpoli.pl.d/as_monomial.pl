@@ -27,7 +27,6 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 % basically in this way we parse the polinomial backward from the end
 % to the start, since order does not matter at this point we can do it!
 % it works "backward" because of how the unificator works in prolog
-% TODO: add checks for atomic coefficients
 as_monomial_parse(Coefficient, Coefficient, []) :-
 	number(Coefficient),
 	!.
