@@ -58,8 +58,7 @@ build:
 	@ cat mvpoli.pl.d/handle_zero_coefficient.pl >> mvpoli.pl
 	@ cat mvpoli.pl.d/compare_vars_powers.pl 									>> mvpoli.pl
 	@ cat mvpoli.pl.d/compare_monomials.pl 										>> mvpoli.pl
-	@ cat mvpoli.pl.d/is_vp_less_by_alphabetical_order.pl 		>> mvpoli.pl
-	@ cat mvpoli.pl.d/is_vp_more_by_power_on_same_letter.pl 	>> mvpoli.pl
+	@ cat mvpoli.pl.d/is_vp_less_by_order.pl 									>> mvpoli.pl
 
 buildtest: build
 	@ cat mvpoli.pl.d/mvpoli_test.pl													>> mvpoli.pl
