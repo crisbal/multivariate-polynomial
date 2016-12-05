@@ -1,0 +1,34 @@
+#!/bin/bash
+
+PROLOG_COMMIT=0
+LISP_COMMIT=0
+{
+	git diff --name-only ^HEAD | grep "^Prolog/"
+	if [[ $? -eq 0 ]]
+	then
+		PROLOG_COMMIT=1
+	fi
+	git diff --name-only ^HEAD | grep "^Lisp/"
+	if [[ $? -eq 0 ]]
+	then
+		LISP_COMMIT=1
+	fi
+} # &> /dev/null
+
+if [[ $PROLOG_COMMIT -eq 1 ]]
+then
+  TMP_PROLOG=`mktemp`
+  echo "Prolog: " > $TMP_PROLOG
+  cat $1 >> $TMP_PROLOG
+  cat $TMP_PROLOG > $1
+  rm -f $TMP_PROLOG
+fi
+
+if [[ $LISP_TEST -eq 1 ]]
+then
+  TMP_LISP=`mktemp`
+  echo "Lisp: " > $TMP_LISP
+  cat $1 >> $TMP_LISP
+  cat $TMP_LISP > $1
+  rm -f $TMP_LISP
+fi
