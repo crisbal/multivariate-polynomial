@@ -4,7 +4,7 @@ pprint_vars_powers([VP]) :-
 	!.
 pprint_vars_powers([VP | OtherVarPowers]) :-
 	pprint_VP(VP),
-	write("*"),
+	write('*'),
 	pprint_vars_powers(OtherVarPowers),
 	!.
 
@@ -13,6 +13,6 @@ pprint_VP(v(1, Variable)) :-
 	!.
 pprint_VP(v(Exponent, Variable)) :-
 	write(Variable),
-	write("^"),
+	write('^'),
 	write(Exponent),
 	!.

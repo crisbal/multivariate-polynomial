@@ -1,7 +1,7 @@
 % print + before the monomial
 pprint_monomial(m(Coefficient, _TD, VarsPowers)) :-
 	Coefficient >= 0,
-	write(" + "),
+	write(' + '),
 	pprint_monomial_coefficient(Coefficient, VarsPowers),
 	pprint_vars_powers(VarsPowers),
 	!.
@@ -9,7 +9,7 @@ pprint_monomial(m(Coefficient, _TD, VarsPowers)) :-
 %print - before the monomial
 pprint_monomial(m(Coefficient, _TD, VarsPowers)) :-
 	Coefficient < 0,
-	write(" - "),
+	write(' - '),
 	NegatedCoefficient is Coefficient*(-1), %negate coeff to handle the - before
 	pprint_monomial_coefficient(NegatedCoefficient, VarsPowers),
 	pprint_vars_powers(VarsPowers),
@@ -26,5 +26,5 @@ pprint_monomial_coefficient(Coefficient, []) :-
 	!.
 pprint_monomial_coefficient(Coefficient, _VarsPowers) :- 
 	write(Coefficient),
-	write("*"),
+	write('*'),
 	!.
