@@ -1,12 +1,18 @@
-pprint_vars_powers([]).
-pprint_vars_powers([v(1, Variable) | OtherVarPowers]) :-
-	write(" * "),
+pprint_vars_powers([]) :- !.
+pprint_vars_powers([VP]) :- 
+	pprint_VP(VP),
+	!.
+pprint_vars_powers([VP | OtherVarPowers]) :-
+	pprint_VP(VP),
+	write("*"),
+	pprint_vars_powers(OtherVarPowers),
+	!.
+
+pprint_VP(v(1, Variable)) :-
 	write(Variable),
-	pprint_vars_powers(OtherVarPowers).
-pprint_vars_powers([v(Exponent, Variable) | OtherVarPowers]) :-
-	write(" * "),
+	!.
+pprint_VP(v(Exponent, Variable)) :-
 	write(Variable),
 	write("^"),
 	write(Exponent),
-	pprint_vars_powers(OtherVarPowers).
-
+	!.
