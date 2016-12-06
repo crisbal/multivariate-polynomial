@@ -1,3 +1,8 @@
+% is_vp_less_by_order/2
+%% this is true when a list of VPs is smaller than a list of other VPs by the
+%% order defined in the requiremens of the project: lexicological order for Vars
+%% and if the Vars are the same smaller exponent first.
+%% TODO: base case? 
 is_vp_less_by_order([v(_,V1) | _], [v(_,V2) | _]) :-
 	V1 @< V2,
 	!.

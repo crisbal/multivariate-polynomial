@@ -1,8 +1,9 @@
 %% maxdegree/2
-maxdegree(E, Degree) :-
-	nonvar(E),
-	to_polynomial(E, P),
-	maxdegree_real(P,Degree).
+% find max degree of a polynomial
+maxdegree(Expression, Degree) :-
+	nonvar(Expression),
+	to_polynomial(Expression, P),
+	maxdegree_real(P, Degree).
 
 maxdegree_real(poly([]), 0) :- !.
 maxdegree_real(poly([m(_, TD, _) | Monomials]), Degree) :-

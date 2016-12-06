@@ -1,4 +1,3 @@
-%%% "helper"/not core rules
 %% monotimespoly/3
 % do the polynomial multiplication between a polinomial and a monomial
 monotimespoly(m(_, _, _), poly([]),	poly([])) :- !.

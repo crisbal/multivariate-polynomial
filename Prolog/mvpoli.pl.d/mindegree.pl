@@ -1,8 +1,9 @@
 %% mindegree/2
-mindegree(E, Degree) :-
-	nonvar(E),
-	to_polynomial(E, P),
-	mindegree_real(P,Degree).
+% find mindegree of a polynomial
+mindegree(Expression, Degree) :-
+	nonvar(Expression),
+	to_polynomial(Expression, P),
+	mindegree_real(P, Degree).
 
 mindegree_real(poly([]), 0) :- !.
 mindegree_real(poly([m(_, TD, _) | Monomials]), Degree) :-
