@@ -1,4 +1,4 @@
-lisp = sbcl
+lisp = rlwrap sbcl
 FILENAME ?= mvpoli
 
 .PHONY: all
