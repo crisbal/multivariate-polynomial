@@ -100,7 +100,8 @@ VARPOWERS is a list of items validated by is-varpower"
     (build-monomial-object e-coefficient e-total-degree e-varpowers)))
 
 (defun as-monomial(expression)
-  "TODO: a number is a monomial"
-  (if (monomial-expression-p expression)
-      (parse-monomial-expression (rest expression))
-      (error "Invalid expression")))
+  "EXPRESSION will be represented as a monomial.
+EXPRESSION is either a number or something validated by monomial-expression-p"
+  (cond ((monomial-expression-p expression) (parse-monomial-expression (rest expression)))
+	((numberp expression) (build-monomial-object expression 0 ()))
+	(T (error "Invalid expression"))))
