@@ -24,7 +24,7 @@ then
   rm -f $TMP_PROLOG
 fi
 
-if [[ $LISP_TEST -eq 1 ]]
+if [[ $LISP_COMMIT -eq 1 ]]
 then
   TMP_LISP=`mktemp`
   echo "Lisp: " > $TMP_LISP
