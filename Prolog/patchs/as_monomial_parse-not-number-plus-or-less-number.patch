@@ -1,0 +1,27 @@
+diff --git a/Prolog/mvpoli.pl.d/as_monomial.pl b/Prolog/mvpoli.pl.d/as_monomial.pl
+index 01587b6..2c72bd2 100644
+--- a/Prolog/mvpoli.pl.d/as_monomial.pl
++++ b/Prolog/mvpoli.pl.d/as_monomial.pl
+@@ -23,11 +23,21 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
+ % using the power of prolog we can write this parse function without
+ % doing too much parsing (as long as the input rules are respected)
+ % basically in this way we parse the polinomial backward from the end
+-% to the start, since order does not matter at this point we can do it without 
++% to the start, since order does not matter at this point we can do it without
+ % problems. it works "backward" because of how the unificator works in prolog
+ as_monomial_parse(Coefficient, Coefficient, []) :-
+ 	number(Coefficient),
+ 	!.
++as_monomial_parse(A1 + A2 , _, _) :-
++	nonvar(A1),
++	nonvar(A2),
++	!,
++	fail.
++as_monomial_parse(A1 - A2 , _, _) :-
++	nonvar(A1),
++	nonvar(A2),
++	!,
++	fail.
+ as_monomial_parse(ArithmeticCoefficient, Coefficient, []) :-
+ 	nonvar(ArithmeticCoefficient),
+ 	% this will convert things like `sin(number)` without throwing exceptions
