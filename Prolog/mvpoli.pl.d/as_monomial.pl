@@ -10,7 +10,6 @@ as_monomial(Expression, m(Coefficient, TotalDegree, FinalVPs)) :-
 	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs),
 	handle_zero_coefficient(Coefficient, CompressedAndSortedVPs, FinalVPs),
 	compute_total_degree_for_vars_powers(FinalVPs, TotalDegree).
-
 as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	compress_sorted_vps(VarsPowers, CompressedVPs),
@@ -19,6 +18,7 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	is_monomial(m(Coefficient, TotalDegree, VarsPowers)), % check if all is ok
 	!.
+
 
 % using the power of prolog we can write this parse function without
 % doing too much parsing (as long as the input rules are respected)

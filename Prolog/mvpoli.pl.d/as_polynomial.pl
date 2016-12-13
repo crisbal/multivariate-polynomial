@@ -10,7 +10,8 @@ as_polynomial(Expression, poly(SortedAndCompressedMonomials)) :-
 	compress_sorted_monomials(SortedMonomials, SortedAndCompressedMonomials).
 as_polynomial(Expression, poly(Monomials)) :-
 	var(Expression),
-	as_polynomial_parse(Expression, Monomials),
+	reverse(Monomials, ReversedMonomials),
+	as_polynomial_parse(Expression, ReversedMonomials),
 	!.
 
 %% as_polynomial_parse/2
