@@ -1,8 +1,10 @@
 %% polytimes/3
 % do polynomial multiplication between two polinomials
-polytimes(P1, P2, poly(MonomialsResult)) :-
-	to_polynomial(P1, poly(M1)),
-	to_polynomial(P2, poly(M2)),
+polytimes(GenericPoly1, GenericPoly2, poly(MonomialsResult)) :-
+	nonvar(GenericPoly1),
+	nonvar(GenericPoly2),
+	to_polynomial(GenericPoly1, poly(M1)),
+	to_polynomial(GenericPoly2, poly(M2)),
 	polytimes_worker(M1, M2, Unsorted),
 	predsort(compare_monomials, Unsorted, SortedMonomials),
 	compress_sorted_monomials(SortedMonomials, MonomialsResult).

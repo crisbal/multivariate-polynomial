@@ -1,4 +1,5 @@
 pprint_polynomial(GenericPoly) :-
+	nonvar(GenericPoly),
 	to_polynomial(GenericPoly, Polynomial), 
 	pprint_polynomial_real(Polynomial),
 	!.

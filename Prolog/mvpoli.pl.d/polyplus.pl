@@ -2,6 +2,8 @@
 % do polynomial sum between two polinomials
 % pretty simple, just concat the list of monomials, sort and compress.
 polyplus(Polynomial1, Polynomial2, poly(MonomialsResult)) :-
+	nonvar(Polynomial1),
+	nonvar(Polynomial2),
 	to_polynomial(Polynomial1, poly(Monomials1)),
 	to_polynomial(Polynomial2, poly(Monomials2)),
 	append(Monomials1, Monomials2, MonomialsAppend),
