@@ -5,6 +5,24 @@
 		  (warning () nil))))
     (if (numberp result) result nil)))
 
+(defun varpower-power(varpower)
+  (when (and (listp varpower)
+	     (numberp (second varpower)))
+    (second varpower)))
+
+(defun varpower-symbol(varpower)
+  (when (and (listp varpower)
+	     (symbolp (third varpower)))
+    (third varpower)))
+
+(defun is-varpower(varpower)
+  (and (listp varpower)
+       (eq 'v (first varpower))
+       (let ((p (varpower-power varpower))
+	     (s (varpower-symbol varpower)))
+	 (and (integerp p)
+	      (symbolp s)))))
+
 (defun exptp(something)
   "T is returned when SOMETHING is a list in the form '(expt symbol number)"
   (and (listp something)
@@ -58,23 +76,6 @@ This is achived by multiplying all the coefficients of EXPRESSION"
 			   1)))
       (list 'v vp-exponent vp-variable))))
 
-(defun varpower-power(varpower)
-  (when (and (listp varpower)
-	     (numberp (second varpower)))
-    (second varpower)))
-
-(defun varpower-symbol(varpower)
-  (when (and (listp varpower)
-	     (symbolp (third varpower)))
-    (third varpower)))
-
-(defun is-varpower(varpower)
-  (and (listp varpower)
-       (eq 'v (first varpower))
-       (let ((p (varpower-power varpower))
-	     (s (varpower-symbol varpower)))
-	 (and (integerp p)
-	      (symbolp s)))))
 
 (defun varpowers-from-expression(expression)
   "Return the varspowers inside EXPRESSION.
@@ -84,10 +85,14 @@ This casts the list gotted by EXPRESSION-VARIABLES."
 (defun sort-varpowers(varpowers)
   "Sort VARPOWERS.
 VARPOWERS is a list of items validated by is-varpower"
-  (when (and (listp varpowers)
+  (when (and (listp varpowers) ;;; TODO_ add better check via a varpowers-list-p 
 	     (every #'identity (mapcar #'is-varpower varpowers)))
     (sort varpowers (lambda(vp1 vp2)
 		      (string< (varpower-symbol vp1) (varpower-symbol vp2))))))
+
+(defun total-degree-varpowers(varpowers)
+  (when (listp varpowers) ;; TODO: add better check via a varpowers-list-p 
+    (reduce #'+ (mapcar (lambda(varpower) (varpower-power varpower)) varpowers))))
 
 (defun build-monomial-object(coefficient total-degree varpowers)
   "Given all the details builds the monomial as needed by the requirements"
@@ -95,9 +100,8 @@ VARPOWERS is a list of items validated by is-varpower"
 
 (defun parse-monomial-expression(expression)
   (let ((e-coefficient (total-coefficient expression))
-	(e-varpowers (sort-varpowers (varpowers-from-expression expression)));;(parse-variables expression))
-	(e-total-degree 'total-degree));(compute-total-degree vars-powers)))
-    (build-monomial-object e-coefficient e-total-degree e-varpowers)))
+	(e-varpowers (sort-varpowers (varpowers-from-expression expression))));;(parse-variables expression))
+    (build-monomial-object e-coefficient (total-degree-varpowers e-varpowers) e-varpowers)))
 
 (defun as-monomial(expression)
   "EXPRESSION will be represented as a monomial.
