@@ -37,18 +37,24 @@
 	     (numberp (third monomial)))
     (third monomial)))
 
+(defun monomial-coefficient(monomial) ;; TODO: add check for is-monomial
+  (when (and (listp monomial)
+	     (numberp (second monomial)))
+    (second monomial)))
+
 (defun compare-varpowers(vp1 vp2)
   (string< (varpower-symbol vp1) (varpower-symbol vp2)))
 
 (defun lesser-varpower(vp1 vp2)
-  (let ((vp1-first-symbol (varpower-symbol (first vp1)))
-	(vp1-first-power (varpower-power (first vp1)))
-	(vp2-first-symbol (varpower-symbol (first vp2)))
-	(vp2-first-power (varpower-power (first vp2))))
-    (cond ((string< vp1-first-symbol vp2-first-symbol) T)
-	  ((and (equal vp1-first-power vp2-first-symbol)
-		(< vp1-first-power vp2-first-power)) T)
-	  (T (lesser-varpower (rest vp1) (rest vp2))))))
+  (unless (or (null vp1) (null vp2)) 
+    (let ((vp1-first-symbol (varpower-symbol (first vp1)))
+	  (vp1-first-power (varpower-power (first vp1)))
+	  (vp2-first-symbol (varpower-symbol (first vp2)))
+	  (vp2-first-power (varpower-power (first vp2))))
+      (cond ((string< vp1-first-symbol vp2-first-symbol) T)
+	    ((and (equal vp1-first-power vp2-first-symbol)
+		  (< vp1-first-power vp2-first-power)) T)
+	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
 
 (defun compare-monomials(mon1 mon2) ;; TODO: implement on equal degree, just like prolog 
   (let ((m1-degree (monomial-degree mon1))
@@ -165,8 +171,22 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
 	     (every #'identity (mapcar #'is-monomial monomials)))
     (sort monomials #'compare-monomials)))
 
+(defun compress-monomials-reducer(element partial-list)
+  (let ((e-coefficient (monomial-coefficient element))
+	(e-varpowers (monomial-varpowers element))
+	(first-coefficient (monomial-coefficient (first partial-list)))
+	(first-varpowers (monomial-varpowers (first partial-list)))
+	(e-degree (monomial-degree element)))
+    (cond ((null partial-list) (list element))
+	  ((equal 0 e-coefficient) partial-list)
+	  ((equal e-varpowers first-varpowers) (cons (build-monomial-object (+ e-coefficient first-coefficient) e-degree e-varpowers) (rest partial-list)))
+	  (T (cons element partial-list)))))
+
+(defun compress-monomials(monomials)
+  (reduce #'compress-monomials-reducer monomials :initial-value nil :from-end T))
+
 (defun parse-polynomial-expression(expression)
-  (let ((parsed-monomials (sort-monomials (mapcar #'as-monomial expression))))
+  (let ((parsed-monomials (compress-monomials (sort-monomials (mapcar #'as-monomial expression)))))
     (list 'P parsed-monomials)))
 
 (defun as-polynomial(expression)
