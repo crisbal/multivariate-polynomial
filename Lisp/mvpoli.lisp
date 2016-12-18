@@ -5,6 +5,12 @@
 		  (warning () nil))))
     (if (numberp result) result nil)))
 
+(defun is-varpower(varpower)
+  (and (equal (list-length varpower) 3)
+    (equal (first varpower) 'V)
+    (numberp (second varpower))
+    (not (numberp (third varpower)))))
+
 (defun varpower-power(varpower)  ;;TODO add check for is-varpower
   (when (and (listp varpower)
 	     (numberp (second varpower)))
@@ -14,14 +20,6 @@
   (when (and (listp varpower)
 	     (symbolp (third varpower)))
     (third varpower)))
-
-(defun is-varpower(varpower)
-  (and (listp varpower)
-       (eq 'v (first varpower))
-       (let ((p (varpower-power varpower))
-	     (s (varpower-symbol varpower)))
-	 (and (integerp p)
-	      (symbolp s)))))
 
 (defun is-monomial(monomials)
   (warn "PLEASE IMPLEMENT IS-MONOMIAL")
