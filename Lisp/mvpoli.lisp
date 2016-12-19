@@ -194,4 +194,38 @@ EXPRESSION is a list validated by polynomial-expression-p"
       (parse-polynomial-expression (rest expression))
       (error "Invalid polynomial expression ~A" expression)))
 
+(defun pprint-varpower(varpower &optional head)
+  (let ((symbol (varpower-symbol varpower))
+	(power (varpower-power varpower)))
+    (progn (unless head
+	     (format T "*"))
+	   (format T "~A" symbol)
+	   (unless (= power 1)
+	     (format T "^~A" power))
+	   NIL))) ;;we return nil explicitally, it is not needed but let's be clear
+
+(defun pprint-monomial(monomial &optional head)
+  (let ((coefficient (monomial-coefficient monomial))
+	(acoefficient (abs (monomial-coefficient monomial)))
+	(varpowers (monomial-varpowers monomial)))
+    (progn (unless head
+	     (if (< coefficient 0)
+		 (format T " - ")
+		 (format T " + ")))
+	   (unless (= acoefficient 1)
+	     (format T "~A" coefficient)
+	     (unless (null varpowers)
+	       (format T "*")))
+	   (unless (null varpowers)
+	     (pprint-varpower (first varpowers) T)
+	     (mapcar 'pprint-varpower (rest varpowers)))
+	   NIL))) ;;here we return nil explicitally because the unexpected return value of mapcar (we know it is nil but better safe than sorry)
+  
+(defun pprint-polynomial(polynomial)
+  (let ((monomials (second polynomial)))
+    (if (null monomials)
+	(format T "0")
+	(progn (pprint-monomial (first monomials) T)
+	       (mapcar #'pprint-monomial (rest monomials))
+	       NIL)))) ;; again force nil return value, we know it is nil but let's be safe and follow requirement
 
