@@ -5,6 +5,16 @@
 		  (warning () nil))))
     (if (numberp result) result nil)))
 
+(defun build-varpower-object(base exponent)
+  (list 'V exponent base))
+
+(defun build-monomial-object(coefficient total-degree varpowers)
+  "Given all the details builds the monomial as needed by the requirements"
+  (list 'M coefficient total-degree varpowers))
+
+(defun build-polynomial-object(monomials)
+  (list 'P monomials))
+
 (defun is-varpower(varpower)
   (and (equal (list-length varpower) 3)
     (equal (first varpower) 'V)
@@ -21,8 +31,12 @@
 	     (symbolp (third varpower)))
     (third varpower)))
 
-(defun is-monomial(monomials)
+(defun is-monomial(monomial)
   (warn "PLEASE IMPLEMENT IS-MONOMIAL")
+  T)
+
+(defun is-polynomial(polynomial)
+  (warn "PLEASE IMPLEMENT IS-POLYNOMIAL")
   T)
 
 (defun monomial-varpowers(monomial) ;; TODO: add check for is-monomial
@@ -111,7 +125,7 @@ This is achived by multiplying all the coefficients of EXPRESSION"
 	  (vp-exponent (if (listp exp-var)
 			   (third exp-var)
 			   1)))
-      (list 'v vp-exponent vp-variable))))
+      (build-varpower-object vp-variable vp-exponent))))
 
 (defun varpowers-from-expression(expression)
   "Return the varspowers inside EXPRESSION.
@@ -129,9 +143,6 @@ VARPOWERS is a list of items validated by is-varpower"
   (when (listp varpowers) ;; TODO: add better check via a varpowers-list-p 
     (reduce #'+ (mapcar (lambda(varpower) (varpower-power varpower)) varpowers))))
 
-(defun build-monomial-object(coefficient total-degree varpowers)
-  "Given all the details builds the monomial as needed by the requirements"
-  (list 'm coefficient total-degree varpowers))
 
 (defun compress-varpowers-reducer(element partial-list)
   (let ((e-power (varpower-power element))
@@ -140,7 +151,7 @@ VARPOWERS is a list of items validated by is-varpower"
 	(first-symbol (varpower-symbol (first partial-list))))
     (cond ((null partial-list) (list element))
 	  ((equal 0 e-power) partial-list)
-	  ((equal e-symbol first-symbol) (cons (list 'V (+ e-power first-power) e-symbol) (rest partial-list)))
+	  ((equal e-symbol first-symbol) (cons (build-varpower-object e-symbol (+ e-power first-power)) (rest partial-list)))
 	  (T (cons element partial-list)))))
 
 (defun compress-varpowers(varspowers)
@@ -185,7 +196,7 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
 
 (defun parse-polynomial-expression(expression)
   (let ((parsed-monomials (compress-monomials (sort-monomials (mapcar #'as-monomial expression)))))
-    (list 'P parsed-monomials)))
+    (build-polynomial-object parsed-monomials)))
 
 (defun as-polynomial(expression)
   "EXPRESSION will be represented as a polynomial.
@@ -193,6 +204,34 @@ EXPRESSION is a list validated by polynomial-expression-p"
   (if (polynomial-expression-p expression)
       (parse-polynomial-expression (rest expression))
       (error "Invalid polynomial expression ~A" expression)))
+
+(defun polyplus(p1 p2)
+  (let ((monomials1 (second p1)) ;; TODO: replace with monomials
+	(monomials2 (second p2)))
+    (build-polynomial-object (compress-monomials (sort-monomials (append monomials1 monomials2))))))
+
+(defun monotimes(m1 m2)
+  (when (and (is-monomial m1)
+	     (is-monomial m2))
+    (let ((m1-coefficient (monomial-coefficient m1))
+	  (m2-coefficient (monomial-coefficient m2))
+	  (m1-degree (monomial-degree m1))
+	  (m2-degree (monomial-degree m2))
+	  (m1-varpowers (monomial-varpowers m1))
+	  (m2-varpowers (monomial-varpowers m2)))
+      (build-monomial-object (* m1-coefficient m2-coefficient) (+ m1-degree m2-degree) (compress-varpowers (sort-varpowers (append m1-varpowers m2-varpowers)))))))
+
+(defun monotimespoly(mono poly) ;; TODO: add sort and compress? Is it needed? 
+  (when (and (is-polynomial poly) ;; TODO: replace with is-polynomial
+	     (is-monomial mono))
+    (let ((monomials (second poly))) ;; TODO: use polynomial-monomials
+      (build-polynomial-object (mapcar (lambda(mono-of-poly) (monotimes mono-of-poly mono)) monomials)))))
+
+(defun polytimes(p1 p2)
+  (when (and (is-polynomial p1)
+	     (is-polynomial p2))
+    (let ((monomials-of-p1 (second p1))) ;; TODO: use polynomial-monomials
+       (build-polynomial-object (compress-monomials (sort-monomials (reduce (lambda(list-until-now mono-of-poly1) (append (second (monotimespoly mono-of-poly1 p2)) list-until-now)) monomials-of-p1 :initial-value nil)))))))
 
 (defun pprint-varpower(varpower &optional head)
   (let ((symbol (varpower-symbol varpower))
