@@ -1,3 +1,11 @@
+;; TODO is-monomial
+;; TODO is-polynomial
+;; TODO monomials
+;; TODO coefficients
+;; TODO variables
+;; TODO polyminus
+;; TODO polyval
+
 (defun eval-as-number(expression)
   "Eval EXPRESSION and return its numeric value"  
   (let ((result (handler-case (eval expression)
