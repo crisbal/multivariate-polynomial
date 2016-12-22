@@ -2,13 +2,28 @@
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
-
+(load "mvpoli.lisp")
 (quicklisp:quickload "clunit")
 
 (clunit:defsuite mvpoli ())
 
+(clunit:defsuite builder (mvpoli))
+"Tests for object builders"
+
+(clunit:deftest test-build-varpower-object (builder)
+  (clunit:assert-equal (build-varpower-object 'x 3) '(V 3 x)))
+
+(clunit:deftest test-build-monomial-object (builder)
+  (clunit:assert-equal (build-monomial-object 1 5 '((V 5 x))) '(M 1 5 ((V 5 x)))))
+
+(clunit:deftest test-build-polynomial-object (builder)
+  (clunit:assert-equal (build-polynomial-object '()) '(P ())))
+
+(clunit:defsuite varpower (mvpoli))
+"Tests for varpower-related functions"
+
+(clunit:defsuite is-varpower (varpower))
 "Tests for is-varpower"
-(clunit:defsuite is-varpower (mvpoli))
 
 (clunit:deftest test-is-varpower-1 (is-varpower)
   (clunit:assert-true (is-varpower '(v 1 x))))
@@ -22,17 +37,38 @@
 (clunit:deftest test-is-varpower-4 (is-varpower)
   (clunit:assert-false (is-varpower '(v 1 1))))
 
+(clunit:defsuite varpower-power (varpower))
+"Tests for varpower-power"
+
+(clunit:deftest test-varpower-power-1 (varpower-power)
+  (clunit:assert-equal (varpower-power '(V 1 x)) 1))
+
+(clunit:defsuite varpower-symbol (varpower))
+"Tests for varpower-symbol"
+
+(clunit:deftest test-varpower-symbol-1 (varpower-symbol)
+  (clunit:assert-equal (varpower-symbol '(V 1 x)) 'x))
+
+(clunit:defsuite helper (mvpoli))
+"Tests for helper functions"
+
+(clunit:defsuite eval-as-number (helper))
 "Tests for eval-as-number"
-(clunit:defsuite eval-as-number (mvpoli))
 
 (clunit:deftest test-eval-as-number-1 (eval-as-number)
-  (clunit:assert-true  (= 12 (eval-as-number '(* 3 4)))))
+  (clunit:assert-equal 12 (eval-as-number '(* 3 4))))
 
 (clunit:deftest test-eval-as-number-2 (eval-as-number)
-  (clunit:assert-true  (= 48 (eval-as-number '(* (* 3 4) (+ 2 2))))))
+  (clunit:assert-equal  48 (eval-as-number '(* (* 3 4) (+ 2 2)))))
 
-"Tests for exptp"
-(clunit:defsuite exptp (mvpoli))
+(clunit:deftest test-eval-as-number-3 (eval-as-number)
+  (clunit:assert-equal (cos 3) (eval-as-number '(cos 3))))
+
+(clunit:defsuite expression (mvpoli))
+"Test for expression parsing"
+
+(clunit:defsuite exptp (expression))
+"Tests for the exptp function"
 
 (clunit:deftest test-exptp-1 (exptp)
   (clunit:assert-true  (exptp '(expt x 4))))
@@ -41,7 +77,7 @@
   (clunit:assert-true  (exptp '(expt y 1))))
 
 "Tests for expression-variable-p"
-(clunit:defsuite expression-variable-p (mvpoli))
+(clunit:defsuite expression-variable-p (expression))
 
 (clunit:deftest test-expression-variable-p-1 (expression-variable-p)
   (clunit:assert-true  (expression-variable-p '(expt x 4))))
@@ -49,8 +85,11 @@
 (clunit:deftest test-expression-variable-p-2 (expression-variable-p)
   (clunit:assert-true  (expression-variable-p 't)))
 
+(clunit:deftest test-expression-variable-p-3 (expression-variable-p)
+  (clunit:assert-false  (expression-variable-p 4)))
+
 "Tests for monomial-expression-component-p"
-(clunit:defsuite monomial-expression-component-p (mvpoli))
+(clunit:defsuite monomial-expression-component-p (expression))
 
 (clunit:deftest test-monomial-expression-component-p-1 (monomial-expression-component-p)
   (clunit:assert-true  (monomial-expression-component-p '(expt x 4))))
@@ -61,47 +100,36 @@
 (clunit:deftest test-monomial-expression-component-p-3 (monomial-expression-component-p)
   (clunit:assert-true  (monomial-expression-component-p 4)))
 
-(clunit:deftest test-monomial-expression-component-p-4 (monomial-expression-component-p)
-  (clunit:assert-true  (monomial-expression-component-p '4)))
+"Tests for monomial-related functions"
+(clunit:defsuite monomial (mvpoli))
 
-"Tests for varpower-power"
-(clunit:defsuite varpower-power (mvpoli))
-
-(clunit:deftest test-varpower-power-1 (varpower-power)
-  (clunit:assert-true (equal (varpower-power '(V 1 x)) 1)))
-
-"Tests for varpower-symbol"
-(clunit:defsuite varpower-symbol (mvpoli))
-
-(clunit:deftest test-varpower-symbol-1 (varpower-symbol)
-  (clunit:assert-true (equal (varpower-symbol '(V 1 x)) 'x)))
-
+(defparameter expression '(* 3 x 2 y x (expt z 3) (expt q 0)))
+(defparameter example-monomial (as-monomial expression))
 "Tests for is-monomial"
-(clunit:defsuite is-monomial (mvpoli))
+(clunit:defsuite is-monomial (monomial))
 
 (clunit:deftest test-is-monomial-1 (is-monomial)
   (clunit:assert-true T))
 
 "Tests for monomial-varpowers"
-(clunit:defsuite monomial-varpowers (mvpoli))
+(clunit:defsuite monomial-varpowers (monomial))
 
 (clunit:deftest test-monomial-varpowers-1 (monomial-varpowers)
-  (clunit:assert-true (equal (monomial-varpowers (as-monomial
-  '(* q w 1 2 3 x y z (expt x 3)))) '((V 1 Q) (V 1 W) (V 4 X) (V 1 Y) (V 1 Z)))))
+  (clunit:assert-equal
+   (monomial-varpowers example-monomial)
+   '((V 2 X) (V 1 Y) (V 3 Z))))
 
 "Tests for monomial-degree"
-(clunit:defsuite monomial-degree (mvpoli))
+(clunit:defsuite monomial-degree (monomial))
 
 (clunit:deftest test-monomial-degree-1 (monomial-degree)
-  (clunit:assert-true (equal (monomial-degree (as-monomial
-  '(* q w 1 2 3 x y z (expt x 3)))) 8)))
+  (clunit:assert-equal (monomial-degree example-monomial) 6))
 
 "Tests for monomial-coefficient"
-(clunit:defsuite monomial-coefficient (mvpoli))
+(clunit:defsuite monomial-coefficient (monomial))
 
 (clunit:deftest test-monomial-coefficient-1 (monomial-coefficient)
-  (clunit:assert-true (equal (monomial-coefficient (as-monomial
-  '(* q w 1 2 3 x y z (expt x 3)))) 6)))
+  (clunit:assert-equal (monomial-coefficient example-monomial) 6))
 
 "Tests for compare-varpowers"
 (clunit:defsuite compare-varpowers (mvpoli))
