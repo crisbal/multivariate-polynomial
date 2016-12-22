@@ -55,9 +55,12 @@
     (second monomial)))
 
 (defun compare-varpowers(vp1 vp2)
+  "Comparator for varpower objects.
+Use case: sort list of varpower objects"  
   (string< (varpower-symbol vp1) (varpower-symbol vp2)))
 
 (defun lesser-varpower(vp1 vp2)
+  "Comparator for lists of varpowers"
   (unless (or (null vp1) (null vp2)) 
     (let ((vp1-first-symbol (varpower-symbol (first vp1)))
 	  (vp1-first-power (varpower-power (first vp1)))
@@ -68,7 +71,9 @@
 		  (< vp1-first-power vp2-first-power)) T)
 	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
 
-(defun compare-monomials(mon1 mon2) ;; TODO: implement on equal degree, just like prolog 
+(defun compare-monomials(mon1 mon2) ;; TODO: implement on equal degree, just like prolog
+  "Comparator for monomial objects.
+Use case: sort list of monomials"
   (let ((m1-degree (monomial-degree mon1))
 	(m2-degree (monomial-degree mon2))
 	(m1-varpowers (monomial-varpowers mon1))

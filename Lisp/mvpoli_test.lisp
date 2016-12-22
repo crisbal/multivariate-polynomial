@@ -59,7 +59,7 @@
   (clunit:assert-equal 12 (eval-as-number '(* 3 4))))
 
 (clunit:deftest test-eval-as-number-2 (eval-as-number)
-  (clunit:assert-equal  48 (eval-as-number '(* (* 3 4) (+ 2 2)))))
+  (clunit:assert-equal 48 (eval-as-number '(* (* 3 4) (+ 2 2)))))
 
 (clunit:deftest test-eval-as-number-3 (eval-as-number)
   (clunit:assert-equal (cos 3) (eval-as-number '(cos 3))))
@@ -132,40 +132,52 @@
   (clunit:assert-equal (monomial-coefficient example-monomial) 6))
 
 "Tests for compare-varpowers"
-(clunit:defsuite compare-varpowers (mvpoli))
+(clunit:defsuite compare-varpowers (varpower))
 
 (clunit:deftest test-compare-varpowers-1 (compare-varpowers)
-  (clunit:assert-true T))
+  (clunit:assert-true (compare-varpowers '(V 2 X) '(V 3 Y))))
+
+(clunit:deftest test-compare-varpowers-2 (compare-varpowers)
+  (clunit:assert-false (compare-varpowers '(V 2 Y) '(V 3 X))))
 
 "Tests for lesser-varpower"
-(clunit:defsuite lesser-varpower (mvpoli))
+(clunit:defsuite lesser-varpower (varpower))
 
 (clunit:deftest test-lesser-varpower-1 (lesser-varpower)
+  (warn "IMPLEMENT TEST FOR LESSER-VARPOWER OR DELETE IT")
   (clunit:assert-true T))
 
 "Tests for compare-monomials"
-(clunit:defsuite compare-monomials (mvpoli))
+(clunit:defsuite compare-monomials (monomial))
 
 (clunit:deftest test-compare-monomials-1 (compare-monomials)
+  (warn "IMPLEMENT TEST FOR COMPARE-MONOMIALS OR DELETE IT")
   (clunit:assert-true T))
 
+(clunit:defsuite monomial-expression-p (expression))
 "Tests for monomial-expression-p"
-(clunit:defsuite monomial-expression-p (mvpoli))
 
 (clunit:deftest test-monomial-expression-p-1 (monomial-expression-p)
-  (clunit:assert-true T))
+  (clunit:assert-true (monomial-expression-p '(* 1 2 x y))))
+
+(clunit:deftest test-monomial-expression-p-2 (monomial-expression-p)
+  (clunit:assert-false (monomial-expression-p '(+ 1 2 x y))))
 
 "Tests for coefficients"
-(clunit:defsuite coefficients (mvpoli))
+(clunit:defsuite expression-coefficient (expression))
 
+(clunit:defsuite coefficients (expression-coefficient))
 (clunit:deftest test-coefficients-1 (coefficients)
-  (clunit:assert-true T))
+  (clunit:assert-equal (coefficients '(2 3 x y (exptp x 3) 4)) '(2 3 4)))
 
 "Tests for total-coefficient"
-(clunit:defsuite total-coefficient (mvpoli))
+(clunit:defsuite total-coefficient (expression-coefficient))
 
 (clunit:deftest test-total-coefficient-1 (total-coefficient)
-  (clunit:assert-true T))
+  (clunit:assert-equal (total-coefficient '(x y 3 z 4)) 12))
+
+(clunit:deftest test-total-coefficient-2 (total-coefficient)
+  (clunit:assert-equal (total-coefficient '(x y z )) 1))
 
 "Tests for expression-variables"
 (clunit:defsuite expression-variables (mvpoli))
