@@ -289,8 +289,13 @@
 (clunit:defsuite is-polynomial (mvpoli))
 
 (clunit:deftest test-is-polynomial-1 (is-polynomial)
-  (clunit:assert-true T))
+  (clunit:assert-true (is-polynomial '(P ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
 
+(clunit:deftest test-is-polynomial-2 (is-polynomial)
+  (clunit:assert-false (is-polynomial '(Q ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
+
+(clunit:deftest test-is-polynomial-3 (is-polynomial)
+  (clunit:assert-false (is-polynomial '(P ((Z 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
 
 
 (defun run-tests()
