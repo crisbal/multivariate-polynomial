@@ -48,11 +48,17 @@ then
 
 	{
 		echo | make test
-	}  > $TMP_LISP
+	}  &> $TMP_LISP
 
 	if [[ $(cat $TMP_LISP | grep " F"$ | wc -l) -gt 0 ]]
 	then
 		echo "Something is wrong! Can't commit!"
+		cat $TMP_LISP
+		echo
+		STATUS=1
+	elif [[ $(cat $TMP_LISP | grep " E"$ | wc -l) -gt 0 ]] || grep "Backtrace for" $TMP_LISP &> /dev/null
+	then
+		echo "Something is very wrong! Can't commit!"
 		cat $TMP_LISP
 		echo
 		STATUS=1
