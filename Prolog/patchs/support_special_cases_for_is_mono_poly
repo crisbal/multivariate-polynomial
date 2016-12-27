@@ -1,0 +1,58 @@
+diff --git a/Prolog/mvpoli.pl.d/is_monomial.pl b/Prolog/mvpoli.pl.d/is_monomial.pl
+index b9ebfeb..2ef5058 100644
+--- a/Prolog/mvpoli.pl.d/is_monomial.pl
++++ b/Prolog/mvpoli.pl.d/is_monomial.pl
+@@ -8,6 +8,17 @@ is_monomial(m(_C, TD, VPs)) :-
+ 	compute_total_degree_for_vars_powers(VPs, TD), %TODO: is needed?
+ 	is_list(VPs),
+ 	% predsort(compare_vars_powers, VPs, VPs), %TODO: is needed?
+-	%compress_sorted_vps(VPs, VPs), %TODO: is needed
+-	!. %TODO: is needed?
++	% compress_sorted_vps(VPs, VPs), %TODO: is needed
++	!.
+ 
++%% is_monomial/1
++% handle case of a poly with a single monomial: it is a monomial
++is_monomial(poly([m(C, TD, VPs)])) :-
++	is_monomial(m(C, TD, VPs)),
++	!.
++
++%% is_monomial/1
++% handle case of an expression
++is_monomial(Expression) :-
++	as_monomial(Expression, _),
++	!.
+\ No newline at end of file
+diff --git a/Prolog/mvpoli.pl.d/is_polynomial.pl b/Prolog/mvpoli.pl.d/is_polynomial.pl
+index 1c020b8..140b841 100644
+--- a/Prolog/mvpoli.pl.d/is_polynomial.pl
++++ b/Prolog/mvpoli.pl.d/is_polynomial.pl
+@@ -1,7 +1,10 @@
+ %% is_polynomial/1
+-% TODO: do we have to check if the list is sorted?
+ is_polynomial(poly(Monomials)) :-
+ 	is_list(Monomials),
+ 	foreach(member(M, Monomials), is_monomial(M)),
+ 	!.
+ 
++%% is_polynomial
++is_polynomial(Expression) :-
++	as_polynomial(Expression, _),
++	!.
+diff --git a/Prolog/mvpoli.plt b/Prolog/mvpoli.plt
+index 59883c8..2a4a448 100644
+--- a/Prolog/mvpoli.plt
++++ b/Prolog/mvpoli.plt
+@@ -228,9 +228,9 @@ test(is_monomial_2) :-
+ test(is_monomial_3) :-
+ 	mvpoli:as_monomial(1,M),
+ 	mvpoli:is_monomial(M).
+-test(is_monomial_4) :-
+-	mvpoli:as_polynomial(1,P),
+-	not(mvpoli:is_monomial(P)).
++%test(is_monomial_4) :-
++%	mvpoli:as_polynomial(1,P),
++%	not(mvpoli:is_monomial(P)).
+ 
+ test(is_polynomial_1) :-
+ 	mvpoli:as_monomial(4*x,M),
