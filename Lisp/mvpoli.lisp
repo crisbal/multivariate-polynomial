@@ -323,6 +323,13 @@ All the errors should be handled by the lower level functions"
 (defun coefficients(generic)
     (mapcar #'monomial-coefficient (monomials generic))) ;;TODO: use polynomial-monomials
 
+(defun maxdegree(generic)
+  "MAX-DEGREE.
+Functional programming!"
+  (reduce #'max (monomials generic) :key #'monomial-degree))
+
+(defun mindegree(generic)
+  (reduce #'min (monomials generic) :key #'monomial-degree))
 ;; BEGIN OF OPERATIONS
 
 (defun polyplus(p1 p2)
@@ -379,6 +386,8 @@ Just concat the monomials and let the reducer do the job"
                            list-until-now))
                  monomials-of-p1
                  :initial-value nil))))))
+
+;; BEGIN OF POLYVAL
 
 (defun get-value-for-symbol(symbol var-to-value-assoc)
   (cdr (assoc symbol var-to-value-assoc)))
