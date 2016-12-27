@@ -41,6 +41,7 @@
 
 (defun is-monomial(monomial)
   (and (equal (list-length monomial) 4)
+    (listp (fourth monomial))
     (equal (first monomial) 'M)
     (numberp (second monomial))
     (numberp (third monomial))
