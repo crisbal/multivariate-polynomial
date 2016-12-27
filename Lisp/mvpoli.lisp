@@ -40,8 +40,11 @@
     (third varpower)))
 
 (defun is-monomial(monomial)
-  (warn "PLEASE IMPLEMENT IS-MONOMIAL")
-  T)
+  (and (equal (list-length monomial) 4)
+    (equal (first monomial) 'M)
+    (numberp (second monomial))
+    (numberp (third monomial))
+    (every #'identity (mapcar 'is-varpower (fourth monomial)))))
 
 (defun is-polynomial(polynomial)
   (warn "PLEASE IMPLEMENT IS-POLYNOMIAL")
