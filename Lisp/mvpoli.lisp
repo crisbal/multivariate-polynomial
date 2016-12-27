@@ -25,9 +25,9 @@
 
 (defun is-varpower(varpower)
   (and (equal (list-length varpower) 3)
-    (equal (first varpower) 'V)
-    (numberp (second varpower))
-    (not (numberp (third varpower)))))
+       (equal (first varpower) 'V)
+       (numberp (second varpower))
+       (not (numberp (third varpower)))))
 
 (defun varpower-power(varpower)  ;;TODO add check for is-varpower
   (when (and (listp varpower)
@@ -41,17 +41,17 @@
 
 (defun is-monomial(monomial)
   (and (equal (list-length monomial) 4)
-    (equal (first monomial) 'M)
-    (listp (fourth monomial))
-    (numberp (second monomial))
-    (numberp (third monomial))
-    (every #'identity (mapcar 'is-varpower (fourth monomial)))))
+       (equal (first monomial) 'M)
+       (listp (fourth monomial))
+       (numberp (second monomial))
+       (numberp (third monomial))
+       (every #'identity (mapcar 'is-varpower (fourth monomial)))))
 
 (defun is-polynomial(polynomial)
   (and (equal (list-length polynomial) 2)
-    (equal (first polynomial) 'P)
-    (listp (second polynomial))
-    (every #'identity (mapcar 'is-monomial (second polynomial)))))
+       (equal (first polynomial) 'P)
+       (listp (second polynomial))
+       (every #'identity (mapcar 'is-monomial (second polynomial)))))
 
 (defun monomial-varpowers(monomial) ;; TODO: add check for is-monomial
   (when (and (listp monomial)
@@ -68,19 +68,25 @@
 	     (numberp (second monomial)))
     (second monomial)))
 
+(defun to-polynomial(generic)
+  (cond ((is-polynomial generic) generic)
+	((is-monomial generic) (build-polynomial-object (list generic)))))
+
 (defun compare-varpowers(vp1 vp2)
-  "Comparator for varpower objects.
+  "Comparator for varpower objects
 Use case: sort list of varpower objects"  
   (string< (varpower-symbol vp1) (varpower-symbol vp2)))
 
 (defun lesser-varpower(vp1 vp2)
   "Comparator for lists of varpowers"
-  (unless (or (null vp1) (null vp2)) 
+  (unless (and (null vp1) (null vp2)) 
     (let ((vp1-first-symbol (varpower-symbol (first vp1)))
 	  (vp1-first-power (varpower-power (first vp1)))
 	  (vp2-first-symbol (varpower-symbol (first vp2)))
 	  (vp2-first-power (varpower-power (first vp2))))
-      (cond ((string< vp1-first-symbol vp2-first-symbol) T)
+      (cond ((and (null vp2) (not (null vp1))) T)
+	    ((and (null vp1) (not (null vp2))) NIL)
+	    ((string< vp1-first-symbol vp2-first-symbol) T)
 	    ((and (equal vp1-first-power vp2-first-symbol)
 		  (< vp1-first-power vp2-first-power)) T)
 	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
@@ -93,7 +99,8 @@ Use case: sort list of monomials"
 	(m1-varpowers (monomial-varpowers mon1))
 	(m2-varpowers (monomial-varpowers mon2)))
     (cond ((< m1-degree m2-degree) T)
-	  ((lesser-varpower m1-varpowers m2-varpowers) T))))
+	  ((and (equal m1-degree m2-degree)
+		(lesser-varpower m1-varpowers m2-varpowers)) T))))
 
 (defun exptp(something)
   "T is returned when SOMETHING is a list in the form '(expt symbol number)"
@@ -250,7 +257,7 @@ EXPRESSION is a list validated by polynomial-expression-p"
   (when (and (is-polynomial p1)
 	     (is-polynomial p2))
     (let ((monomials-of-p1 (second p1))) ;; TODO: use polynomial-monomials
-       (build-polynomial-object (compress-monomials (sort-monomials (reduce (lambda(list-until-now mono-of-poly1) (append (second (monotimespoly mono-of-poly1 p2)) list-until-now)) monomials-of-p1 :initial-value nil)))))))
+      (build-polynomial-object (compress-monomials (sort-monomials (reduce (lambda(list-until-now mono-of-poly1) (append (second (monotimespoly mono-of-poly1 p2)) list-until-now)) monomials-of-p1 :initial-value nil)))))))
 
 (defun pprint-varpower(varpower &optional head)
   (let ((symbol (varpower-symbol varpower))
@@ -278,7 +285,7 @@ EXPRESSION is a list validated by polynomial-expression-p"
 	     (pprint-varpower (first varpowers) T)
 	     (mapcar 'pprint-varpower (rest varpowers)))
 	   NIL))) ;;here we return nil explicitally because the unexpected return value of mapcar (we know it is nil but better safe than sorry)
-  
+
 (defun pprint-polynomial(polynomial)
   (let ((monomials (second polynomial)))
     (if (null monomials)
@@ -286,4 +293,5 @@ EXPRESSION is a list validated by polynomial-expression-p"
 	(progn (pprint-monomial (first monomials) T)
 	       (mapcar #'pprint-monomial (rest monomials))
 	       NIL)))) ;; again force nil return value, we know it is nil but let's be safe and follow requirement
+
 
