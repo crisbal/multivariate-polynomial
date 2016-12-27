@@ -283,7 +283,8 @@
 (clunit:defsuite as-polynomial (mvpoli))
 
 (clunit:deftest test-as-polynomial-1 (as-polynomial)
-  (clunit:assert-equal (as-polynomial '(+ (* -1 x) (* x w))) '(P ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X)))))))
+  (clunit:assert-equal (as-polynomial '(+ (* -1 x) (* x w))) '(P ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))))) ))
+
 
 "Tests for is-polynomial"
 (clunit:defsuite is-polynomial (mvpoli))
