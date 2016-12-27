@@ -36,6 +36,9 @@ as_monomial_parse(ArithmeticCoefficient, Coefficient, []) :-
 as_monomial_parse(HeadVarPower, 1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
 	!.
+as_monomial_parse(+HeadVarPower, 1, [VarPower]) :-
+	as_var_power(HeadVarPower, VarPower),
+	!.
 as_monomial_parse(-HeadVarPower, -1, [VarPower]) :-
 	as_var_power(HeadVarPower, VarPower),
 	!.
