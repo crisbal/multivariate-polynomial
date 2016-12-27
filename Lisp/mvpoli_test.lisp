@@ -109,7 +109,17 @@
 (clunit:defsuite is-monomial (monomial))
 
 (clunit:deftest test-is-monomial-1 (is-monomial)
-  (clunit:assert-true T))
+  (clunit:assert-true (is-monomial example-monomial)))
+
+(clunit:deftest test-is-monomial-2 (is-monomial)
+  (clunit:assert-false (is-monomial '(r e 2))))
+
+(clunit:deftest test-is-monomial-3 (is-monomial)
+  (clunit:assert-false (is-monomial '(M 6 6 ((Q 2 X) (V 1 Y) (V 3 Z))))))
+
+(clunit:deftest test-is-monomial-4 (is-monomial)
+  (clunit:assert-true (is-monomial '(M 0 0 ()))))
+
 
 "Tests for monomial-varpowers"
 (clunit:defsuite monomial-varpowers (monomial))
