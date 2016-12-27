@@ -41,15 +41,17 @@
 
 (defun is-monomial(monomial)
   (and (equal (list-length monomial) 4)
-    (listp (fourth monomial))
     (equal (first monomial) 'M)
+    (listp (fourth monomial))
     (numberp (second monomial))
     (numberp (third monomial))
     (every #'identity (mapcar 'is-varpower (fourth monomial)))))
 
 (defun is-polynomial(polynomial)
-  (warn "PLEASE IMPLEMENT IS-POLYNOMIAL")
-  T)
+  (and (equal (list-length polynomial) 2)
+    (equal (first polynomial) 'P)
+    (listp (second polynomial))
+    (every #'identity (mapcar 'is-monomial (second polynomial)))))
 
 (defun monomial-varpowers(monomial) ;; TODO: add check for is-monomial
   (when (and (listp monomial)
