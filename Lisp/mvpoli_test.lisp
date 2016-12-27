@@ -176,7 +176,7 @@
 "Tests for coefficients"
 (clunit:defsuite expression-coefficient (expression))
 
-(clunit:defsuite coefficients (expression-coefficient))
+(clunit:defsuite expression-coefficients (expression-coefficient))
 (clunit:deftest test-coefficients-1 (coefficients)
   (clunit:assert-equal (coefficients '(2 3 x y (exptp x 3) 4)) '(2 3 4)))
 

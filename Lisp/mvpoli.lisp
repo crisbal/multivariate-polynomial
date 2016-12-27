@@ -62,6 +62,10 @@
 	     (listp (fourth monomial)))
     (fourth monomial)))
 
+(defun varpowers(monomial)
+  "ALIAS: just because this function is a requirement"
+  (monomial-varpowers monomial))
+
 (defun monomial-degree(monomial) ;; TODO: add check for is-monomial
   (when (and (listp monomial)
 	     (numberp (third monomial)))
@@ -72,6 +76,9 @@
 	     (numberp (second monomial)))
     (second monomial)))
 
+(defun polynomial-monomials(polynomial)
+  (when (is-polynomial polynomial) ;;TODO add strict check
+    (second polynomial)))
 
 (defun compare-varpowers(vp1 vp2)
   "Comparator for varpower objects
@@ -132,7 +139,7 @@ EXPRESSION must begin with '* and must include only elements validated by MONOMI
               (mapcar 'monomial-expression-component-p
                       (rest expression))))) ;; check that all symbols are valid
 
-(defun coefficients(expression)
+(defun expression-coefficients(expression)
   "Return all the coefficient inside EXPRESSION"
   (remove-if-not (lambda(x)
                    (numberp (eval-as-number x)))
@@ -143,7 +150,7 @@ EXPRESSION must begin with '* and must include only elements validated by MONOMI
 This is achived by multiplying all the coefficients of EXPRESSION"
   (reduce #'*
           (mapcar #'eval-as-number
-                  (coefficients expression)))) ;; default value can be omitted since for '* is 1
+                  (expression-coefficients expression)))) ;; default value can be omitted since for '* is 1
 
 (defun expression-variables(expression)
   "Return all the variables inside EXPRESSION"
@@ -290,20 +297,31 @@ All the errors should be handled by the lower level functions"
 	((is-monomial generic) (build-polynomial-object (list generic)))
         (T (as-polynomial generic))))
 
-(defun variables-monomial(monomial)
+(defun monomial-variables(monomial)
   (when (is-monomial monomial);;TODO: strict check
     (sort (remove-duplicates (mapcar 'varpower-symbol
                                      (monomial-varpowers monomial)))
           #'string<)))
 
+(defun vars-of(monomial)
+  "ALIAS: just because this function is a requirement"
+  (monomial-variables monomial))
+
 (defun variables(generic)
   (let ((polynomial (to-polynomial generic)))
     (sort (remove-duplicates (reduce (lambda(partial-list monomial)
                                        (append partial-list
-                                               (variables-monomial monomial)))
+                                               (monomial-variables monomial)))
                                      (second polynomial)
                                      :initial-value nil))
           #'string<)))
+
+(defun monomials(generic)
+  (let ((polynomial (to-polynomial generic)))
+    (polynomial-monomials polynomial)))
+
+(defun coefficients(generic)
+    (mapcar #'monomial-coefficient (monomials generic))) ;;TODO: use polynomial-monomials
 
 ;; BEGIN OF OPERATIONS
 
