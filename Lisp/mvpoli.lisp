@@ -4,7 +4,7 @@
 ;; TODO polyval
 
 (defun eval-as-number(expression)
-  "Eval EXPRESSION and return its numeric value"  
+  "Eval EXPRESSION and return its numeric value"
   (let ((result (handler-case (eval expression)
 		  (error () nil)
 		  (warning () nil))))
@@ -18,7 +18,7 @@
   (list 'M coefficient total-degree varpowers))
 
 (defun build-polynomial-object(monomials)
-  (list 'P monomials))
+  (list 'POLY monomials))
 
 (defun is-varpower(varpower)
   (and (listp varpower)
@@ -51,7 +51,7 @@
 (defun is-polynomial(polynomial)
   (and (listp polynomial)
        (equal (list-length polynomial) 2)
-       (equal (first polynomial) 'P)
+       (equal (first polynomial) 'POLY)
        (listp (second polynomial))
        (every #'identity (mapcar
                           'is-monomial
@@ -82,12 +82,12 @@
 
 (defun compare-varpowers(vp1 vp2)
   "Comparator for varpower objects
-Use case: sort list of varpower objects"  
+Use case: sort list of varpower objects"
   (string< (varpower-symbol vp1) (varpower-symbol vp2)))
 
 (defun lesser-varpower(vp1 vp2)
   "Comparator for lists of varpowers"
-  (unless (and (null vp1) (null vp2)) 
+  (unless (and (null vp1) (null vp2))
     (let ((vp1-first-symbol (varpower-symbol (first vp1)))
 	  (vp1-first-power (varpower-power (first vp1)))
 	  (vp2-first-symbol (varpower-symbol (first vp2)))
@@ -178,7 +178,7 @@ This casts the list gotted by EXPRESSION-VARIABLES."
 (defun sort-varpowers(varpowers)
   "Sort VARPOWERS.
 VARPOWERS is a list of items validated by is-varpower"
-  (when (and (listp varpowers) ;;; TODO_ add better check via a varpowers-list-p 
+  (when (and (listp varpowers) ;;; TODO_ add better check via a varpowers-list-p
 	     (every #'identity
                     (mapcar #'is-varpower
                             varpowers)))
@@ -186,7 +186,7 @@ VARPOWERS is a list of items validated by is-varpower"
           #'compare-varpowers)))
 
 (defun total-degree-varpowers(varpowers)
-  (when (listp varpowers) ;; TODO: add better check via a varpowers-list-p 
+  (when (listp varpowers) ;; TODO: add better check via a varpowers-list-p
     (reduce #'+
             (mapcar (lambda(varpower)
                       (varpower-power varpower))
@@ -241,7 +241,7 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
        (equal (first expression) '+))) ;; TODO: add check for all the monomials components, will require a small adjustament of monomial-expression-p. Not really needed, since as-monomial will take care of the problem
 
 (defun sort-monomials(monomials)
-  (when (and (listp monomials) ;;; TODO_ add better check via a varpowers-list-p 
+  (when (and (listp monomials) ;;; TODO_ add better check via a varpowers-list-p
 	     (every #'identity
                     (mapcar #'is-monomial
                             monomials)))

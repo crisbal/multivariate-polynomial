@@ -17,7 +17,7 @@
   (clunit:assert-equal (build-monomial-object 1 5 '((V 5 x))) '(M 1 5 ((V 5 x)))))
 
 (clunit:deftest test-build-polynomial-object (builder)
-  (clunit:assert-equal (build-polynomial-object '()) '(P ())))
+  (clunit:assert-equal (build-polynomial-object '()) '(POLY ())))
 
 (clunit:defsuite varpower (mvpoli))
 "Tests for varpower-related functions"
@@ -283,20 +283,20 @@
 (clunit:defsuite as-polynomial (mvpoli))
 
 (clunit:deftest test-as-polynomial-1 (as-polynomial)
-  (clunit:assert-equal (as-polynomial '(+ (* -1 x) (* x w))) '(P ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))))) ))
+  (clunit:assert-equal (as-polynomial '(+ (* -1 x) (* x w))) '(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))))) ))
 
 
 "Tests for is-polynomial"
 (clunit:defsuite is-polynomial (mvpoli))
 
 (clunit:deftest test-is-polynomial-1 (is-polynomial)
-  (clunit:assert-true (is-polynomial '(P ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
+  (clunit:assert-true (is-polynomial '(POLY ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
 
 (clunit:deftest test-is-polynomial-2 (is-polynomial)
   (clunit:assert-false (is-polynomial '(Q ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
 
 (clunit:deftest test-is-polynomial-3 (is-polynomial)
-  (clunit:assert-false (is-polynomial '(P ((Z 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
+  (clunit:assert-false (is-polynomial '(POLY ((Z 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
 
 
 (defun run-tests()
