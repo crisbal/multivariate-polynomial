@@ -364,11 +364,11 @@ Just concat the monomials and let the reducer do the job"
 (defun monotimespoly(mono poly-generic) ;; TODO: add sort and compress? Is it needed?
   ""
   (when (is-monomial mono) ;; TODO: will need strict checking
-    (let ((monomials poly-generic)) 
+    (let ((the-monomials (monomials poly-generic))) 
       (build-polynomial-object (mapcar (lambda(mono-of-poly)
                                          (monotimes mono-of-poly
                                                     mono))
-                                       monomials)))))
+                                       the-monomials)))))
 
 (defun polyminus(p1-generic p2-generic)
   "Compute the difference of two polynomials."
