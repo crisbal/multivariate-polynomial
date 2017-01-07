@@ -290,6 +290,7 @@ EXPRESSION is a list validated by polynomial-expression-p"
 
 ;; BEGIN OF HELPERS
 
+
 (defun to-polynomial(generic)
   "GENERIC will be converted to a polynomial object.
 All the errors should be handled by the lower level functions"
@@ -330,10 +331,19 @@ All the errors should be handled by the lower level functions"
 (defun maxdegree(generic)
   "MAX-DEGREE.
 Functional programming!"
-  (reduce #'max (monomials generic) :key #'monomial-degree))
+  (let ((the-monomials (monomials generic)))
+    (if (null the-monomials)
+        0
+        (reduce #'max the-monomials :key #'monomial-degree))))
 
 (defun mindegree(generic)
-  (reduce #'min (monomials generic) :key #'monomial-degree))
+  "MIN-DEGREE.
+Functional programming!"
+  (let ((the-monomials (monomials generic)))
+    (if (null the-monomials)
+        0
+        (reduce #'min the-monomials :key #'monomial-degree))))
+
 ;; BEGIN OF OPERATIONS
 
 (defun polyplus(p1 p2)
