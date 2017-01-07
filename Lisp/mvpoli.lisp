@@ -60,21 +60,6 @@
                           'is-monomial
                           (second polynomial)))))
 
-(defun monomial-varpowers(monomial)
-  (when (is-monomial monomial)
-    (fourth monomial)))
-
-(defun varpowers(monomial)
-  "ALIAS: just because this function is a requirement"
-  (monomial-varpowers monomial))
-
-(defun monomial-degree(monomial) 
-  (when (is-monomial monomial)
-    (third monomial)))
-
-(defun monomial-coefficient(monomial) 
-  (when (is-monomial monomial)
-    (second monomial)))
 
 (defun polynomial-monomials(polynomial)
   (when (is-polynomial polynomial) ;;TODO add strict check
@@ -98,17 +83,6 @@ Use case: sort list of varpower objects"
 	    ((and (equal vp1-first-power vp2-first-symbol)
 		  (< vp1-first-power vp2-first-power)) T)
 	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
-
-(defun compare-monomials(mon1 mon2) 
-  "Comparator for monomial objects.
-Use case: sort list of monomials"
-  (let ((m1-degree (monomial-degree mon1))
-	(m2-degree (monomial-degree mon2))
-	(m1-varpowers (monomial-varpowers mon1))
-	(m2-varpowers (monomial-varpowers mon2)))
-    (cond ((< m1-degree m2-degree) T)
-	  ((and (equal m1-degree m2-degree)
-		(lesser-varpower m1-varpowers m2-varpowers)) T))))
 
 (defun exptp(something)
   "T is returned when SOMETHING is a list in the form '(expt symbol number)"
@@ -219,7 +193,9 @@ VARPOWERS is a list of items validated by is-varpower"
 (defun as-monomial(expression)
   "EXPRESSION will be represented as a monomial.
 EXPRESSION is either a number or something validated by monomial-expression-p"
-  (cond ((monomial-expression-p
+  (cond ((null expression)
+         (build-monomial-object 0 0 NIL))
+         ((monomial-expression-p
           expression)
          (parse-monomial-expression
           (rest expression)))
@@ -228,6 +204,39 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
                                 0
                                 NIL))
 	(T (error "Invalid monomial expression ~A" expression))))
+
+(defun to-monomial(generic)
+  (cond ((is-monomial generic) generic)
+        (T (as-monomial generic))))
+
+(defun monomial-varpowers(monomial)
+    (fourth (to-monomial monomial)))
+
+(defun varpowers(monomial)
+  "ALIAS: just because this function is a requirement"
+  (monomial-varpowers monomial))
+
+(defun monomial-degree(monomial) 
+    (third (to-monomial monomial)))
+
+(defun monomial-coefficient(monomial) 
+    (second (to-monomial monomial)))
+
+(defun monomial-variables(monomial)
+  (sort (copy-seq (remove-duplicates (mapcar 'varpower-symbol
+                                             (monomial-varpowers monomial))))
+        #'string<))
+
+(defun compare-monomials(mon1 mon2) 
+  "Comparator for monomial objects.
+Use case: sort list of monomials"
+  (let ((m1-degree (monomial-degree mon1))
+  (m2-degree (monomial-degree mon2))
+  (m1-varpowers (monomial-varpowers mon1))
+  (m2-varpowers (monomial-varpowers mon2)))
+    (cond ((< m1-degree m2-degree) T)
+    ((and (equal m1-degree m2-degree)
+    (lesser-varpower m1-varpowers m2-varpowers)) T))))
 
 ;; BEGIN OF AS POLYNOMIAL
 
@@ -290,7 +299,6 @@ EXPRESSION is a list validated by polynomial-expression-p"
 
 ;; BEGIN OF HELPERS
 
-
 (defun to-polynomial(generic)
   "GENERIC will be converted to a polynomial object.
 All the errors should be handled by the lower level functions"
@@ -298,11 +306,6 @@ All the errors should be handled by the lower level functions"
 	((is-monomial generic) (build-polynomial-object (list generic)))
         (T (as-polynomial generic))))
 
-(defun monomial-variables(monomial)
-  (when (is-monomial monomial)
-    (sort (copy-seq (remove-duplicates (mapcar 'varpower-symbol
-                                               (monomial-varpowers monomial))))
-          #'string<)))
 
 (defun vars-of(monomial)
   "ALIAS: just because this function is a requirement"
