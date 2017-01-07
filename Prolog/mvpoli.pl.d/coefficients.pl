@@ -8,6 +8,7 @@ coefficients(GenericPoly, Coefficients) :-
 	coefficients_worker(Monomials, Coefficients).
 
 coefficients_worker([], []).
-coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], [Coefficient | RestOfCoefficients]) :-
+coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials], 
+        [Coefficient | RestOfCoefficients]) :-
 	coefficients_worker(RestOfMonomials, RestOfCoefficients).
 

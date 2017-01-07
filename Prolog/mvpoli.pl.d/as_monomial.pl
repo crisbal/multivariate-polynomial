@@ -58,7 +58,9 @@ as_monomial_parse(OtherVars * Var, Coefficient, [VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
 	!.
-as_monomial_parse(OtherVars * -Var, NegatedCoefficient, [VarPower | OtherVarPowers]) :-
+as_monomial_parse(OtherVars * -Var, 
+		NegatedCoefficient, 
+		[VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
 	NegatedCoefficient is Coefficient*(-1),
