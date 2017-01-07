@@ -115,7 +115,8 @@ Use case: sort list of monomials"
   (and (listp something)
        (equal (first something) 'expt)
        (symbolp (second something))
-       (numberp (third something))))
+       (numberp (third something))
+       (>= (third something) 0)))
 
 (defun expression-variable-p(something)
   "Something is either a symbol or an '(expt symbol number) object"
@@ -253,11 +254,13 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
 	  ((null partial-list)
            (list element))
           ((equal e-varpowers first-varpowers)
-           (cons (build-monomial-object (+ e-coefficient
-                                           first-coefficient)
-                                        e-degree
-                                        e-varpowers)
-                 (rest partial-list)))
+           (if (equal 0 (+ first-coefficient e-coefficient))
+               (rest partial-list)
+               (cons (build-monomial-object (+ e-coefficient
+                                               first-coefficient)
+                                            e-degree
+                                            e-varpowers)
+                     (rest partial-list))))
 	  (T (cons element partial-list)))))
 
 (defun compress-monomials(monomials)
@@ -318,7 +321,11 @@ All the errors should be handled by the lower level functions"
     (polynomial-monomials polynomial)))
 
 (defun coefficients(generic)
-    (mapcar #'monomial-coefficient (monomials generic)))
+  (let ((the-coefficients (mapcar #'monomial-coefficient
+                                  (monomials generic))))
+    (if (null the-coefficients)
+        (list 0)
+        the-coefficients)))
 
 (defun maxdegree(generic)
   "MAX-DEGREE.
