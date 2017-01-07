@@ -86,11 +86,11 @@ test(as_polynomial_18) :-
 test(coefficients_1) :-
 	mvpoli:coefficients(poly([m(42, 0, [])]), [42]).
 test(coefficients_2) :-
-	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]),m(42, 0, [])]), [3,42]).
+	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]), m(42, 0, [])]), [42, 3]).
 test(coefficients_3) :-
-	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]), m(-4, 1, [v(1, x)]), m(1, 0, [])]), [3, -4, 1]).
+	mvpoli:coefficients(poly([m(3, 1, [v(1, x)]), m(-4, 1, [v(1, x)]), m(1, 0, [])]), [1, -1]).
 test(coefficients_4) :-
-	mvpoli:coefficients(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [-4 ,3, 1]).
+	mvpoli:coefficients(poly([m(-4, 2, [v(2, x)]), m(3, 1, [v(1, x)]), m(1, 0, [])]), [1 , 3, -4]).
 test(coefficients_5) :-
 	mvpoli:coefficients(poly([m(1, 8, [v(2, x), v(5, y), v(1, z)]), m(1, 5, [v(1, x), v(1, y), v(3, z)]), m(1, 3, [v(1, x), v(1, y), v(1, z)])]), [1, 1, 1]).
 

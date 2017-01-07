@@ -1,7 +1,7 @@
 %% compare_monomials/3
 % this delta predicate is used by predsort/3 in as_polynomial, monomials are
-% first compared by their TotalDegree then by degree+alphabetical of each single 
-% VP. We keep "duplicates" since we will join them later on with 
+% first compared by their TotalDegree then by degree+alphabetical of each 
+% single VP. We keep "duplicates" since we will join them later on with 
 % compress_sorted_monomials/3
 compare_monomials(<, m(_C1, D1, _VPs1), m(_C2, D2, _VPs2)) :-
 	D1 < D2,
