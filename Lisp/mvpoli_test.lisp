@@ -193,13 +193,13 @@
 (clunit:defsuite expression-variables (mvpoli))
 
 (clunit:deftest test-expression-variables-1 (expression-variables)
-  (clunit:assert-true T))
+  (clunit:assert-equal (expression-variables '(* r 3 s k 2 o 4 k 9 o f)) '(* R S K O K O F)))
 
 "Tests for expression-variable-to-varpower"
 (clunit:defsuite expression-variable-to-varpower (mvpoli))
 
 (clunit:deftest test-expression-variable-to-varpower-1 (expression-variable-to-varpower)
-  (clunit:assert-true T))
+  (clunit:assert-equal (expression-variable-to-varpower '(expt x 4)) '(V 4 X)))
 
 "Tests for varpowers-from-expression"
 (clunit:defsuite varpowers-from-expression (mvpoli))
