@@ -205,7 +205,7 @@
 (clunit:defsuite varpowers-from-expression (mvpoli))
 
 (clunit:deftest test-varpowers-from-expression-1 (varpowers-from-expression)
-  (clunit:assert-true T))
+  (clunit:assert-equal (varpowers-from-expression '(* r 3 s k 2 o 4 k 9 o f)) '((V 1 *) (V 1 R) (V 1 S) (V 1 K) (V 1 O) (V 1 K) (V 1 O) (V 1 F))))
 
 "Tests for sort-varpowers"
 (clunit:defsuite sort-varpowers (mvpoli))
