@@ -8,12 +8,6 @@
 (defun build-varpower-object(base exponent)
   (list 'V exponent base))
 
-(defun build-monomial-object(coefficient total-degree varpowers)
-  "Given all the details builds the monomial as needed by the requirements"
-  (list 'M
-        coefficient
-        (if (equal coefficient 0) 0 total-degree)
-        (if (equal coefficient 0) NIL varpowers)))
 
 
 (defun is-varpower(varpower)
@@ -62,7 +56,7 @@
 
 
 (defun polynomial-monomials(polynomial)
-  (when (is-polynomial polynomial) ;;TODO add strict check
+  (when (is-polynomial polynomial) 
     (second polynomial)))
 
 (defun compare-varpowers(vp1 vp2)
@@ -183,9 +177,20 @@ VARPOWERS is a list of items validated by is-varpower"
           :initial-value nil
           :from-end T))
 
+(defun build-monomial-object(coefficient total-degree varpowers)
+  "Given all the details builds the monomial as needed by the requirements"
+  (list 'M
+        coefficient
+        (if (equal coefficient 0)
+            0
+            total-degree)
+        (if (equal coefficient 0)
+            NIL
+            (compress-varpowers (sort-varpowers varpowers)))))
+
 (defun parse-monomial-expression(expression)
   (let ((e-coefficient (total-coefficient expression))
-	(e-varpowers (compress-varpowers (sort-varpowers (varpowers-from-expression expression)))))
+	(e-varpowers (varpowers-from-expression expression)))
     (build-monomial-object e-coefficient
                            (total-degree-varpowers e-varpowers)
                            e-varpowers)))
@@ -242,7 +247,7 @@ Use case: sort list of monomials"
 
 (defun polynomial-expression-p(expression)
   (and (listp expression)
-       (equal (first expression) '+))) ;; TODO: add check for all the monomials components, will require a small adjustament of monomial-expression-p. Not really needed, since as-monomial will take care of the problem
+       (equal (first expression) '+))) 
 
 (defun sort-monomials(monomials)
   (when (and (listp monomials) ;;; TODO_ add better check via a varpowers-list-p
@@ -357,7 +362,7 @@ Just concat the monomials and let the reducer do the job"
     (build-polynomial-object (append monomials1
                                      monomials2))))
 
-(defun monotimes(m1 m2) ;; TODO: is-monomial will need strict checking
+(defun monotimes(m1 m2) 
   "Compute the product of M1 and M2, both must be monomials."
   (when (and (is-monomial m1)
 	     (is-monomial m2))
@@ -367,16 +372,16 @@ Just concat the monomials and let the reducer do the job"
 	  (m2-degree (monomial-degree m2))
 	  (m1-varpowers (monomial-varpowers m1))
 	  (m2-varpowers (monomial-varpowers m2)))
-      (build-monomial-object (* m1-coefficient
-                                m2-coefficient)
-                             (+ m1-degree
+      (build-monomial-object (* m1-coefficient  ;;pretty straight-forward
+                                m2-coefficient) ;; multiply coeffs 
+                             (+ m1-degree ;; sum degrees
                                 m2-degree)
-                             (compress-varpowers (sort-varpowers (append m1-varpowers
-                                                                         m2-varpowers)))))))
+                             (append m1-varpowers ;;append varpowers
+                                     m2-varpowers)))))
 
-(defun monotimespoly(mono poly-generic) ;; TODO: add sort and compress? Is it needed?
-  ""
-  (when (is-monomial mono) ;; TODO: will need strict checking
+(defun monotimespoly(mono poly-generic) 
+  "Multiply a monomial for a polynomial. Will return a polynomial"
+  (when (is-monomial mono) 
     (let ((the-monomials (monomials poly-generic))) 
       (build-polynomial-object (mapcar (lambda(mono-of-poly)
                                          (monotimes mono-of-poly
@@ -450,7 +455,7 @@ Just concat the monomials and let the reducer do the job"
                   (format T "^~A" power))
                 NIL)))) ;;we return nil explicitally, it is not needed but let's be clear
 
-(defun pprint-monomial(monomial &optional head) ;; TODO: add strict is-monomial
+(defun pprint-monomial(monomial &optional head) 
   (when (is-monomial monomial)
     (let ((coefficient (monomial-coefficient monomial))
           (acoefficient (abs (monomial-coefficient monomial)))
