@@ -88,10 +88,13 @@ Use case: sort list of varpower objects"
 	  (vp1-first-power (varpower-power (first vp1)))
 	  (vp2-first-symbol (varpower-symbol (first vp2)))
 	  (vp2-first-power (varpower-power (first vp2))))
-      (cond ((and (null vp2) (not (null vp1))) T)
-	    ((and (null vp1) (not (null vp2))) NIL)
+      (cond ((and (null vp2)
+                  (not (null vp1))) T)
+	    ((and (null vp1)
+                  (not (null vp2))) NIL)
 	    ((string< vp1-first-symbol vp2-first-symbol) T)
-	    ((and (equal vp1-first-power vp2-first-symbol)
+	    ((and (equal vp1-first-symbol
+                         vp2-first-symbol)
 		  (< vp1-first-power vp2-first-power)) T)
 	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
 
@@ -261,12 +264,12 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
   "Comparator for monomial objects.
 Use case: sort list of monomials"
   (let ((m1-degree (monomial-degree mon1))
-  (m2-degree (monomial-degree mon2))
-  (m1-varpowers (monomial-varpowers mon1))
-  (m2-varpowers (monomial-varpowers mon2)))
+        (m2-degree (monomial-degree mon2))
+        (m1-varpowers (monomial-varpowers mon1))
+        (m2-varpowers (monomial-varpowers mon2)))
     (cond ((< m1-degree m2-degree) T)
-    ((and (equal m1-degree m2-degree)
-    (lesser-varpower m1-varpowers m2-varpowers)) T))))
+          ((and (equal m1-degree m2-degree)
+                (lesser-varpower m1-varpowers m2-varpowers)) T))))
 
 ;; BEGIN OF AS POLYNOMIAL
 
