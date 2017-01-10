@@ -32,27 +32,44 @@
                       (varpower-power varpower))
                     varpowers))))
 
+(defun assert-or-error(condition error-message-args)
+  (if condition
+      T
+      (apply #'error error-message-args)))
+
 (defun is-monomial(monomial)
   (and (listp monomial)
-       (equal (list-length monomial) 4)
        (equal (first monomial) 'M)
-       (numberp (second monomial))
-       (numberp (third monomial))
-       (>= (third monomial) 0)
-       (listp (fourth monomial))
-       (every #'identity
-              (mapcar 'is-varpower
-                      (fourth monomial)))
-       (equal (total-degree-varpowers (fourth monomial)) (third monomial))))
+       (assert-or-error (equal (list-length monomial) 4)
+                        (list "Invalid length for monomial object: ~A" monomial))
+       (assert-or-error (numberp (second monomial))
+                        (list "coefficient not a number in: ~A" monomial))
+       (assert-or-error (numberp (third monomial))
+                        (list "total-degree not a number in: ~A" monomial))
+       (assert-or-error (>= (third monomial) 0)
+                        (list "total-degree not positive in: ~A" monomial))
+       (assert-or-error (listp (fourth monomial))
+                        (list "expected vps as list in: ~A" monomial))
+       (assert-or-error (every #'identity
+                               (mapcar 'is-varpower
+                                       (fourth monomial)))
+                        (list "Invalid varpower in monomial: ~A" monomial))
+       (assert-or-error (equal (total-degree-varpowers (fourth monomial))
+                               (third monomial))
+
+                        (list "Invalid total-degree for monomial: ~A" monomial))))
 
 (defun is-polynomial(polynomial)
   (and (listp polynomial)
-       (equal (list-length polynomial) 2)
        (equal (first polynomial) 'POLY)
-       (listp (second polynomial))
-       (every #'identity (mapcar
-                          'is-monomial
-                          (second polynomial)))))
+       (assert-or-error (equal (list-length polynomial) 2)
+                        (list "Invalid polynomial, length not 2 for: ~A" polynomial))
+       (assert-or-error (listp (second polynomial))
+                        (list "Invalid polynomial, 2nd item not a list for: ~A" polynomial))
+       (assert-or-error (every #'identity
+                               (mapcar 'is-monomial
+                                       (second polynomial)))
+                        (list "Invalid monomial in polynomial: ~A" polynomial))))
 
 
 (defun polynomial-monomials(polynomial)
@@ -210,8 +227,16 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
                                 NIL))
 	(T (error "Invalid monomial expression ~A" expression))))
 
+(defun adjust-monomial(monomial)
+  "To reorder the vps in case the passed monomial had wrong order"
+  (when (is-monomial monomial)
+    (let ((coefficient (second monomial))
+          (total-degree (third monomial))
+          (vps (fourth monomial)))
+      (build-monomial-object coefficient total-degree vps))))
+
 (defun to-monomial(generic)
-  (cond ((is-monomial generic) generic)
+  (cond ((is-monomial generic) (adjust-monomial generic))
         (T (as-monomial generic))))
 
 (defun monomial-varpowers(monomial)
@@ -304,11 +329,17 @@ EXPRESSION is a list validated by polynomial-expression-p"
 
 ;; BEGIN OF HELPERS
 
+(defun adjust-polynomial(polynomial)
+  "Take care of reordering the polynomial and its monomials"
+  (when (is-polynomial polynomial)
+    (build-polynomial-object (mapcar 'to-monomial
+                                     (polynomial-monomials polynomial)))))
+
 (defun to-polynomial(generic)
   "GENERIC will be converted to a polynomial object.
 All the errors should be handled by the lower level functions"
-  (cond ((is-polynomial generic) generic)
-	((is-monomial generic) (build-polynomial-object (list generic)))
+  (cond ((is-polynomial generic) (adjust-polynomial generic))
+	((is-monomial generic) (build-polynomial-object (list (to-monomial generic))))
         (T (as-polynomial generic))))
 
 
@@ -475,7 +506,7 @@ Just concat the monomials and let the reducer do the job"
              NIL)))) ;;here we return nil explicitally because the unexpected return value of mapcar (we know it is nil but better safe than sorry)
   
 (defun pprint-polynomial(polynomial)
-  (let ((the-monomials (to-polynomial polynomial)))
+  (let ((the-monomials (monomials polynomial)))
     (if (null the-monomials)
 	(format T "0")
 	(progn (pprint-monomial (first the-monomials) T)

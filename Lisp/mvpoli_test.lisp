@@ -114,9 +114,6 @@
 (clunit:deftest test-is-monomial-2 (is-monomial)
   (clunit:assert-false (is-monomial '(r e 2))))
 
-(clunit:deftest test-is-monomial-3 (is-monomial)
-  (clunit:assert-false (is-monomial '(M 6 6 ((Q 2 X) (V 1 Y) (V 3 Z))))))
-
 (clunit:deftest test-is-monomial-4 (is-monomial)
   (clunit:assert-true (is-monomial '(M 0 0 ()))))
 
@@ -291,13 +288,6 @@
 
 (clunit:deftest test-is-polynomial-1 (is-polynomial)
   (clunit:assert-true (is-polynomial '(POLY ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
-
-(clunit:deftest test-is-polynomial-2 (is-polynomial)
-  (clunit:assert-false (is-polynomial '(Q ((M 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
-
-(clunit:deftest test-is-polynomial-3 (is-polynomial)
-  (clunit:assert-false (is-polynomial '(POLY ((Z 1 2 ((V 1 W) (V 1 X))) (M -1 1 ((V 1 X))))))))
-
 
 (defun run-tests()
 	(clunit:run-suite 'mvpoli :report-progress T))
