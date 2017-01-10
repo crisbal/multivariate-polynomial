@@ -93,9 +93,13 @@ Use case: sort list of varpower objects"
 	    ((and (null vp1)
                   (not (null vp2))) NIL)
 	    ((string< vp1-first-symbol vp2-first-symbol) T)
+            ((string> vp1-first-symbol vp2-first-symbol) nil)
 	    ((and (equal vp1-first-symbol
                          vp2-first-symbol)
 		  (< vp1-first-power vp2-first-power)) T)
+            ((and (equal vp1-first-symbol
+                         vp2-first-symbol)
+                  (> vp1-first-power vp2-first-power)) nil)
 	    (T (lesser-varpower (rest vp1) (rest vp2)))))))
 
 (defun exptp(something)

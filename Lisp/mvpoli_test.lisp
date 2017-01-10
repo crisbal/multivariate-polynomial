@@ -158,8 +158,10 @@
 (clunit:defsuite compare-monomials (monomial))
 
 (clunit:deftest test-compare-monomials-1 (compare-monomials)
-  (warn "IMPLEMENT TEST FOR COMPARE-MONOMIALS OR DELETE IT")
-  (clunit:assert-true T))
+  (clunit:assert-false (compare-monomials '(M 1 3 ((V 2 X) (V 1 Y))) '(M 1 3 ((V 1 X) (V 2 Y))))))
+
+(clunit:deftest test-compare-monomials-2 (compare-monomials)
+  (clunit:assert-true (compare-monomials '(M 1 3 ((V 1 X) (V 2 Y))) '(M 1 3 ((V 2 X) (V 1 Y))))))
 
 (clunit:defsuite monomial-expression-p (expression))
 "Tests for monomial-expression-p"
@@ -281,6 +283,12 @@
 
 (clunit:deftest test-as-polynomial-1 (as-polynomial)
   (clunit:assert-equal (as-polynomial '(+ (* -1 x) (* x w))) '(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))))) ))
+
+(clunit:deftest test-as-polynomial-2 (as-polynomial)
+  (clunit:assert-equal (as-polynomial '(+ (* (expt x 3) (expt y 2) z) (* (expt x 3) y (expt z 2)))) '(POLY ((M 1 6 ((V 3 X) (V 1 Y) (V 2 Z))) (M 1 6 ((V 3 X) (V 2 Y) (V 1 Z))))) ))
+
+(clunit:deftest test-as-polynomial-3 (as-polynomial)
+  (clunit:assert-equal (as-polynomial '(+ (* (expt x 3) y (expt z 2)) (* (expt x 3) (expt y 2) z))) '(POLY ((M 1 6 ((V 3 X) (V 1 Y) (V 2 Z))) (M 1 6 ((V 3 X) (V 2 Y) (V 1 Z))))) ))
 
 
 "Tests for is-polynomial"
