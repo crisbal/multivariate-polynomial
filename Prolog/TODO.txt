@@ -1,0 +1,3 @@
+Controlli: metterli o no?
+
+polyval, aggiustare la mappatura var-valore, posso passare più valori del dovuto?

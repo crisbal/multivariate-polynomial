@@ -3,14 +3,30 @@
 % NOTE: we have to check if expression is a var or not, because if it is
 % a var the program can't sort the VPs variable.
 as_monomial(Expression, m(Coefficient, TotalDegree, FinalVPs)) :-
+	as_monomial_strict(Expression, m(Coefficient, TotalDegree, FinalVPs)),
+	!.
+% this is for when the monomial is actually a polynomial expression
+% this will handle expression such as x+0+x+y-y which could be momomials
+as_monomial(ExpressionThatCanBeMonomial, 
+		m(Coefficient, TotalDegree, FinalVPs)) :-
+	nonvar(ExpressionThatCanBeMonomial),
+	as_polynomial(ExpressionThatCanBeMonomial, 
+		poly([m(Coefficient, TotalDegree, FinalVPs)])),
+	!.
+
+%% as_monomial_strict/2
+% these strict function allows only monomial expression as input, not 
+% also poly-expression that could be monomials too
+as_monomial_strict(Expression, m(Coefficient, TotalDegree, FinalVPs)) :-
 	nonvar(Expression),
-	!,
 	as_monomial_parse(Expression, Coefficient, VarsPowers),
 	predsort(compare_vars_powers, VarsPowers, SortedVPs),
 	compress_sorted_vps(SortedVPs, CompressedAndSortedVPs),
 	handle_zero_coefficient(Coefficient, CompressedAndSortedVPs, FinalVPs),
-	compute_total_degree_for_vars_powers(FinalVPs, TotalDegree).
-as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
+	compute_total_degree_for_vars_powers(FinalVPs, TotalDegree),
+	!.
+% this as_monomial_strict is for reverse parsing, from Monomial to Expression
+as_monomial_strict(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	var(Expression),
 	compress_sorted_vps(VarsPowers, CompressedVPs),
 	reverse(CompressedVPs, ReversedVarsPowers), % so we print the m_vps in order
@@ -18,7 +34,6 @@ as_monomial(Expression, m(Coefficient, TotalDegree, VarsPowers)) :-
 	compute_total_degree_for_vars_powers(VarsPowers, TotalDegree),
 	is_monomial(m(Coefficient, TotalDegree, VarsPowers)), % check if all is ok
 	!.
-
 
 % using the power of prolog we can write this parse function without
 % doing too much parsing (as long as the input rules are respected)

@@ -21,6 +21,8 @@ Inoltre è stato aggiunto il supporto a:
 * passare da oggetto `Polynomial`/`Monomial` ad espressione nelle funzioni `as_monomial`/`as_polynomial`
     * richiamando `as_polynomial(E, poly([m(5, 1, [v(1, x)]), m(1, 1, [v(1, z)]), m(1, 3, [v(3, q)])]))` il programma farà il procedimento inverso ed `E = 5*x+z+q^3`
     * siamo a conoscenza che un particolare oggetto `Polynomial` potrebbe essere originato da infinite espressioni, ma quella proposta è la "minima" per generarlo.
+* `as_monomial()` di espressioni che pur apparendo come polinomi sono in realtà monomi
+    * `as_monomial(x+x+0+y-y, R)` ritorna `R = m(2, 1, [v(1, x)])`.
 
 ## Implementazione
 
