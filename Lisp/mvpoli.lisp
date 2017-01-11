@@ -1,16 +1,20 @@
 (defun eval-as-number(expression)
-  "Eval EXPRESSION and return its numeric value"
+  "Eval EXPRESSION and return its numeric value
+It works by trying to eval the expression, catching any error or warning,
+and returning a number only if the evalued result is a number, NIL otherwise"
   (let ((result (handler-case (eval expression)
 		  (error () nil)
 		  (warning () nil))))
     (if (numberp result) result nil)))
 
 (defun build-varpower-object(base exponent)
+  "Build a varpower object '(V EXPONENT BASE)"
   (list 'V exponent base))
 
 
 
 (defun is-varpower(varpower)
+  "Check if VARPOWER is a varpower object"
   (and (listp varpower)
        (equal (list-length varpower) 3)
        (equal (first varpower) 'V)
@@ -18,14 +22,18 @@
        (symbolp (third varpower))))
 
 (defun varpower-power(varpower)
+  "Gets the power from VARPOWER "
   (when (is-varpower varpower)
     (second varpower)))
 
 (defun varpower-symbol(varpower)
+  "Gets the symbol from VARPOWER"
   (when (is-varpower varpower)
     (third varpower)))
 
 (defun total-degree-varpowers(varpowers)
+  "Compute total degree for a given list of VARPOWERS
+REDUCE is used to compute the sum"
   (when (listp varpowers) ;; TODO: add better check via a varpowers-list-p
     (reduce #'+
             (mapcar (lambda(varpower)
@@ -33,46 +41,61 @@
                     varpowers))))
 
 (defun assert-or-error(condition error-message-args)
+  "Assert condition or throw an error formatted by ERROR-MESSAGE-ARGS"
   (if condition
       T
+      ;; we use apply becasue format has a variable number of args
       (apply #'error error-message-args)))
 
 (defun is-monomial(monomial)
+  "Check if MONOMIAL is a monomial object. NIL is returned if it is not.
+An error is thrown if it is a monomial object but it's malformed in any way"
   (and (listp monomial)
        (equal (first monomial) 'M)
        (assert-or-error (equal (list-length monomial) 4)
-                        (list "Invalid length for monomial object: ~A" monomial))
+                        (list "Invalid length for monomial object: ~A"
+                              monomial))
        (assert-or-error (numberp (second monomial))
-                        (list "coefficient not a number in: ~A" monomial))
+                        (list "coefficient not a number in: ~A"
+                              monomial))
        (assert-or-error (numberp (third monomial))
-                        (list "total-degree not a number in: ~A" monomial))
+                        (list "total-degree not a number in: ~A"
+                              monomial))
        (assert-or-error (>= (third monomial) 0)
-                        (list "total-degree not positive in: ~A" monomial))
+                        (list "total-degree not positive in: ~A"
+                              monomial))
        (assert-or-error (listp (fourth monomial))
-                        (list "expected vps as list in: ~A" monomial))
+                        (list "expected vps as list in: ~A"
+                              monomial))
        (assert-or-error (every #'identity
                                (mapcar 'is-varpower
                                        (fourth monomial)))
-                        (list "Invalid varpower in monomial: ~A" monomial))
+                        (list "Invalid varpower in monomial: ~A"
+                              monomial))
        (assert-or-error (equal (total-degree-varpowers (fourth monomial))
                                (third monomial))
 
-                        (list "Invalid total-degree for monomial: ~A" monomial))))
+                        (list "Invalid total-degree for monomial: ~A"
+                              monomial))))
 
 (defun is-polynomial(polynomial)
   (and (listp polynomial)
        (equal (first polynomial) 'POLY)
        (assert-or-error (equal (list-length polynomial) 2)
-                        (list "Invalid polynomial, length not 2 for: ~A" polynomial))
+                        (list "Invalid polynomial, length not 2 for: ~A"
+                              polynomial))
        (assert-or-error (listp (second polynomial))
-                        (list "Invalid polynomial, 2nd item not a list for: ~A" polynomial))
+                        (list "Invalid polynomial, 2nd item not a list for: ~A"
+                              polynomial))
        (assert-or-error (every #'identity
                                (mapcar 'is-monomial
                                        (second polynomial)))
-                        (list "Invalid monomial in polynomial: ~A" polynomial))))
+                        (list "Invalid monomial in polynomial: ~A"
+                              polynomial))))
 
 
 (defun polynomial-monomials(polynomial)
+  "Getter for the monomials of a polynomial"
   (when (is-polynomial polynomial) 
     (second polynomial)))
 
@@ -125,7 +148,8 @@ COMPONENT is either a number or something validated by EXPRESSION-VARIABLE-P"
 
 (defun monomial-expression-p(expression)
   "Validate EXPRESSION as a valid monomial expression.
-EXPRESSION must begin with '* and must include only elements validated by MONOMIAL-EXPRESSION-COMPONENT-P"
+EXPRESSION must begin with '* and must include only elements
+validated by MONOMIAL-EXPRESSION-COMPONENT-P"
   (and (listp expression)
        (equal (first expression) '*)
        (every #'identity
@@ -143,7 +167,8 @@ EXPRESSION must begin with '* and must include only elements validated by MONOMI
 This is achived by multiplying all the coefficients of EXPRESSION"
   (reduce #'*
           (mapcar #'eval-as-number
-                  (expression-coefficients expression)))) ;; default value can be omitted since for '* is 1
+                  (expression-coefficients expression))))
+;; default value for REDUCE can be omitted since for '* is 1
 
 (defun expression-variables(expression)
   "Return all the variables inside EXPRESSION"
@@ -151,7 +176,7 @@ This is achived by multiplying all the coefficients of EXPRESSION"
                  expression))
 
 (defun expression-variable-to-varpower(exp-var)
-  "Convert EXP-VAR (validated by EXPRESSION-VARIABLE-P) to an object in the format of '(v exponent variable)"
+  "Convert EXP-VAR to a varpower"
   (when (expression-variable-p exp-var) ;; let's make sure
     (let ((vp-variable (if (listp exp-var)
 			   (second exp-var)
@@ -164,23 +189,22 @@ This is achived by multiplying all the coefficients of EXPRESSION"
 
 (defun varpowers-from-expression(expression)
   "Return the varspowers inside EXPRESSION.
-This casts the list gotted by EXPRESSION-VARIABLES."
+This casts the list gotten by EXPRESSION-VARIABLES."
   (mapcar #'expression-variable-to-varpower
           (expression-variables expression)))
 
 (defun sort-varpowers(varpowers)
   "Sort VARPOWERS.
 VARPOWERS is a list of items validated by is-varpower"
-  (when (and (listp varpowers) ;;; TODO_ add better check via a varpowers-list-p
+  (when (and (listp varpowers) ;;; TODO add better check via a varpowers-list-p
 	     (every #'identity
                     (mapcar #'is-varpower
                             varpowers)))
     (sort (copy-seq varpowers)
           #'compare-varpowers)))
 
-
-
 (defun compress-varpowers-reducer(element partial-list)
+  "To be used with REDUCE, merge duplicates and remove null varpowers"
   (let ((e-power (varpower-power element))
 	(e-symbol (varpower-symbol element))
 	(first-power (varpower-power (first partial-list)))
@@ -198,11 +222,12 @@ VARPOWERS is a list of items validated by is-varpower"
 (defun compress-varpowers(varspowers)
   (reduce #'compress-varpowers-reducer
           varspowers
-          :initial-value nil
-          :from-end T))
+          :initial-value nil ;empty list
+          :from-end T)) ;start from end since the varpowers are sorted 
 
 (defun build-monomial-object(coefficient total-degree varpowers)
-  "Given all the details builds the monomial as needed by the requirements"
+  "Given all the details builds the monomial as needed by the requirements
+It takes care of compressing and sorting"
   (list 'M
         coefficient
         (if (equal coefficient 0)
@@ -213,6 +238,7 @@ VARPOWERS is a list of items validated by is-varpower"
             (compress-varpowers (sort-varpowers varpowers)))))
 
 (defun parse-monomial-expression(expression)
+  "Extract the needed elements from expression and build the monomial"
   (let ((e-coefficient (total-coefficient expression))
 	(e-varpowers (varpowers-from-expression expression)))
     (build-monomial-object e-coefficient
@@ -221,7 +247,9 @@ VARPOWERS is a list of items validated by is-varpower"
 
 (defun as-monomial(expression)
   "EXPRESSION will be represented as a monomial.
-EXPRESSION is either a number or something validated by monomial-expression-p"
+EXPRESSION is either a number or something validated by monomial-expression-p
+NIL is also a valid expression treated as the null monomial 0
+An error is thrown if the monomial expression is malformed in any way"
   (cond ((null expression)
          (build-monomial-object 0 0 NIL))
          ((monomial-expression-p
@@ -232,7 +260,8 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
          (build-monomial-object expression
                                 0
                                 NIL))
-	(T (error "Invalid monomial expression ~A" expression))))
+	(T (error "Invalid monomial expression ~A"
+                  expression))))
 
 (defun adjust-monomial(monomial)
   "To reorder the vps in case the passed monomial had wrong order"
@@ -243,23 +272,32 @@ EXPRESSION is either a number or something validated by monomial-expression-p"
       (build-monomial-object coefficient total-degree vps))))
 
 (defun to-monomial(generic)
+  "Take a GENERIC object (expression or monomial) and convert it to monomial
+If GENERIC is a monomial it will be sorted and compressed"
   (cond ((is-monomial generic) (adjust-monomial generic))
         (T (as-monomial generic))))
 
 (defun monomial-varpowers(monomial)
+  "Get the varpower of a MONOMIAL generic"
     (fourth (to-monomial monomial)))
 
 (defun varpowers(monomial)
-  "ALIAS: just because this function is a requirement"
+  "ALIAS: just because this function is a requirement
+We us monomial-varpowers because it has a clearer name"
   (monomial-varpowers monomial))
 
-(defun monomial-degree(monomial) 
+(defun monomial-degree(monomial)
+  "Get the degree of a MONOMIAL generic"
     (third (to-monomial monomial)))
 
-(defun monomial-coefficient(monomial) 
+(defun monomial-coefficient(monomial)
+  "Get the coefficient of a MONOMIAL generic"
     (second (to-monomial monomial)))
 
 (defun monomial-variables(monomial)
+  "Get the variables of a MONOMIAL generic
+COPY-SEQ it is maybe not needed but better safe than sorry.
+VARS are sorted ascending by the STRING< function"
   (sort (copy-seq (remove-duplicates (mapcar 'varpower-symbol
                                              (monomial-varpowers monomial))))
         #'string<))
@@ -278,29 +316,35 @@ Use case: sort list of monomials"
 ;; BEGIN OF AS POLYNOMIAL
 
 (defun polynomial-expression-p(expression)
+  "Check if EXPRESSION looks like a valid polynomial-expression
+We only check the external level and"
   (and (listp expression)
        (equal (first expression) '+))) 
 
 (defun sort-monomials(monomials)
-  (when (and (listp monomials) ;;; TODO_ add better check via a varpowers-list-p
-	     (every #'identity
+  "Sort MONOMIALS"
+  (when (and (listp monomials) ;; TODO add better check via a varpowers-list-p
+	     (every #'identity ;; checks if every item of MONOMIAL is a monomial
                     (mapcar #'is-monomial
                             monomials)))
-    (sort (copy-seq monomials)
-          #'compare-monomials)))
+    (sort (copy-seq monomials) ;; copyseq because sort is destructive
+          #'compare-monomials))) 
 
 (defun compress-monomials-reducer(element partial-list)
+  "Use with REDUCE. Merge duplicates, remove null monomials.
+Very similar to compress-varpower-reducer"
   (let ((e-coefficient (monomial-coefficient element))
 	(e-varpowers (monomial-varpowers element))
 	(first-coefficient (monomial-coefficient (first partial-list)))
 	(first-varpowers (monomial-varpowers (first partial-list)))
 	(e-degree (monomial-degree element)))
-    (cond ((equal 0 e-coefficient)
+    (cond ((equal 0 e-coefficient) ;; null monomial
            partial-list)
-	  ((null partial-list)
-           (list element))
-          ((equal e-varpowers first-varpowers)
+	  ((null partial-list) 
+           (list element)) ;; base case
+          ((equal e-varpowers first-varpowers) ;; merge on equal varpowers
            (if (equal 0 (+ first-coefficient e-coefficient))
+               ;; skip merge if resulting monomial is 0
                (rest partial-list)
                (cons (build-monomial-object (+ e-coefficient
                                                first-coefficient)
@@ -310,34 +354,41 @@ Use case: sort list of monomials"
 	  (T (cons element partial-list)))))
 
 (defun compress-monomials(monomials)
+  "Compress MONOMIALS
+Very similar to compress-varpowers"
   (reduce #'compress-monomials-reducer
           monomials
           :initial-value nil
           :from-end T))
 
 (defun build-polynomial-object(monomials)
+  "Return a POLY object
+Takes care of sorting and compressing too."
   (list 'POLY (compress-monomials (sort-monomials monomials))))
 
 (defun parse-polynomial-expression(expression)
+  "Parse EXPRESSION ('+ is already removed)
+We don't really do much, just parse with as-monomial"
   (let ((parsed-monomials (mapcar #'as-monomial
                                   expression)))
     (build-polynomial-object parsed-monomials)))
 
 (defun as-polynomial(expression)
   "EXPRESSION will be represented as a polynomial.
-EXPRESSION is a list validated by polynomial-expression-p"
+EXPRESSION is a list validated by polynomial-expression-p or
+EXPRESSION could also be a number or a valid monomial expression"
   (cond ((polynomial-expression-p expression)
          (parse-polynomial-expression (rest expression)))
         ((monomial-expression-p expression)
          (build-polynomial-object (list (as-monomial expression))))
         ((numberp expression)
          (build-polynomial-object (list (as-monomial expression))))
-        (T (error "Invalid polynomial expression ~A" expression))))
-
-;; BEGIN OF HELPERS
+        (T (error "Invalid polynomial expression ~A"
+                  expression))))
 
 (defun adjust-polynomial(polynomial)
-  "Take care of reordering the polynomial and its monomials"
+  "Take care of reordering POLYNOMIAL
+Also takes care of reordering its monomials"
   (when (is-polynomial polynomial)
     (build-polynomial-object (mapcar 'to-monomial
                                      (polynomial-monomials polynomial)))))
@@ -349,25 +400,30 @@ All the errors should be handled by the lower level functions"
 	((is-monomial generic) (build-polynomial-object (list (to-monomial generic))))
         (T (as-polynomial generic))))
 
-
 (defun vars-of(monomial)
-  "ALIAS: just because this function is a requirement"
+  "ALIAS: just because this function is a requirement
+See MONOMIAL-VARIABLES"
   (monomial-variables monomial))
 
 (defun variables(generic)
+  "Get the variables in the GENERIC polynomial object
+The reduce is needed as a kind of list flattern"
   (let ((polynomial (to-polynomial generic)))
-    (sort (copy-seq (remove-duplicates (reduce (lambda(partial-list monomial)
-                                                 (append partial-list
-                                                         (monomial-variables monomial)))
+    (sort (copy-seq (remove-duplicates (reduce #'append
                                                (polynomial-monomials polynomial)
-                                               :initial-value nil)))
+                                               :initial-value NIL
+                                               :key #'monomial-variables
+                                               )))
           #'string<)))
 
 (defun monomials(generic)
+  "Get the monomials of polynomial object GENERIC
+POLYNOMIAL-MONOMIALS does not accept GENERIC, only polynomials"
   (let ((polynomial (to-polynomial generic)))
     (polynomial-monomials polynomial)))
 
 (defun coefficients(generic)
+  "Get the list of coefficients for GENERIC"
   (let ((the-coefficients (mapcar #'monomial-coefficient
                                   (monomials generic))))
     (if (null the-coefficients)
@@ -376,15 +432,17 @@ All the errors should be handled by the lower level functions"
 
 (defun maxdegree(generic)
   "MAX-DEGREE.
-Functional programming!"
+REDUCE to the rescue!"
   (let ((the-monomials (monomials generic)))
     (if (null the-monomials)
         0
+        ;; :key is the function that will be applied to each monomial
+        ;; before applying #'max 
         (reduce #'max the-monomials :key #'monomial-degree))))
 
 (defun mindegree(generic)
   "MIN-DEGREE.
-Functional programming!"
+REDUCE again"
   (let ((the-monomials (monomials generic)))
     (if (null the-monomials)
         0
@@ -393,7 +451,7 @@ Functional programming!"
 ;; BEGIN OF OPERATIONS
 
 (defun polyplus(p1 p2)
-  "Compute the sum of P1 and P2
+  "Compute the sum of P1 and P2, generic polynomials
 Just concat the monomials and let the reducer do the job"
   (let ((monomials1 (monomials p1))
 	(monomials2 (monomials p2)))
@@ -420,14 +478,15 @@ Just concat the monomials and let the reducer do the job"
 (defun monotimespoly(mono poly-generic) 
   "Multiply a monomial for a polynomial. Will return a polynomial"
   (when (is-monomial mono) 
-    (let ((the-monomials (monomials poly-generic))) 
+    (let ((the-monomials (monomials poly-generic)))
+      ;; just call monotimes as needed
       (build-polynomial-object (mapcar (lambda(mono-of-poly)
                                          (monotimes mono-of-poly
                                                     mono))
                                        the-monomials)))))
 
 (defun polyminus(p1-generic p2-generic)
-  "Compute the difference of two polynomials."
+  "Compute the difference of two generic polynomials."
   (let ((p1 (to-polynomial p1-generic))
         (negated-p2 (monotimespoly (as-monomial -1)
                                    (to-polynomial p2-generic))))
@@ -448,7 +507,10 @@ Just concat the monomials and let the reducer do the job"
 ;; BEGIN OF POLYVAL
 
 (defun get-value-for-symbol(symbol var-to-value-assoc)
-  (cdr (assoc symbol var-to-value-assoc)))
+  "Get the value associated with SYMBOL in the assoc VAR-TO-VALUE-ASSOC"
+  ;; cdr becaue assoc returns a tuple/cons (key . value), we need value
+  (cdr (assoc symbol var-to-value-assoc))) 
+  
 
 (defun varpower-values-reducer(partial-value varpower var-to-value-assoc)
   (let ((v-symbol (varpower-symbol varpower))
@@ -460,6 +522,9 @@ Just concat the monomials and let the reducer do the job"
 
 (defun monomial-value(monomial var-to-value-assoc)
   (* (monomial-coefficient monomial)
+     ;; this reduce seems prettu strange but we use the lambda because
+     ;; we need to pass the additional VAR-TO-VALUE-ASSOC to the reducer
+     ;; so we can extract the associated values
      (reduce (lambda(partial-value varpower)
                (varpower-values-reducer partial-value
                                         varpower
@@ -472,17 +537,27 @@ Just concat the monomials and let the reducer do the job"
                                    var-to-value-assoc)))
 
 (defun polyval(polynomial-generic values-for-vars)
+  ;; pairlis builds the associations between variables and values
+  ;; TODO: add clamp values list to variable length 
   (let ((var-to-value-assoc (pairlis (variables polynomial-generic)
                                      values-for-vars)))
+    ;; same as monomail-value, the lambda is for VAR-TO-VALUE-ASSOC
     (reduce (lambda(partial-value monomial)
-              (monomial-values-reducer partial-value monomial
+              (monomial-values-reducer partial-value
+                                       monomial
                                        var-to-value-assoc))
-            (second (to-polynomial polynomial-generic))
+            (polynomial-monomials (to-polynomial polynomial-generic))
             :initial-value 0)))
 
 ;; PPRINT
 
+;; In all the pprint progn is used since it is the best way
+;; (in our opinion) to handle printing operations without
+;; going crazy with lists, recursion, and many other solutions
+
 (defun pprint-varpower(varpower &optional head)
+  "Pretty print VARPOWER
+Pass HEAD if it is the first varpower and you don't want to print the * before"
  (when (is-varpower varpower)
        (let ((symbol (varpower-symbol varpower))
              (power (varpower-power varpower)))
@@ -491,34 +566,40 @@ Just concat the monomials and let the reducer do the job"
                 (format T "~A" symbol)
                 (unless (= power 1)
                   (format T "^~A" power))
-                NIL)))) ;;we return nil explicitally, it is not needed but let's be clear
+                NIL)))) ;;we return nil explicitally
+;; it is not needed but let's be clear
 
 (defun pprint-monomial(monomial &optional head) 
+  "Pretty print MONOMIAL
+Pass HEAD if you don't want to print + before the monomial
+HEAD if for the head monomial"
   (when (is-monomial monomial)
     (let ((coefficient (monomial-coefficient monomial))
           (acoefficient (abs (monomial-coefficient monomial)))
           (varpowers (monomial-varpowers monomial)))
-      (progn (unless head
-               (if (< coefficient 0)
-                   (format T " - ")
+      (progn (if (< coefficient 0)
+                 (format T " - ")
+                 (unless head
                    (format T " + ")))
-             (unless (= acoefficient 1)
-               (format T "~A" coefficient)
-               (unless (null varpowers)
-                 (format T "*")))
+             (when (or (not (= acoefficient 1))
+                       (null varpowers))
+               (format T "~A" acoefficient))
              (unless (null varpowers)
+               (unless (= acoefficient 1) (format T "*"))
                (pprint-varpower (first varpowers) T)
                (mapcar 'pprint-varpower
                        (rest varpowers)))
-             NIL)))) ;;here we return nil explicitally because the unexpected return value of mapcar (we know it is nil but better safe than sorry)
+             NIL)))) ;;here we return nil explicitally
+;; because the unexpected return value of mapcar
+;; (we know it is nil but better safe than sorry)
   
 (defun pprint-polynomial(polynomial)
+  "Pretty print a POLYNOMIAL generic"
   (let ((the-monomials (monomials polynomial)))
-    (if (null the-monomials)
-	(format T "0")
+    (if (null the-monomials) 
+	(format T "0") ;; no monomial = 0
 	(progn (pprint-monomial (first the-monomials) T)
 	       (mapcar #'pprint-monomial
                        (rest the-monomials))
-	       NIL)))) ;; again force nil return value, we know it is nil but let's be safe and follow requirement
-
-
+	       NIL)))) ;; again force nil return value
+;; we know it is nil but let's be safe and follow requirement
