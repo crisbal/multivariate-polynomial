@@ -155,9 +155,10 @@ EXPRESSION must begin with '* and must include only elements
 validated by MONOMIAL-EXPRESSION-COMPONENT-P"
   (and (listp expression)
        (equal (first expression) '*)
-       (every #'identity
-              (mapcar 'monomial-expression-component-p
-                      (rest expression))))) ;; check that all symbols are valid
+       ;; check if the value of monomial-expression-component-p applied to each
+       ;; element of the third element is true
+       (every #'monomial-expression-component-p
+                      (rest expression)))) ;; check that all symbols are valid
 
 (defun expression-coefficients(expression)
   "Return all the coefficient inside EXPRESSION"

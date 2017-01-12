@@ -172,6 +172,9 @@
 (clunit:deftest test-monomial-expression-p-2 (monomial-expression-p)
   (clunit:assert-false (monomial-expression-p '(+ 1 2 x y))))
 
+(clunit:deftest test-monomial-expression-p-3 (monomial-expression-p)
+  (clunit:assert-false (monomial-expression-p '(+))))
+
 "Tests for coefficients"
 (clunit:defsuite expression-coefficient (expression))
 
