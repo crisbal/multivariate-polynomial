@@ -99,7 +99,7 @@ An error is thrown if it is a monomial object but it's malformed in any way"
 
 (defun polynomial-monomials(polynomial)
   "Getter for the monomials of a polynomial"
-  (when (is-polynomial polynomial) 
+  (when (is-polynomial polynomial)
     (second polynomial)))
 
 (defun compare-varpowers(vp1 vp2)
@@ -228,7 +228,7 @@ VARPOWERS is a list of items validated by is-varpower"
   (reduce #'compress-varpowers-reducer
           varspowers
           :initial-value nil ;empty list
-          :from-end T)) ;start from end since the varpowers are sorted 
+          :from-end T)) ;start from end since the varpowers are sorted
 
 (defun build-monomial-object(coefficient total-degree varpowers)
   "Given all the details builds the monomial as needed by the requirements
@@ -307,7 +307,7 @@ VARS are sorted ascending by the STRING< function"
                                              (monomial-varpowers monomial))))
         #'string<))
 
-(defun compare-monomials(mon1 mon2) 
+(defun compare-monomials(mon1 mon2)
   "Comparator for monomial objects.
 Use case: sort list of monomials"
   (let ((m1-degree (monomial-degree mon1))
@@ -324,7 +324,7 @@ Use case: sort list of monomials"
   "Check if EXPRESSION looks like a valid polynomial-expression
 We only check the external level and"
   (and (listp expression)
-       (equal (first expression) '+))) 
+       (equal (first expression) '+)))
 
 (defun sort-monomials(monomials)
   "Sort MONOMIALS"
@@ -333,7 +333,7 @@ We only check the external level and"
                     (mapcar #'is-monomial
                             monomials)))
     (sort (copy-seq monomials) ;; copyseq because sort is destructive
-          #'compare-monomials))) 
+          #'compare-monomials)))
 
 (defun compress-monomials-reducer(element partial-list)
   "Use with REDUCE. Merge duplicates, remove null monomials.
@@ -345,7 +345,7 @@ Very similar to compress-varpower-reducer"
 	(e-degree (monomial-degree element)))
     (cond ((equal 0 e-coefficient) ;; null monomial
            partial-list)
-	  ((null partial-list) 
+	  ((null partial-list)
            (list element)) ;; base case
           ((equal e-varpowers first-varpowers) ;; merge on equal varpowers
            (if (equal 0 (+ first-coefficient e-coefficient))
@@ -442,7 +442,7 @@ REDUCE to the rescue!"
     (if (null the-monomials)
         0
         ;; :key is the function that will be applied to each monomial
-        ;; before applying #'max 
+        ;; before applying #'max
         (reduce #'max the-monomials :key #'monomial-degree))))
 
 (defun mindegree(generic)
@@ -463,7 +463,7 @@ Just concat the monomials and let the reducer do the job"
     (build-polynomial-object (append monomials1
                                      monomials2))))
 
-(defun monotimes(m1 m2) 
+(defun monotimes(m1 m2)
   "Compute the product of M1 and M2, both must be monomials."
   (when (and (is-monomial m1)
 	     (is-monomial m2))
@@ -474,15 +474,15 @@ Just concat the monomials and let the reducer do the job"
 	  (m1-varpowers (monomial-varpowers m1))
 	  (m2-varpowers (monomial-varpowers m2)))
       (build-monomial-object (* m1-coefficient  ;;pretty straight-forward
-                                m2-coefficient) ;; multiply coeffs 
+                                m2-coefficient) ;; multiply coeffs
                              (+ m1-degree ;; sum degrees
                                 m2-degree)
                              (append m1-varpowers ;;append varpowers
                                      m2-varpowers)))))
 
-(defun monotimespoly(mono poly-generic) 
+(defun monotimespoly(mono poly-generic)
   "Multiply a monomial for a polynomial. Will return a polynomial"
-  (when (is-monomial mono) 
+  (when (is-monomial mono)
     (let ((the-monomials (monomials poly-generic)))
       ;; just call monotimes as needed
       (build-polynomial-object (mapcar (lambda(mono-of-poly)
@@ -514,8 +514,8 @@ Just concat the monomials and let the reducer do the job"
 (defun get-value-for-symbol(symbol var-to-value-assoc)
   "Get the value associated with SYMBOL in the assoc VAR-TO-VALUE-ASSOC"
   ;; cdr becaue assoc returns a tuple/cons (key . value), we need value
-  (cdr (assoc symbol var-to-value-assoc))) 
-  
+  (cdr (assoc symbol var-to-value-assoc)))
+
 
 (defun varpower-values-reducer(partial-value varpower var-to-value-assoc)
   (let ((v-symbol (varpower-symbol varpower))
@@ -577,7 +577,7 @@ Pass HEAD if it is the first varpower and you don't want to print the * before"
                 NIL)))) ;;we return nil explicitally
 ;; it is not needed but let's be clear
 
-(defun pprint-monomial(monomial &optional head) 
+(defun pprint-monomial(monomial &optional head)
   "Pretty print MONOMIAL
 Pass HEAD if you don't want to print + before the monomial
 HEAD if for the head monomial"
@@ -600,11 +600,11 @@ HEAD if for the head monomial"
              NIL)))) ;;here we return nil explicitally
 ;; because the unexpected return value of mapcar
 ;; (we know it is nil but better safe than sorry)
-  
+
 (defun pprint-polynomial(polynomial)
   "Pretty print a POLYNOMIAL generic"
   (let ((the-monomials (monomials polynomial)))
-    (if (null the-monomials) 
+    (if (null the-monomials)
 	(format T "0") ;; no monomial = 0
 	(progn (pprint-monomial (first the-monomials) T)
 	       (mapcar #'pprint-monomial
