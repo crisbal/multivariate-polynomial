@@ -140,12 +140,13 @@ La funzione`is-polynomial` ritorna `T` quando `p` passato è effettivamente un `
 Ritorna `NIL` se `p` non è un `Polynomial`.
 Genera un `SIMPLE-ERROR` (con descrizione associata) se `p` è un `Polynomial` ma è malformato/matematicamente errato (ad esempio se la lista che rappresenta `p` non è della lunghezza giusta).
 
-
 ### to-monomial
 
 `(to-monomial GenericMonomial g) -> Monomial m`
 
 La funzione `to-monomial` viene usata per fare il "casting" da `GenericMonomial` a `Monomial`, ritorna infatti il monomio associato a `g`. 
+
+La funzione, usata praticamente in ogni funzione che accetta `GenericMonomial`, si assicura che, in caso `GenericMonomial` sia un `Monomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Monomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-monomial`.
 
 ### to-polynomial
 
@@ -153,15 +154,17 @@ La funzione `to-monomial` viene usata per fare il "casting" da `GenericMonomial`
 
 La funzione `to-polynomial` viene usata per fare il "casting" da `GenericPolynomial` a `Polynomial`, ritorna infatti il monomio associato a `g`.
 
+La funzione, usata praticamente in ogni funzione che accetta `GenericPolynomial`, si assicura che, in caso `GenericPolynomial` sia un `Polynomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Polynomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-polynomial`. 
+
 ### pprint-polynomial
 
-`(pprint-polynomial GenericPolynomial g)`
+`(pprint-polynomial GenericPolynomial g) -> NIL`
 
 La funzione `pprint-polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`. 
 
 ### pprint-monomial
 
-`(pprint-monomial Monomial m)`
+`(pprint-monomial Monomial m) -> NIL`
 
 La funzione `pprint-monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`. 
 
@@ -188,3 +191,69 @@ La funzione `polytimes` ritorna la moltiplicazione dei `GenericPolynomial` `g1` 
 `(monotimes Monomial g1, Monomial g2) -> Polynomial r`
 
 La funzione `monotimes` ritorna la moltiplicazione dei `Monomial` `g1` e `g2`.
+
+### polyval
+
+`(polyval GenericPolynomial p, NumberList v) -> Number r`
+
+La funzione `polyval` effettua la valutazione del polinomio `p` nei punti espressi dalla lista di numeri `v`. `v` deve contenere un valore per ogni variabile ottenuta dalla funzione `variables`.
+
+Viene generato un `SIMPLE-ERROR` in caso il numero di valori forniti sia diverso dal numero di variabili ottenute con `variables`.
+
+### maxdegree
+
+`(maxdegree GenericPolynomial p) -> Number md`
+
+La funzione `maxdegree` ritorna il grado più alto tra quello di tutti i `Monomial` di `p`.
+
+### mindegree
+
+`(mindegree GenericPolynomial p) -> Number md`
+
+La funzione `mindegree` ritorna il grado più basso tra quello di tutti i `Monomial` di `p`.
+
+### coefficients
+
+`(coefficients GenericPolynomial p) -> NumberList n`
+
+`coefficients` ritorna la lista dei coefficienti dei `Monomial` di `p`. 
+
+### variables
+
+`(variables GenericPolynomial p) -> SymbolList n`
+
+`variables` ritorna la lista delle variabili di `p`. 
+
+### monomials
+
+`(monomials GenericPolynomial p) -> MonomialList l`
+
+`monomials` ritorna la lista dei monomi di `p`. 
+
+### varpowers
+
+`(varpowers GenericMonomial m) -> VarPowerList l`
+
+`varpowers` ritorna la lista delle VarPower di m.
+
+Alias di: `monomial-varpowers`
+
+### vars-of
+
+`(vars-of GenericMonomial m) -> SymbolList l`
+
+`vars-of` ritorna la lista delle variabili di m.
+
+Alias di: `monomial-variables`
+
+### monomial-degree
+
+`(monomial-degree GenericMonomial m) -> Number d`
+
+`monomial-degree` ritorna il grado del monomio `m`.
+
+### monomial-coefficient
+
+`(monomial-coefficient GenericMonomial m) -> Number d`
+
+`monomial-coefficient` ritorna il coefficiente del monomio `m`.
