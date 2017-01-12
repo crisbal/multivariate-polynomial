@@ -538,16 +538,19 @@ Just concat the monomials and let the reducer do the job"
 
 (defun polyval(polynomial-generic values-for-vars)
   ;; pairlis builds the associations between variables and values
-  ;; TODO: add clamp values list to variable length 
-  (let ((var-to-value-assoc (pairlis (variables polynomial-generic)
-                                     values-for-vars)))
-    ;; same as monomail-value, the lambda is for VAR-TO-VALUE-ASSOC
-    (reduce (lambda(partial-value monomial)
-              (monomial-values-reducer partial-value
-                                       monomial
-                                       var-to-value-assoc))
-            (polynomial-monomials (to-polynomial polynomial-generic))
-            :initial-value 0)))
+  ;; TODO: add clamp values list to variable length
+  (if (= (length (variables polynomial-generic))
+         (length values-for-vars))
+      (let ((var-to-value-assoc (pairlis (variables polynomial-generic)
+                                         values-for-vars)))
+        ;; same as monomail-value, the lambda is for VAR-TO-VALUE-ASSOC
+        (reduce (lambda(partial-value monomial)
+                  (monomial-values-reducer partial-value
+                                           monomial
+                                           var-to-value-assoc))
+                (polynomial-monomials (to-polynomial polynomial-generic))
+                :initial-value 0))
+      (error "Invalid length for supplied list of values")))
 
 ;; PPRINT
 
