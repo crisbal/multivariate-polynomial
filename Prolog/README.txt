@@ -33,7 +33,7 @@ Alcune note sull'implementazione:
 
 * Generalmente è stato usato il "pattern" (se cosi' lo si vuole chiamare) dell'avere un predicato wrapper (che è quella che poi viene "esposta" all'esterno) che richiama un predicato worker che effettivamente fa il lavoro richiesto. Questo perchè il wrapper attua generalmente controlli e/o perchè il worker è ricorsivo e/o per semplicità vengono passati solo i parametri strettamente necessari.
 * Per ordinare i monomi e le varpower è stato usato `predsort` definendo dei predicati di comparazione. Usare predsort ci permette di ordinare i monomi e i polinomi secondo il criterio richiesto e allo stesso momento non ci vincola troppo nel caso dovesse cambiare la specifica dell'ordinamento.
-* i predicati delle operazioni e di utility controllano esplicitamente che i parametri siano `nonvar`, TODO. Ad esempio la chiamata di `polyplus(A, B, poly([m(1, 0, [])]))` produrrà `false` perchè è impossibile ricondursi al valore di A e di B.
+* i predicati delle operazioni e di utility controllano esplicitamente che i parametri siano `nonvar`, dove ovviamente non è possibile fare chiamate "inverse". Ad esempio la chiamata di `polyplus(A, B, poly([m(1, 0, [])]))` produrrà `false` perchè è impossibile ricondursi al valore di A e di B.
 
 ## Documentazione "tipi"
 
