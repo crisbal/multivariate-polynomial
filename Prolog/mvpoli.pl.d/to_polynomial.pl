@@ -10,5 +10,11 @@ to_polynomial(Monomial, poly([Monomial])) :-
 	is_monomial(Monomial),
 	!.
 to_polynomial(Expression, Polynomial) :-
-	as_polynomial(Expression, Polynomial),
+	nonvar(Expression),
+    as_polynomial(Expression, Polynomial),
 	!.
+    
+to_polynomial(Variable, Polynomial) :-
+    var(Variable),
+    is_polynomial(Polynomial),
+    !.
