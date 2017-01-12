@@ -162,6 +162,7 @@ validated by MONOMIAL-EXPRESSION-COMPONENT-P"
 
 (defun expression-coefficients(expression)
   "Return all the coefficient inside EXPRESSION"
+  ;; remove element of the list if (numberp  (eval-as-number x)) is not true
   (remove-if-not (lambda(x)
                    (numberp (eval-as-number x)))
                  expression))
