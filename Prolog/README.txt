@@ -64,7 +64,7 @@ Ad esempio:
 
 * `VarPower` è un "termine" rappresentante una potenza.
 * `VarPower` è nella forma `v(Power, Symbol)`
-* `VarPower` è validato dal metodo `is_varpower/1`
+* `VarPower` è validato dal predicato `is_varpower/1`
 
 Ad esempio:
 
@@ -94,13 +94,13 @@ Ad esempio:
 ### GenericPolynomial
 
 * `GenericPolynomial` è usato nei predicati che possono accettare indistintamente come tipo di parametro: `Monomial`, `Polynomial`, `PolynomialExpression`.
-* `GenericPolynomial` viene sempre trasformato in `Polynomial` tramite il metodo `to_polynomial/2`  
+* `GenericPolynomial` viene sempre trasformato in `Polynomial` tramite il predicato `to_polynomial/2`  
 
 ## Documentazione predicati
 
-Sono stati descritti anche predicati che, pur non essendo esplicitamente richiesti, sono stati aggiunti per completezza e facilità di lavoro e che si sono rivelati utili anche lato utente.
+Sono stati descritti anche predicati che, pur non essendo esplicitamente richiesti, sono stati aggiunti per completezza e per facilitare il lavoro e che si sono poi rivelati utili anche lato utente.
 
-Tutti i metodi controllano, dove possibile che i parametri di input siano del "tipo" corretto. 
+Tutti i predicati controllano, dove possibile che i parametri di input siano del "tipo" corretto. 
 
 ### as_monomial/2
 
@@ -177,7 +177,7 @@ Il predicato NON è invertibile.
 
 `polyval(GenericPolynomial p, NumberList v, Number r)`
 
-Il predicato `polyval/3` è vero quando `r` è il numero risultante dalla valutazione del polinomio `p` valutato nei punti espressi dalla lista di numeri `v`. `v` deve contenere un valore per ogni variabile ottenuta dalla funzione `variables/2`.
+Il predicato `polyval/3` è vero quando `r` è il numero risultante dalla valutazione del polinomio `p` valutato nei punti espressi dalla lista di numeri `v`. `v` deve contenere un valore per ogni variabile ottenuta dal predicato `variables/2`.
 
 Il predicato NON è invertibile.
 
