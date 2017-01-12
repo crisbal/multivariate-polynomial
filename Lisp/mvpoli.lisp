@@ -329,9 +329,8 @@ We only check the external level and"
 (defun sort-monomials(monomials)
   "Sort MONOMIALS"
   (when (and (listp monomials) ;; TODO add better check via a varpowers-list-p
-	     (every #'identity ;; checks if every item of MONOMIAL is a monomial
-                    (mapcar #'is-monomial
-                            monomials)))
+	     (every #'is-monomial
+                            monomials))
     (sort (copy-seq monomials) ;; copyseq because sort is destructive
           #'compare-monomials)))
 
