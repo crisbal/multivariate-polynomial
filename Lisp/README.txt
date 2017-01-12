@@ -1,5 +1,8 @@
 # multivariate-polynomial - Lisp
 
+XXXNAME XXXSURNAME - XXXNUMBER
+XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
+
 ## Scopo della libreria
 
 Questa libreria Lisp espone varie funzioni che permettono di lavorare con polinomi e monomi. 
@@ -257,3 +260,10 @@ Alias di: `monomial-variables`
 `(monomial-coefficient GenericMonomial m) -> Number d`
 
 `monomial-coefficient` ritorna il coefficiente del monomio `m`.
+
+## Altro
+
+* Il codice è stato scritto su emacs, con il pacchetto SLIME per l'integrazione emacs<->LISP
+* Il codice è stato messo sotto version control tramite `git`
+* Il codice è stato testato (anche) automaticamente usando il pacchetto/modulo LISP `clunit` per definire le unit test.
+* L'esecuzione, compilazione, testing del progetto è stato gestito tramite un Makefile

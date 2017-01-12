@@ -1,5 +1,8 @@
 # multivariate-polynomial - Prolog
 
+XXXNAME XXXSURNAME - XXXNUMBER
+XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
+
 ## Scopo della libreria
 
 Questa libreria Prolog espone vari predicati che permettono di lavorare con polinomi e monomi. 
@@ -214,3 +217,11 @@ Il predicato NON è invertibile.
 `monomials(GenericPolynomial p, MonomialList m)`
 
 Il predicato `monomials/2` è vero quando `m` è la lista dei `Monomial` di `p`.
+
+## Altro
+
+* Il codice è stato messo sotto version control tramite `git`
+* Il codice è stato testato (anche) automaticamente usando il sistema di unit testing integrato a SWIPL
+* L'esecuzione, compilazione, testing del progetto è stato gestito tramite un Makefile
+    * Il Makefile si occupava anche di costruire il file mvpoli.pl a partire da una serie di file più piccoli, uno per ogni predicato diverso 
+

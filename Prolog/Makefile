@@ -20,8 +20,8 @@ clean:
 .PHONY: build
 build:
 	@ echo -n																									>	 mvpoli.pl
-	@ echo '%%%% NUMBER SURNAME NAME' 												>> mvpoli.pl
-	@ echo '%%%% CO_NUMBER CO_SURNAME CO_NAME' 								>> mvpoli.pl
+	@ echo '%%%% XXXNUMBER XXXSURNAME XXXNAME' 												>> mvpoli.pl
+	@ echo '%%%% XXXCO_NUMBER XXXCO_SURNAME XXXCO_NAME' 								>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_var_power.pl 												>> mvpoli.pl
 	@ /bin/echo -e "\n"																				>> mvpoli.pl

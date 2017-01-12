@@ -1,3 +1,6 @@
+;;;; XXXNUMBER XXXSURNAME XXXNAME
+;;;; XXXCO_NUMBER XXXCO_SURNAME XXXCO_NAME
+
 (defun eval-as-number(expression)
   "Eval EXPRESSION and return its numeric value
 It works by trying to eval the expression, catching any error or warning,

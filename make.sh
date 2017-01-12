@@ -37,8 +37,8 @@ build() {
     if test -f "$scriptDirectory/Prolog/Makefile"
     then
         cd "$scriptDirectory/Prolog"
-        make build
         echo "Building Prolog..."
+        make build
         mkdir -p "$tempDir/$buildName/Prolog"
         cp "mvpoli.pl" "$tempDir/$buildName/Prolog"
         cp "README.txt" "$tempDir/$buildName/Prolog"
@@ -48,8 +48,8 @@ build() {
     if test -f "$scriptDirectory/Lisp/Makefile"
     then
         cd "$scriptDirectory/Lisp"
-        make build
         echo "Building Lisp..."
+        #make build
         mkdir -p "$tempDir/$buildName/Lisp"
         cp "mvpoli.lisp" "$tempDir/$buildName/Lisp"
         cp "README.txt" "$tempDir/$buildName/Lisp"
@@ -60,12 +60,12 @@ build() {
     cd $tempDir
     find "$tempDir" -type f | while read file
     do
-        sed -i 's/CO_NUMBER/'$co_number'/g' $file
-        sed -i 's/CO_SURNAME/'$co_surname'/g' $file
-        sed -i 's/CO_NAME/'$co_name'/g' $file
-        sed -i 's/NUMBER/'$number'/g' $file
-        sed -i 's/SURNAME/'$surname'/g' $file
-        sed -i 's/NAME/'$name'/g' $file
+        sed -i 's/XXXCO_NUMBER/'$co_number'/g' $file
+        sed -i 's/XXXCO_SURNAME/'$co_surname'/g' $file
+        sed -i 's/XXXCO_NAME/'$co_name'/g' $file
+        sed -i 's/XXXNUMBER/'$number'/g' $file
+        sed -i 's/XXXSURNAME/'$surname'/g' $file
+        sed -i 's/XXXNAME/'$name'/g' $file
     done
     if test -f "$outputDirectory/$buildName.zip"
     then
