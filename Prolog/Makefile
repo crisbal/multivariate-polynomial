@@ -21,44 +21,78 @@ clean:
 build:
 	@ echo -n																									>	 mvpoli.pl
 	@ echo '%%%% NUMBER SURNAME NAME' 												>> mvpoli.pl
-	@ echo '%%%% CO_NUMBER CO_SURNAME CO_NAME' 															>> mvpoli.pl
+	@ echo '%%%% CO_NUMBER CO_SURNAME CO_NAME' 								>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_var_power.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_var_power.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_monomial.pl 													>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_monomial.pl 													>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_polynomial.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/as_polynomial.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyval.pl 															>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/monoval.pl 															>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/varpowersval.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_polynomial.pl 										>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_monomial.pl 											>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/pprint_vars_powers.pl 									>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/coefficients.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/maxdegree.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/mindegree.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/variables.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/monomials.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyplus.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/polyminus.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/polytimes.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ echo 																										>> mvpoli.pl
 	@ echo '%%% "helper"/not core rules'											>> mvpoli.pl
-	@ echo
+	@ echo																										>> mvpoli.pl
 	@ cat mvpoli.pl.d/find_var_value.pl 											>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/extract_vars.pl 												>> mvpoli.pl
-	@ cat mvpoli.pl.d/to_polynomial.pl 												>> mvpoli.pl																	>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
+	@ cat mvpoli.pl.d/to_polynomial.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl																	>> mvpoli.pl
 	@ cat mvpoli.pl.d/monotimespoly.pl 												>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/monotimes.pl 														>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/monomials_times_minus_one.pl 						>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/compress_sorted_vps.pl 									>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/compress_sorted_monomials.pl 						>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/compute_total_degree_for_vars_powers.pl >> mvpoli.pl
-	@ cat mvpoli.pl.d/handle_zero_coefficient.pl >> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
+	@ cat mvpoli.pl.d/handle_zero_coefficient.pl 							>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/compare_vars_powers.pl 									>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/compare_monomials.pl 										>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 	@ cat mvpoli.pl.d/is_vp_less_by_order.pl 									>> mvpoli.pl
+	@ echo "\n"																								>> mvpoli.pl
 
 buildtest: build
 	@ cat mvpoli.pl.d/mvpoli_test.pl													>> mvpoli.pl
