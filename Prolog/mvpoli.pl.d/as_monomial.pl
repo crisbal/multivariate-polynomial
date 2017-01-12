@@ -7,12 +7,13 @@ as_monomial(Expression, m(Coefficient, TotalDegree, FinalVPs)) :-
 	!.
 % this is for when the monomial is actually a polynomial expression
 % this will handle expression such as x+0+x+y-y which could be momomials
-as_monomial(ExpressionThatCanBeMonomial, 
-		m(Coefficient, TotalDegree, FinalVPs)) :-
-	nonvar(ExpressionThatCanBeMonomial),
-	as_polynomial(ExpressionThatCanBeMonomial, 
-		poly([m(Coefficient, TotalDegree, FinalVPs)])),
-	!.
+% commented because we don't have to support this anymore
+% as_monomial(ExpressionThatCanBeMonomial, 
+%		m(Coefficient, TotalDegree, FinalVPs)) :-
+%	nonvar(ExpressionThatCanBeMonomial),
+%	as_polynomial(ExpressionThatCanBeMonomial, 
+%		poly([m(Coefficient, TotalDegree, FinalVPs)])),
+%	!.
 
 %% as_monomial_strict/2
 % these strict function allows only monomial expression as input, not 

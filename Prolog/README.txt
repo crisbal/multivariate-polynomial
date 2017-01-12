@@ -21,6 +21,9 @@ Inoltre è stato aggiunto il supporto a:
 * passare da oggetto `Polynomial`/`Monomial` ad espressione nei predicati `as_monomial`/`as_polynomial`
     * richiamando `as_polynomial(E, poly([m(5, 1, [v(1, x)]), m(1, 1, [v(1, z)]), m(1, 3, [v(3, q)])]))` il programma farà il procedimento inverso ed `E = 5*x+z+q^3`
     * siamo a conoscenza che un particolare oggetto `Polynomial` potrebbe essere originato da infinite espressioni, ma quella proposta è la "minima" per generarlo.
+
+Implementate ma commentate nella release finale:
+
 * `as_monomial()` di espressioni che pur apparendo come polinomi sono in realtà monomi
     * `as_monomial(x+x+0+y-y, R)` ritorna `R = m(2, 1, [v(1, x)])`.
 
@@ -34,14 +37,16 @@ Alcune note sull'implementazione:
 
 ## Documentazione "tipi"
 
+Per comprendere meglio la lettura della documentazione e la comprensione del programma definiamo di seguito dei "tipi" di oggetti, che torneranno utili più sotto per la descrizione della firma dei predicati implementati. 
+Pur non esistendo il concetto di "tipo" e firma tipizzata in Prolog speriamo che questa astrazione ci sia permessa, quantomeno per comprendere meglio la documentazione.
+
 ### MonomialExpression
 
-`MonomialExpression` è una espressione di un monomio (o l'espressione di un polinomio riconducibile ad un monomio). 
+`MonomialExpression` è una espressione di un monomio,
 
 Esempio:
 
 * `sin(30)*x*y^2*42`
-* `x+x+0+y-y`
 * `x`
 * `42`
 
@@ -94,6 +99,8 @@ Ad esempio:
 ## Documentazione predicati
 
 Sono stati descritti anche predicati che, pur non essendo esplicitamente richiesti, sono stati aggiunti per completezza e facilità di lavoro e che si sono rivelati utili anche lato utente.
+
+Tutti i metodi controllano, dove possibile che i parametri di input siano del "tipo" corretto. 
 
 ### as_monomial/2
 
