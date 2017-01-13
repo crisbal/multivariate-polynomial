@@ -261,6 +261,11 @@ An error is thrown if the monomial expression is malformed in any way"
           expression)
          (parse-monomial-expression
           (rest expression)))
+        ((and (symbolp expression) ;; last second add
+              (not (null expression)))
+         (build-monomial-object 1
+                                1
+                                (list (build-varpower-object expression 1))))
         ((numberp expression)
          (build-monomial-object expression
                                 0
