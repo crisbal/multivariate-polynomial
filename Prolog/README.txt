@@ -121,6 +121,10 @@ Il predicato `as_polynomial` è vero quando `Polynomial p` è il termine che rap
 
 Il predicato è invertibile.
 
+Ad esempio:
+* `as_polynomial(a^2 + a^3, poly([m(1, 2, [v(2, a)]), m(1, 3, [v(3, a)])])).`
+* `as_polynomial(a*c+a^2+a*b+a,F).` verrà dimostrato per `F = poly([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])]).`
+
 ### is_monomial/1
 
 `is_monomial(Monomial m)`
