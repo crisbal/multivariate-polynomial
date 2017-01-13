@@ -5,8 +5,8 @@ XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
 
 ## Scopo della libreria
 
-Questa libreria Lisp espone varie funzioni che permettono di lavorare con polinomi e monomi. 
-In particolare è possibile parsare polinomi/monomi, farci operazioni di somma, sottrazione e moltiplicazione e calcolarne il valore in determinati punti. 
+Questa libreria Lisp espone varie funzioni che permettono di lavorare con polinomi e monomi.
+In particolare è possibile parsare polinomi/monomi, farci operazioni di somma, sottrazione e moltiplicazione e calcolarne il valore in determinati punti.
 Sono inoltre presenti funzioni di "utility".
 
 ## Funzionalità
@@ -17,7 +17,7 @@ Inoltre è stato aggiunto il supporto a:
 
 * più coefficienti in un'espressione
     * `'(* 3 x y 42)` è valida e parsata correttamente
-* coefficienti non direttamente numerici ma riconducibili ad un numero 
+* coefficienti non direttamente numerici ma riconducibili ad un numero
     * `'(+ 42 (* (cos 30) x) (* (sin 60)))` è valida e parsata correttamente
 * passare espressioni non parsate (e anche monomi) a tutte le funzioni che per specifica accettano oggetti `Polynomial`
     * `(POLYPLUS '(* 3 x y 42) '(M 1 2 ((V 1 X) (V 1 Y))))` è valida e valutata correttamente
@@ -32,22 +32,22 @@ Alcune note sull'implementazione:
 * si è usato `error` dove necessario (quasi esclusivamente per stampare errori nel parsing dei polinomi/monomi e per il riconoscimento di oggetti `Monomial` e `Polynomial` malformati)
 * il codice è stato scritto ed indentato in emacs, preferendo gli spazi al posto dei TABs
 
-## Documentazione "tipi"
+## Documentazione strutture
 
-Per comprendere meglio la lettura della documentazione e la comprensione del programma definiamo di seguito dei "tipi" di oggetti, che torneranno utili più sotto per la descrizione della firma delle funzioni implementate. 
+Per comprendere meglio la lettura della documentazione e la comprensione del programma definiamo di seguito le strutture che torneranno utili per la descrizione della firma delle funzioni implementate.
 Pur non esistendo il concetto di "tipo" e firma tipizzata in LISP speriamo che questa astrazione ci sia permessa, quantomeno per comprendere meglio la documentazione.
 
 ### VarExpt
 
-* `VarExpt` è la rappresentazione all'interno di una `MonomialExpression` di una potenza. 
+* `VarExpt` è la rappresentazione all'interno di una `MonomialExpression` di una potenza.
 * `VarExpt` è nella forma `'(expt Symbol Power)` oppure `'Symbol`
-* `VarExpt` è validata dalla funzione `(expression-variable-p VarExpt)` 
+* `VarExpt` è validata dalla funzione `(expression-variable-p VarExpt)`
 
 ### MonomialExpression
 
-* `MonomialExpression` è una espressione di un monomio. Può essere o un `number` oppure nella forma  `'(* (VarExpt|Coefficient)* )` 
+* `MonomialExpression` è una espressione di un monomio. Può essere o un `number` oppure nella forma  `'(* (VarExpt|Coefficient)* )`
 * `MonomialExpression`, nel caso non fosse un `number`, è validata da `(monomial-expression-p MonomialExpression)`
-* `coefficient` è o un `Number` oppure un "qualcosa" `eval`utabile come `Number` 
+* `coefficient` è o un `Number` oppure un "qualcosa" `eval`utabile come `Number`
     * `42`
     * `'(cos 30)`
 
@@ -78,7 +78,7 @@ Esempio:
 * `Monomial` è nella forma `'(M Coefficient TotalDegree VarPowers)`.
     * `Coefficient` è il coefficiente del monomio, un numero
     * `TotalDegree` è il grado del monomio, un numero >= 0
-    * `VarPowers` è una lista (anche vuota) di oggetti `VarPower` 
+    * `VarPowers` è una lista (anche vuota) di oggetti `VarPower`
 * `Monomial` è validato dalla funzione `is-monomial`.
 
 Ad esempio:
@@ -95,19 +95,19 @@ Ad esempio:
 
 ### GenericMonomial
 
-* `GenericMonomial` è usato per le funzioni che possono accettare indistintamente come tipo di parametro: `Monomial`, `MonomialExpression`.
-* `GenericMonomial` viene sempre trasformato in `Monomial` tramite la funzione `(to-monomial GenericMonomial)`  
+* `GenericMonomial` è usato per le funzioni che possono accettare indistintamente come struttura del parametro: `Monomial`, `MonomialExpression`.
+* `GenericMonomial` viene sempre trasformato in `Monomial` tramite la funzione `(to-monomial GenericMonomial)`
 
 ### GenericPolynomial
 
-* `GenericPolynomial` è usato per le funzioni che possono accettare indistintamente come tipo di parametro: `Monomial`, `Polynomial`, `PolynomialExpression`.
+* `GenericPolynomial` è usato per le funzioni che possono accettare indistintamente come struttura del parametro: `Monomial`, `Polynomial`, `PolynomialExpression`.
 * `GenericPolynomial` viene sempre trasformato in `Polynomial` tramite la funzione `(to-polynomial GenericPolynomial)`
 
 ## Documentazione funzioni
 
 Sono state descritte anche funzioni che, pur non essendo esplicitamente richieste, sono state aggiunti per completezza e per facilitare il lavoro e che si sono poi rivelate utili anche lato utente.
 
-Tutti le funzioni controllano, dove possibile, che i parametri di input siano del "tipo" corretto, ritornando `NIL` o generando errori in caso contrario. 
+Tutti le funzioni controllano, dove possibile, che i parametri di input rispettino la struttura prevista, ritornando `NIL` o generando errori in caso contrario.
 
 
 ### as-monomial
@@ -116,7 +116,7 @@ Tutti le funzioni controllano, dove possibile, che i parametri di input siano de
 
 La funzione `as-monomial` ritorna il `Monomial m` che rappresenta il monomio risultante dal parsing dell’espressione `MonomialExpression me`
 
-Un `SIMPLE-ERROR` è generato se l'espressione passata non è del tipo `MonomialExpression` 
+Un `SIMPLE-ERROR` è generato se l'espressione passata non è conforme alla struttura `MonomialExpression`
 
 ### as-polynomial
 
@@ -124,7 +124,7 @@ Un `SIMPLE-ERROR` è generato se l'espressione passata non è del tipo `Monomial
 
 La funzione `as-polynomial` ritorna il `Polynomial m` che rappresenta il polinomio risultante dal parsing dell’espressione `PolynomialExpression pe`
 
-Un `SIMPLE-ERROR` è generato se l'espressione passata non è del tipo `PolynomialExpression`
+Un `SIMPLE-ERROR` è generato se l'espressione passata non è conforme alla struttura `PolynomialExpression`
 
 
 ### is-monomial
@@ -147,7 +147,7 @@ Genera un `SIMPLE-ERROR` (con descrizione associata) se `p` è un `Polynomial` m
 
 `(to-monomial GenericMonomial g) -> Monomial m`
 
-La funzione `to-monomial` viene usata per fare il "casting" da `GenericMonomial` a `Monomial`, ritorna infatti il monomio associato a `g`. 
+La funzione `to-monomial` viene usata per fare il "casting" da `GenericMonomial` a `Monomial`, ritorna infatti il monomio associato a `g`.
 
 La funzione, usata praticamente in ogni funzione che accetta `GenericMonomial`, si assicura che, in caso `GenericMonomial` sia un `Monomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Monomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-monomial`.
 
@@ -157,19 +157,19 @@ La funzione, usata praticamente in ogni funzione che accetta `GenericMonomial`, 
 
 La funzione `to-polynomial` viene usata per fare il "casting" da `GenericPolynomial` a `Polynomial`, ritorna infatti il monomio associato a `g`.
 
-La funzione, usata praticamente in ogni funzione che accetta `GenericPolynomial`, si assicura che, in caso `GenericPolynomial` sia un `Polynomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Polynomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-polynomial`. 
+La funzione, usata praticamente in ogni funzione che accetta `GenericPolynomial`, si assicura che, in caso `GenericPolynomial` sia un `Polynomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Polynomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-polynomial`.
 
 ### pprint-polynomial
 
 `(pprint-polynomial GenericPolynomial g) -> NIL`
 
-La funzione `pprint-polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`. 
+La funzione `pprint-polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`.
 
 ### pprint-monomial
 
 `(pprint-monomial Monomial m) -> NIL`
 
-La funzione `pprint-monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`. 
+La funzione `pprint-monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`.
 
 ### polyplus
 
@@ -219,19 +219,19 @@ La funzione `mindegree` ritorna il grado più basso tra quello di tutti i `Monom
 
 `(coefficients GenericPolynomial p) -> NumberList n`
 
-`coefficients` ritorna la lista dei coefficienti dei `Monomial` di `p`. 
+`coefficients` ritorna la lista dei coefficienti dei `Monomial` di `p`.
 
 ### variables
 
 `(variables GenericPolynomial p) -> SymbolList n`
 
-`variables` ritorna la lista delle variabili di `p`. 
+`variables` ritorna la lista delle variabili di `p`.
 
 ### monomials
 
 `(monomials GenericPolynomial p) -> MonomialList l`
 
-`monomials` ritorna la lista dei monomi di `p`. 
+`monomials` ritorna la lista dei monomi di `p`.
 
 ### varpowers
 
