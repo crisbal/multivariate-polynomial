@@ -1,8 +1,8 @@
 %% compress_sorted_monomials/2
 % same as compress_sorted_vps/2. but for the monomials
-compress_sorted_monomials(I, R) :-
-	nonvar(I),
-	compress_sorted_monomials_real(I, R).
+compress_sorted_monomials(Monomials, R) :-
+	nonvar(Monomials),
+	compress_sorted_monomials_real(Monomials, R).
 
 compress_sorted_monomials_real([], []) :- !.
 compress_sorted_monomials_real([m(0, _, _) | RestOfMons], Result) :-

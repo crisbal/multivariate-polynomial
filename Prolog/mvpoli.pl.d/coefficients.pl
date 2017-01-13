@@ -11,5 +11,5 @@ coefficients_worker([], [0]) :- !.
 coefficients_worker([m(Coefficient, _Degree, _VarsPowers)], [Coefficient]) :- !.
 coefficients_worker([m(Coefficient, _Degree, _VarsPowers) | RestOfMonomials],
 		[Coefficient | RestOfCoefficients]) :-
-coefficients_worker(RestOfMonomials, RestOfCoefficients),
+    coefficients_worker(RestOfMonomials, RestOfCoefficients),
 	!.

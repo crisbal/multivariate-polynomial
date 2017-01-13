@@ -5,9 +5,9 @@ variables(GenericPoly, UniqueAndSortedVPs) :-
 	to_polynomial(GenericPoly, poly(Monomials)),
 	is_polynomial(poly(Monomials)),
 	variables_worker(Monomials, [], Variables),
+	%sort also removes duplicates, so we are good
 	sort(Variables, UniqueAndSortedVPs),
 	!. 
-	%sort also removes duplicates, so we are good
 
 variables_worker([], CurrentVars, CurrentVars) :- !.
 variables_worker([m(_Coefficient, _Degree, VarsPowers) | RestOfMonomials],

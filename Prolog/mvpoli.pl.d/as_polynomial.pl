@@ -23,7 +23,7 @@ as_polynomial_parse(OtherExpr + MonExpr, [Mon | OtherMon]) :-
 as_polynomial_parse(OtherExpr - MonExpr, 
 		[m(NegCoeff, TotDeg, VPs) | OtherMon]) :-
 	as_monomial_strict(MonExpr, m(Coeff, TotDeg, VPs)),
-	NegCoeff is Coeff*(-1),
+	NegCoeff is Coeff * (-1),
 	as_polynomial_parse(OtherExpr, OtherMon),
 	!.
 as_polynomial_parse(MonExpr, [Mon]) :-
@@ -31,5 +31,5 @@ as_polynomial_parse(MonExpr, [Mon]) :-
 	!.
 as_polynomial_parse(-MonExpr, [m(NegCoeff, TotDeg, VPs)]) :- 
 	as_monomial_strict(MonExpr, m(Coeff, TotDeg, VPs)),
-	NegCoeff is Coeff*(-1),
+	NegCoeff is Coeff * (-1),
 	!.

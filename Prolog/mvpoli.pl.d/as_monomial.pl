@@ -79,5 +79,5 @@ as_monomial_parse(OtherVars * -Var,
 		[VarPower | OtherVarPowers]) :-
 	as_var_power(Var, VarPower),
 	as_monomial_parse(OtherVars, Coefficient, OtherVarPowers),
-	NegatedCoefficient is Coefficient*(-1),
+	NegatedCoefficient is Coefficient * (-1),
 	!.
