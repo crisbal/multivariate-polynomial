@@ -186,6 +186,9 @@ Il predicato `polyplus/3` è vero quando `r` è il polinomio risultante dalla so
 
 Il predicato NON è invertibile.
 
+Ad esempio:
+* `polyplus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(6, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)]), m(1, 7, [v(4, x), v(3, y)])])).`
+
 ### polyminus/3
 
 `polyminus(GenericPolynomial g1, GenericPolynomial g2, Polynomial r)`
@@ -194,6 +197,9 @@ Il predicato `polyminus/3` è vero quando `r` è il polinomio risultante dalla d
 
 Il predicato NON è invertibile.
 
+Ad esempio:
+* `polyminus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(1, 5, [v(4, x), v(1, y)]), m(-1, 7, [v(4, x), v(3, y)])])).`
+
 ### polytimes/3
 
 `polytimes(GenericPolynomial g1, GenericPolynomial g2, Polynomial r)`
@@ -201,6 +207,9 @@ Il predicato NON è invertibile.
 Il predicato `polytimes/3` è vero quando `r` è il polinomio risultante dalla moltiplicazione di `g1` e `g2`.
 
 Il predicato NON è invertibile.
+
+Ad esempio:
+* `polytimes(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(9, 4, [v(2, f), v(2, x)]), m(3, 7, [v(1, f), v(5, x), v(1, y)]), m(3, 9, [v(1, f), v(5, x), v(3, y)]), m(1, 12, [v(8, x), v(4, y)])])).`
 
 ### polyval/3
 
