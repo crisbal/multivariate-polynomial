@@ -18,4 +18,3 @@ compress_sorted_monomials_real([m(C1, T1, V1), m(C2, T2, V2) | RestOfMons],
 	[m(C1, T1, V1) | Result]) :-
 	compress_sorted_monomials_real([ m(C2, T2, V2) | RestOfMons], Result),
 	!.
-

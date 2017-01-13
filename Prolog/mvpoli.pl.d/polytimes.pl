@@ -17,4 +17,3 @@ polytimes_worker([MonHead | Monomials1], Monomials2, MonomialsR) :-
 	monotimespoly(MonHead, poly(Monomials2), poly(MR)),
 	polytimes_worker(Monomials1, Monomials2, MonomialsWorker),
 	append(MR, MonomialsWorker, MonomialsR).
-

@@ -11,4 +11,3 @@ compare_vars_powers(<, v(_E1, V1), v(_E2, V2)) :-
 compare_vars_powers(>, v(_E1, V1), v(_E2, V2)) :-
 	V1 @>= V2, %>= so we keep duplicates of the same variable
 	!.
-

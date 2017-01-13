@@ -20,4 +20,3 @@ compress_sorted_vps_real([v(E1, B1), v(E2, B2) | RestOfVps],
 	[v(E1, B1) | Result]) :-
 	compress_sorted_vps_real([v(E2, B2) | RestOfVps], Result),
 	!.
-

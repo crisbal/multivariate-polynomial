@@ -9,4 +9,3 @@ compute_total_degree_for_vars_powers_real([v(Power, _) | Other], TotalDegree) :-
 	compute_total_degree_for_vars_powers_real(Other, OtherTotalDegree),
 	TotalDegree is OtherTotalDegree+Power,
 	!.
-

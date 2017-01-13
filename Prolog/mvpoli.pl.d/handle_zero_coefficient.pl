@@ -4,4 +4,3 @@ handle_zero_coefficient(0, _, []) :- !.
 handle_zero_coefficient(Coefficient, VarsPowers, VarsPowers) :- 
 	Coefficient \= 0,
 	!.
-

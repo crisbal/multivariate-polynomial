@@ -4,4 +4,3 @@ is_varpower(v(Exponent, Variable)) :-
 	integer(Exponent),
 	Exponent >= 0,
 	atomic(Variable).
-

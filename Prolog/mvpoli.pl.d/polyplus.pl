@@ -9,4 +9,3 @@ polyplus(Polynomial1, Polynomial2, poly(MonomialsResult)) :-
 	append(Monomials1, Monomials2, MonomialsAppend),
 	predsort(compare_monomials, MonomialsAppend, SortedMonomials),
 	compress_sorted_monomials(SortedMonomials, MonomialsResult).
-

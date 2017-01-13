@@ -6,4 +6,3 @@ monomials_times_minus_one([m(C, T, V) | Monomials],
 	C_R is -1*C,
 	monomials_times_minus_one(Monomials, Monomials_R),
 	!.
-

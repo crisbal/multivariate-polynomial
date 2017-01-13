@@ -18,4 +18,3 @@ polyval_worker(poly([Monomial | RestOfMonomials]),
 		VarValues, 
 		RestOfMonomialsResult),
 		Result is MonomialResult+RestOfMonomialsResult.
-
