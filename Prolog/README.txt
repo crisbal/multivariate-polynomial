@@ -187,7 +187,7 @@ Il predicato `polyplus/3` è vero quando `r` è il polinomio risultante dalla so
 Il predicato NON è invertibile.
 
 Ad esempio:
-* `polyplus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(6, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)]), m(1, 7, [v(4, x), v(3, y)])])).`
+* `polyplus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(6, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)]), m(1, 7, [v(4, x), v(3, y)])])).` verrà dimostrata
 
 ### polyminus/3
 
@@ -198,7 +198,7 @@ Il predicato `polyminus/3` è vero quando `r` è il polinomio risultante dalla d
 Il predicato NON è invertibile.
 
 Ad esempio:
-* `polyminus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(1, 5, [v(4, x), v(1, y)]), m(-1, 7, [v(4, x), v(3, y)])])).`
+* `polyminus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(1, 5, [v(4, x), v(1, y)]), m(-1, 7, [v(4, x), v(3, y)])])).` verrà dimostrata
 
 ### polytimes/3
 
@@ -209,7 +209,7 @@ Il predicato `polytimes/3` è vero quando `r` è il polinomio risultante dalla m
 Il predicato NON è invertibile.
 
 Ad esempio:
-* `polytimes(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(9, 4, [v(2, f), v(2, x)]), m(3, 7, [v(1, f), v(5, x), v(1, y)]), m(3, 9, [v(1, f), v(5, x), v(3, y)]), m(1, 12, [v(8, x), v(4, y)])])).`
+* `polytimes(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(9, 4, [v(2, f), v(2, x)]), m(3, 7, [v(1, f), v(5, x), v(1, y)]), m(3, 9, [v(1, f), v(5, x), v(3, y)]), m(1, 12, [v(8, x), v(4, y)])])).` verrà dimostrata
 
 ### polyval/3
 
@@ -218,6 +218,10 @@ Ad esempio:
 Il predicato `polyval/3` è vero quando `r` è il numero risultante dalla valutazione del polinomio `p` valutato nei punti espressi dalla lista di numeri `v`. `v` deve contenere un valore per ogni variabile ottenuta dal predicato `variables/2`.
 
 Il predicato NON è invertibile.
+
+Ad esempio:
+* `polyval(poly([m(1, 3, [v(3, y)])]), [2], 8).` verrà dimostrata
+* `polyval(poly([m(1, 2, [v(2, x)]), m(-1, 2, [v(2, y)])]),  [12, 12], 0).` verrà dimostrata
 
 ### maxdegree/2
 
