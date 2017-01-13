@@ -141,6 +141,9 @@ Ad esempio:
 
 Il predicato `is_polynomial` è vero quando il `Polynomial p` passato è effettivamente un termine di tipo `Polynomial` ben formato e matematicamente corretto. Viene controllato in particolare che tutti i `Monomials` di `Polynomial p` siano monomi (tramite `is_monomial`).
 
+Ad esempio:
+* `is_polynomial(poly([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])])).` darà come risultato `true.`
+* `is_polynomial([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])]).` avrà come risultato `false.`
 
 ### to_polynomial/2
 
