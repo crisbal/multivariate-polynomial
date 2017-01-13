@@ -5,8 +5,8 @@ XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
 
 ## Scopo della libreria
 
-Questa libreria Prolog espone vari predicati che permettono di lavorare con polinomi e monomi. 
-In particolare è possibile parsare polinomi/monomi, farci operazioni di somma, sottrazione e moltiplicazione e calcolarne il valore in determinati punti. 
+Questa libreria Prolog espone vari predicati che permettono di lavorare con polinomi e monomi.
+In particolare è possibile parsare polinomi/monomi, farci operazioni di somma, sottrazione e moltiplicazione e calcolarne il valore in determinati punti.
 Sono inoltre presenti predicati di "utility".
 
 ## Funzionalità
@@ -17,7 +17,7 @@ Inoltre è stato aggiunto il supporto a:
 
 * più coefficienti in un'espressione
     * `3*x^7*42*y + 12` è valida e parsata correttamente
-* coefficienti non direttamente numerici ma riconducibili ad un numero 
+* coefficienti non direttamente numerici ma riconducibili ad un numero
     * `cos(30)*x*y*max(5, 42) + 3^2` è valida e parsata correttamente
 * passare espressioni non parsate (e anche monomi) a tutti i predicati che per specifica accettano oggetti `Polynomial`
     * `polyplus(3*x, m(1,0,[]), R)` è valida e valutata correttamente
@@ -34,13 +34,13 @@ Implementate ma commentate nella release finale:
 
 Alcune note sull'implementazione:
 
-* Generalmente è stato usato il "pattern" (se cosi' lo si vuole chiamare) dell'avere un predicato wrapper (che è quella che poi viene "esposta" all'esterno) che richiama un predicato worker che effettivamente fa il lavoro richiesto. Questo perchè il wrapper attua generalmente controlli e/o perchè il worker è ricorsivo e/o per semplicità vengono passati solo i parametri strettamente necessari.
+* Generalmente è stato usato il "pattern" (se cosi' lo si vuole chiamare) dell'avere un predicato wrapper (che è quella che poi viene "esposta" all'esterno) che richiama un predicato worker che effettivamente tenta di dimostrare il goal. Questo perchè il wrapper attua generalmente controlli e/o perchè il worker è ricorsivo e/o per semplicità vengono passati solo i parametri strettamente necessari.
 * Per ordinare i monomi e le varpower è stato usato `predsort` definendo dei predicati di comparazione. Usare predsort ci permette di ordinare i monomi e i polinomi secondo il criterio richiesto e allo stesso momento non ci vincola troppo nel caso dovesse cambiare la specifica dell'ordinamento.
 * i predicati delle operazioni e di utility controllano esplicitamente che i parametri siano `nonvar`, dove ovviamente non è possibile fare chiamate "inverse". Ad esempio la chiamata di `polyplus(A, B, poly([m(1, 0, [])]))` produrrà `false` perchè è impossibile ricondursi al valore di A e di B.
 
-## Documentazione "tipi"
+## Documentazione strutture
 
-Per comprendere meglio la lettura della documentazione e la comprensione del programma definiamo di seguito dei "tipi" di oggetti, che torneranno utili più sotto per la descrizione della firma dei predicati implementati. 
+Per comprendere meglio la lettura della documentazione e la comprensione del programma definiamo di seguito delle strutture che torneranno utili per la descrizione della firma dei predicati implementati.
 Pur non esistendo il concetto di "tipo" e firma tipizzata in Prolog speriamo che questa astrazione ci sia permessa, quantomeno per comprendere meglio la documentazione.
 
 ### MonomialExpression
@@ -80,7 +80,7 @@ Ad esempio:
 * `Monomial` è nella forma `m(Coefficient, TotalDegree, VarPowers)`.
     * `Coefficient` è il coefficiente del monomio, un numero
     * `TotalDegree` è il grado del monomio, un numero >= 0
-    * `VarPowers` è una lista (anche vuota) di oggetti `VarPower` 
+    * `VarPowers` è una lista (anche vuota) di oggetti `VarPower`
 * `Monomial` è validato dal predicato `is_monomial/1`.
 
 Ad esempio:
@@ -96,14 +96,14 @@ Ad esempio:
 
 ### GenericPolynomial
 
-* `GenericPolynomial` è usato nei predicati che possono accettare indistintamente come tipo di parametro: `Monomial`, `Polynomial`, `PolynomialExpression`.
-* `GenericPolynomial` viene sempre trasformato in `Polynomial` tramite il predicato `to_polynomial/2`  
+* `GenericPolynomial` è usato nei predicati che possono accettare indistintamente come struttura del parametro: `Monomial`, `Polynomial`, `PolynomialExpression`.
+* `GenericPolynomial` viene sempre trasformato in `Polynomial` tramite il predicato `to_polynomial/2`
 
 ## Documentazione predicati
 
 Sono stati descritti anche predicati che, pur non essendo esplicitamente richiesti, sono stati aggiunti per completezza e per facilitare il lavoro e che si sono poi rivelati utili anche lato utente.
 
-Tutti i predicati controllano, dove possibile che i parametri di input siano del "tipo" corretto. 
+Tutti i predicati controllano, dove possibile che i parametri di input siano della struttura corretta.
 
 ### as_monomial/2
 
@@ -200,7 +200,7 @@ Il predicato `mindegree/2` è vero quando `md` è il grado più basso tra quello
 
 `coefficients(GenericPolynomial p, NumberList n)`
 
-Il predicato `coefficients/2` è vero quando `n` è la lista dei coefficienti dei `Monomial` di `p`. 
+Il predicato `coefficients/2` è vero quando `n` è la lista dei coefficienti dei `Monomial` di `p`.
 
 Il predicato NON è invertibile.
 
@@ -223,5 +223,4 @@ Il predicato `monomials/2` è vero quando `m` è la lista dei `Monomial` di `p`.
 * Il codice è stato messo sotto version control tramite `git`
 * Il codice è stato testato (anche) automaticamente usando il sistema di unit testing integrato a SWIPL
 * L'esecuzione, compilazione, testing del progetto è stato gestito tramite un Makefile
-    * Il Makefile si occupava anche di costruire il file mvpoli.pl a partire da una serie di file più piccoli, uno per ogni predicato diverso 
-
+    * Il Makefile si occupava anche di costruire il file mvpoli.pl a partire da una serie di file più piccoli, uno per ogni predicato diverso
