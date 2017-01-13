@@ -216,11 +216,19 @@ Il predicato NON è invertibile.
 
 Il predicato `maxdegree/2` è vero quando `md` è il grado più alto tra quello di tutti i `Monomial` di `p`.
 
+Ad esempio:
+* `maxdegree(poly([m(3, 0, []), m(1, 1, [v(1, c)]), m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)])]),3).` ritornerà `true`
+* `maxdegree(poly([m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)]), m(1, 6, [v(6, y)])]),6).` ritornerà `true`
+
 ### mindegree/2
 
 `mindegree(GenericPolynomial p, Number md)`
 
 Il predicato `mindegree/2` è vero quando `md` è il grado più basso tra quello di tutti i `Monomial` di `p`.
+
+Ad esempio:
+* `mindegree(poly([m(3, 0, []), m(1, 1, [v(1, c)]), m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)])]),0).` ritornerà `true`
+* `mindegree(poly([m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)]), m(1, 6, [v(6, y)])]),2).` ritornerà `true`
 
 ### coefficients/2
 
