@@ -131,6 +131,10 @@ Ad esempio:
 
 Il predicato `is_monomial` è vero quando il `Monomial m` passato è effettivamente un termine di tipo `Monomial` ben formato e matematicamente corretto.
 
+Ad esempio:
+* Per `is_monomial(x*y^3*z*10).` la dimostrazione fallirà
+* Per `is_monomial(m(10, 5, [v(1, x), v(3, y), v(1, z)])).` la dimostrazione avrà successo
+
 ### is_polynomial/1
 
 `is_polynomial(Polynomial p)`
