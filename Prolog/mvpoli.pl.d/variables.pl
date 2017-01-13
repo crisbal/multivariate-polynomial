@@ -1,8 +1,8 @@
 %% variables/2
 % extract variables from a poly 
 variables(GenericPoly, UniqueAndSortedVPs) :-
-    nonvar(GenericPoly),
-    to_polynomial(GenericPoly, poly(Monomials)),
+	nonvar(GenericPoly),
+	to_polynomial(GenericPoly, poly(Monomials)),
 	is_polynomial(poly(Monomials)),
 	variables_worker(Monomials, [], Variables),
 	sort(Variables, UniqueAndSortedVPs),
