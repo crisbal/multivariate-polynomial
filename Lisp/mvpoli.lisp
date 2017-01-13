@@ -549,22 +549,30 @@ Compute the value of the current monomial and add it to the partial value"
 
 (defun polyval(polynomial-generic values-for-vars)
   "Evaluate POLYNOMIAL-GENERIC in the points specified by VALUES-FOR-VARS
-VALUES-FOR-VARS needs to be of the same length as (VARIABLES poly-generic)
-A SIMPLE-ERROR is thrown on invalid values-for-vars length."
-  (if (= (length (variables polynomial-generic))
-         (length values-for-vars)) ;; check for the exact number of values
-      (let ((var-to-value-assoc (pairlis (variables polynomial-generic)
-                                         values-for-vars)))
+VALUES-FOR-VARS needs to be of at least the length of (VARIABLES poly-generic)
+A SIMPLE-ERROR is thrown on less values-for-vars than variables."
+  (let ((vars (variables polynomial-generic)))
+    (if (> (length vars)
+           (length values-for-vars)) ;; check for the exact number of values
+        (error "Invalid length for supplied list of values")
         ;; pairlis builds the assoc/map between variable and values
-        ;; same as monomail-value, this lambda is for passing VAR-TO-VALUE-ASSOC
-        (reduce (lambda(partial-value monomial)
-                  (monomial-values-reducer partial-value
-                                           monomial
+        ;; we use subseq to handle the case that more values than
+        ;; variables were supplied
+        ;; (x y) (1 2 3) => ((x 1) (y 2))
+        (let ((var-to-value-assoc (pairlis vars
+                                           (subseq values-for-vars
+                                                   0
+                                                   (length vars)))))
+              ;; same as monomail-value, this lambda is for passing
+              ;; VAR-TO-VALUE-ASSOC to the reducer
+              (reduce (lambda(partial-value monomial)
+                        (monomial-values-reducer partial-value
+                                                 monomial
                                            var-to-value-assoc))
                 (polynomial-monomials (to-polynomial polynomial-generic))
                 :initial-value 0))
-      (error "Invalid length for supplied list of values")))
-
+          )))
+  
 ;; PPRINT
 
 ;; In all the pprint progn is used since it is the best way
@@ -577,10 +585,10 @@ Pass HEAD if it is the first varpower and you don't want to print the * before"
  (when (is-varpower varpower)
        (let ((symbol (varpower-symbol varpower))
              (power (varpower-power varpower)))
-         (progn (unless head
-                  (format T "*"))
+         (progn (unless head ;; if it is not the first of the list of vps
+                  (format T "*")) 
                 (format T "~A" symbol)
-                (unless (= power 1)
+                (unless (= power 1) ;; don't print ^1
                   (format T "^~A" power))
                 NIL)))) ;;we return nil explicitally
 ;; it is not needed but let's be clear
@@ -593,17 +601,17 @@ HEAD if for the head monomial"
     (let ((coefficient (monomial-coefficient monomial))
           (acoefficient (abs (monomial-coefficient monomial)))
           (varpowers (monomial-varpowers monomial)))
-      (progn (if (< coefficient 0)
+      (progn (if (< coefficient 0) ;;on negative coefficient always print -
                  (format T " - ")
-                 (unless head
+                 (unless head ;; only print + if it is not the first
                    (format T " + ")))
-             (when (or (not (= acoefficient 1))
-                       (null varpowers))
+             (when (or (not (= acoefficient 1)) ;; print not 1 coefficients
+                       (null varpowers)) ;; or force print if varspower is null
                (format T "~A" acoefficient))
              (unless (null varpowers)
                (unless (= acoefficient 1) (format T "*"))
-               (pprint-varpower (first varpowers) T)
-               (mapcar 'pprint-varpower
+               (pprint-varpower (first varpowers) T) ;; print the HEAD VP
+               (mapcar 'pprint-varpower ;; print the others
                        (rest varpowers)))
              NIL)))) ;;here we return nil explicitally
 ;; because the unexpected return value of mapcar
@@ -614,8 +622,8 @@ HEAD if for the head monomial"
   (let ((the-monomials (monomials polynomial)))
     (if (null the-monomials)
 	(format T "0") ;; no monomial = 0
-	(progn (pprint-monomial (first the-monomials) T)
-	       (mapcar #'pprint-monomial
+	(progn (pprint-monomial (first the-monomials) T) ;; print the HEAD
+	       (mapcar #'pprint-monomial ;; print the others
                        (rest the-monomials))
 	       NIL)))) ;; again force nil return value
 ;; we know it is nil but let's be safe and follow requirement
