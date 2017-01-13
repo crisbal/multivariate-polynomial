@@ -151,6 +151,14 @@ Ad esempio:
 
 Il predicato `to_polynomial` è vero quando `p` è il `Polynomial` associato a `GenericPolynomial`. Viene usato quindi per fare il "casting" da `GenericPolynomial` a `Polynomial`.
 
+Ad esempio:
+* `to_polynomial(z*f*q^3,poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
+
+* `to_polynomial(poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])]),poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
+
+* `to_polynomial(m(1, 5, [v(1, f), v(3, q), v(1, z)]),poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
+
+
 ### pprint_polynomial/1
 
 `pprint_polynomial(GenericPolynomial g)`
