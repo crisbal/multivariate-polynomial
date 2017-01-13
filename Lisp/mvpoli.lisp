@@ -517,37 +517,46 @@ Just concat the monomials and let the reducer do the job"
 
 
 (defun varpower-values-reducer(partial-value varpower var-to-value-assoc)
+  "Use with REDUCE.
+Given a VARPOWER and a PARTIAL-VALUE computes the product.
+VAR-TO-VALUE-ASSOC is the map that maps a variable to its value"
   (let ((v-symbol (varpower-symbol varpower))
         (v-power (varpower-power varpower)))
-    (* partial-value
-       (expt (get-value-for-symbol v-symbol
+    (* partial-value ;; multiply current value by
+       (expt (get-value-for-symbol v-symbol ;we want to compute a power v^e
                                    var-to-value-assoc)
              v-power))))
 
 (defun monomial-value(monomial var-to-value-assoc)
+  "Evaluate the monomial in the points specified by VAR-TO-VALUE-ASSOC"
   (* (monomial-coefficient monomial)
-     ;; this reduce seems prettu strange but we use the lambda because
+     ;; this reduce seems pretty strange but we use the lambda because
      ;; we need to pass the additional VAR-TO-VALUE-ASSOC to the reducer
-     ;; so we can extract the associated values
+     ;; so we can extract the associated values, since REDUCE does
+     ;; not pass additinal parameters to the reduce function
      (reduce (lambda(partial-value varpower)
                (varpower-values-reducer partial-value
                                         varpower
                                         var-to-value-assoc))
-             (monomial-varpowers monomial)
-             :initial-value 1)))
+             (monomial-varpowers monomial) ;; compute on the varpowers 
+             :initial-value 1))) ;; no varpowers = 1
 
 (defun monomial-values-reducer(partial-value monomial var-to-value-assoc)
-  (+ partial-value (monomial-value monomial
+  "USE with REDUCE.
+Compute the value of the current monomial and add it to the partial value"
+  (+ partial-value (monomial-value monomial 
                                    var-to-value-assoc)))
 
 (defun polyval(polynomial-generic values-for-vars)
-  ;; pairlis builds the associations between variables and values
-  ;; TODO: add clamp values list to variable length
+  "Evaluate POLYNOMIAL-GENERIC in the points specified by VALUES-FOR-VARS
+VALUES-FOR-VARS needs to be of the same length as (VARIABLES poly-generic)
+A SIMPLE-ERROR is thrown on invalid values-for-vars length."
   (if (= (length (variables polynomial-generic))
-         (length values-for-vars))
+         (length values-for-vars)) ;; check for the exact number of values
       (let ((var-to-value-assoc (pairlis (variables polynomial-generic)
                                          values-for-vars)))
-        ;; same as monomail-value, the lambda is for VAR-TO-VALUE-ASSOC
+        ;; pairlis builds the assoc/map between variable and values
+        ;; same as monomail-value, this lambda is for passing VAR-TO-VALUE-ASSOC
         (reduce (lambda(partial-value monomial)
                   (monomial-values-reducer partial-value
                                            monomial
