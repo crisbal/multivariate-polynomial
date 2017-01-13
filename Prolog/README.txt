@@ -163,11 +163,20 @@ Ad esempio:
 
 Il preditcato `pprint_polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`.
 
+Ad esempio:
+* `pprint_polynomial(poly([m(314, 9, [v(8, g), v(1, r)]), m(1, 9, [v(9, q)])])).` stamperà a video `314*g^8*r + q^9`
+* `pprint_polynomial(poly([m(1, 2, [v(2, x)])])).` stamperà a video `x^2`
+
 ### pprint_monomial/1
 
 `pprint_monomial(Monomial m)`
 
 Il preditcato `pprint_monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`.
+
+Ad esempio:
+* `pprint_monomial(m(314, 9, [v(8, g), v(1, r)])).` stamperà a video ` + 314*g^8*r`
+* `pprint_monomial(m(1, 9, [v(9, q)])).` stamperà a video ` + q^9`
+* `pprint_monomial(m(1, 2, [v(2, x)])).` stamperà a video ` + x^2`
 
 ### polyplus/3
 
