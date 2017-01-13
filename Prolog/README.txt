@@ -230,6 +230,10 @@ Il predicato `coefficients/2` è vero quando `n` è la lista dei coefficienti de
 
 Il predicato NON è invertibile.
 
+Ad esempio:
+* `coefficients(f+g+f*g, [1, 1, 1]).` risulterà `true.`
+* ` coefficients(f+g+f*g+40, F).` risulterà `F = [40, 1, 1, 1].`
+
 ### variables/2
 
 `variables(GenericPolynomial p, SymbolList s)`
@@ -238,11 +242,18 @@ Il predicato `variables/2` è vero quando `s` è la lista delle variabili dei `M
 
 Il predicato NON è invertibile.
 
+Ad esempio:
+* `variables(f+g+f*g,[f, g]).` risulterà `true.`
+* `variables(poly([m(1, 1, [v(1, f)]), m(1, 1, [v(1, g)]), m(1, 2, [v(1, f), v(1, g)])]),[f, g]).` risulterà `true.`
+
 ### monomials/2
 
 `monomials(GenericPolynomial p, MonomialList m)`
 
 Il predicato `monomials/2` è vero quando `m` è la lista dei `Monomial` di `p`.
+
+Ad esempio:
+* Il predicato `monomials(poly([m(2, 4, [v(4, t)]), m(1, 5, [v(1, g), v(4, k)])]), [m(2, 4, [v(4, t)]), m(1, 5, [v(1, g), v(4, k)])]).` verrà dimostrato
 
 ## Altro
 
