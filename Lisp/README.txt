@@ -201,7 +201,7 @@ La funzione `monotimes` ritorna la moltiplicazione dei `Monomial` `g1` e `g2`.
 
 La funzione `polyval` effettua la valutazione del polinomio `p` nei punti espressi dalla lista di numeri `v`. `v` deve contenere un valore per ogni variabile ottenuta dalla funzione `variables`.
 
-Viene generato un `SIMPLE-ERROR` in caso il numero di valori forniti sia diverso dal numero di variabili ottenute con `variables`.
+Viene generato un `SIMPLE-ERROR` in caso il numero di valori forniti sia minore dal numero di variabili ottenute con `variables`.
 
 ### maxdegree
 
