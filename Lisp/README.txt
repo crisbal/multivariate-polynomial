@@ -185,7 +185,7 @@ Ad esempio:
 * `(to-polynomial '(* x f a))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
 * `(to-polynomial '(* x (expt f 3) a))` ritornerà `(POLY ((M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
 * `(to-polynomial '(+ (* -1 x) (* x w)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
-* `(to-polynomial (to-polynomial '(+ (* -1 x) (* x w))))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
+* `(to-polynomial '(+ (* -1 x) (* x w)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
 
 ### pprint-polynomial
 
@@ -218,8 +218,8 @@ Ad esempio:
 La funzione `polyplus` ritorna la somma dei `GenericPolynomial` `g1` e `g2`.
 
 Ad esempio:
-* `(polyplus (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
-* `(polyplus (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
+* `(polyplus '(+ (* -1 x) (* x w)) '(* x f a))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(polyplus '(* x (expt f 3) a) '(* x f a))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
 
 ### polyminus
 
@@ -228,8 +228,8 @@ Ad esempio:
 La funzione `polyminus` ritorna la differenza dei `GenericPolynomial` `g1` e `g2`.
 
 Ad esempio:
-* `(polyminus (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M -1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
-* `(polyminus (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
+* `(polyminus '(+ (* -1 x) (* x w)) '(* x f a))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M -1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(polyminus '(* x (expt f 3) a) '(* x f a))` ritornerà `(POLY ((M -1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
 
 ### polytimes
 
@@ -238,8 +238,8 @@ Ad esempio:
 La funzione `polytimes` ritorna la moltiplicazione dei `GenericPolynomial` `g1` e `g2`.
 
 Ad esempio:
-* `(polytimes (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 4 ((V 1 A) (V 1 F) (V 2 X))) (M 1 5 ((V 1 A) (V 1 F) (V 1 W) (V 2 X)))))`
-* `(polytimes (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M 1 8 ((V 2 A) (V 4 F) (V 2 X)))))`
+* `(polytimes '(+ (* -1 x) (* x w)) '(* x f a))` ritornerà `(POLY ((M -1 4 ((V 1 A) (V 1 F) (V 2 X))) (M 1 5 ((V 1 A) (V 1 F) (V 1 W) (V 2 X)))))`
+* `(polytimes '(* x (expt f 3) a) '(* x f a))` ritornerà `(POLY ((M 1 8 ((V 2 A) (V 4 F) (V 2 X)))))`
 
 ### monotimes
 
