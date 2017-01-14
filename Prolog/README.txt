@@ -122,6 +122,7 @@ Il predicato `as_polynomial` è vero quando `Polynomial p` è il termine che rap
 Il predicato è invertibile.
 
 Ad esempio:
+
 * `as_polynomial(a^2 + a^3, poly([m(1, 2, [v(2, a)]), m(1, 3, [v(3, a)])])).`
 * `as_polynomial(a*c+a^2+a*b+a,F).` verrà dimostrato per `F = poly([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])]).`
 
@@ -132,6 +133,7 @@ Ad esempio:
 Il predicato `is_monomial` è vero quando il `Monomial m` passato è effettivamente un termine di tipo `Monomial` ben formato e matematicamente corretto.
 
 Ad esempio:
+
 * Per `is_monomial(x*y^3*z*10).` la dimostrazione fallirà
 * Per `is_monomial(m(10, 5, [v(1, x), v(3, y), v(1, z)])).` la dimostrazione avrà successo
 
@@ -142,6 +144,7 @@ Ad esempio:
 Il predicato `is_polynomial` è vero quando il `Polynomial p` passato è effettivamente un termine di tipo `Polynomial` ben formato e matematicamente corretto. Viene controllato in particolare che tutti i `Monomials` di `Polynomial p` siano monomi (tramite `is_monomial`).
 
 Ad esempio:
+
 * `is_polynomial(poly([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])])).` darà come risultato `true.`
 * `is_polynomial([m(1, 1, [v(1, a)]), m(1, 2, [v(1, a), v(1, b)]), m(1, 2, [v(1, a), v(1, c)]), m(1, 2, [v(2, a)])]).` avrà come risultato `false.`
 
@@ -152,6 +155,7 @@ Ad esempio:
 Il predicato `to_polynomial` è vero quando `p` è il `Polynomial` associato a `GenericPolynomial`. Viene usato quindi per fare il "casting" da `GenericPolynomial` a `Polynomial`.
 
 Ad esempio:
+
 * `to_polynomial(z*f*q^3,poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
 * `to_polynomial(poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])]),poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
 * `to_polynomial(m(1, 5, [v(1, f), v(3, q), v(1, z)]),poly([m(1, 5, [v(1, f), v(3, q), v(1, z)])])).` risulterà `true.`
@@ -164,6 +168,7 @@ Ad esempio:
 Il preditcato `pprint_polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`.
 
 Ad esempio:
+
 * `pprint_polynomial(poly([m(314, 9, [v(8, g), v(1, r)]), m(1, 9, [v(9, q)])])).` stamperà a video `314*g^8*r + q^9`
 * `pprint_polynomial(poly([m(1, 2, [v(2, x)])])).` stamperà a video `x^2`
 
@@ -174,6 +179,7 @@ Ad esempio:
 Il preditcato `pprint_monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`.
 
 Ad esempio:
+
 * `pprint_monomial(m(314, 9, [v(8, g), v(1, r)])).` stamperà a video ` + 314*g^8*r`
 * `pprint_monomial(m(1, 9, [v(9, q)])).` stamperà a video ` + q^9`
 * `pprint_monomial(m(1, 2, [v(2, x)])).` stamperà a video ` + x^2`
@@ -187,6 +193,7 @@ Il predicato `polyplus/3` è vero quando `r` è il polinomio risultante dalla so
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `polyplus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(6, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)]), m(1, 7, [v(4, x), v(3, y)])])).` verrà dimostrata
 
 ### polyminus/3
@@ -198,6 +205,7 @@ Il predicato `polyminus/3` è vero quando `r` è il polinomio risultante dalla d
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `polyminus(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(1, 5, [v(4, x), v(1, y)]), m(-1, 7, [v(4, x), v(3, y)])])).` verrà dimostrata
 
 ### polytimes/3
@@ -209,6 +217,7 @@ Il predicato `polytimes/3` è vero quando `r` è il polinomio risultante dalla m
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `polytimes(poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 5, [v(4, x), v(1, y)])]), poly([m(3, 2, [v(1, f), v(1, x)]), m(1, 7, [v(4, x), v(3, y)])]), poly([m(9, 4, [v(2, f), v(2, x)]), m(3, 7, [v(1, f), v(5, x), v(1, y)]), m(3, 9, [v(1, f), v(5, x), v(3, y)]), m(1, 12, [v(8, x), v(4, y)])])).` verrà dimostrata
 
 ### polyval/3
@@ -220,6 +229,7 @@ Il predicato `polyval/3` è vero quando `r` è il numero risultante dalla valuta
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `polyval(poly([m(1, 3, [v(3, y)])]), [2], 8).` verrà dimostrata
 * `polyval(poly([m(1, 2, [v(2, x)]), m(-1, 2, [v(2, y)])]),  [12, 12], 0).` verrà dimostrata
 
@@ -230,6 +240,7 @@ Ad esempio:
 Il predicato `maxdegree/2` è vero quando `md` è il grado più alto tra quello di tutti i `Monomial` di `p`.
 
 Ad esempio:
+
 * `maxdegree(poly([m(3, 0, []), m(1, 1, [v(1, c)]), m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)])]),3).` ritornerà `true`
 * `maxdegree(poly([m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)]), m(1, 6, [v(6, y)])]),6).` ritornerà `true`
 
@@ -240,6 +251,7 @@ Ad esempio:
 Il predicato `mindegree/2` è vero quando `md` è il grado più basso tra quello di tutti i `Monomial` di `p`.
 
 Ad esempio:
+
 * `mindegree(poly([m(3, 0, []), m(1, 1, [v(1, c)]), m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)])]),0).` ritornerà `true`
 * `mindegree(poly([m(1, 2, [v(2, q)]), m(1, 3, [v(3, x)]), m(1, 6, [v(6, y)])]),2).` ritornerà `true`
 
@@ -252,8 +264,9 @@ Il predicato `coefficients/2` è vero quando `n` è la lista dei coefficienti de
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `coefficients(f+g+f*g, [1, 1, 1]).` risulterà `true.`
-* ` coefficients(f+g+f*g+40, F).` risulterà `F = [40, 1, 1, 1].`
+* `coefficients(f+g+f*g+40, F).` risulterà `F = [40, 1, 1, 1].`
 
 ### variables/2
 
@@ -264,6 +277,7 @@ Il predicato `variables/2` è vero quando `s` è la lista delle variabili dei `M
 Il predicato NON è invertibile.
 
 Ad esempio:
+
 * `variables(f+g+f*g,[f, g]).` risulterà `true.`
 * `variables(poly([m(1, 1, [v(1, f)]), m(1, 1, [v(1, g)]), m(1, 2, [v(1, f), v(1, g)])]),[f, g]).` risulterà `true.`
 
@@ -274,6 +288,7 @@ Ad esempio:
 Il predicato `monomials/2` è vero quando `m` è la lista dei `Monomial` di `p`.
 
 Ad esempio:
+
 * Il predicato `monomials(poly([m(2, 4, [v(4, t)]), m(1, 5, [v(1, g), v(4, k)])]), [m(2, 4, [v(4, t)]), m(1, 5, [v(1, g), v(4, k)])]).` verrà dimostrato
 
 ## Altro

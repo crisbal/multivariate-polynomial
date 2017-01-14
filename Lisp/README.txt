@@ -353,6 +353,7 @@ Ad esempio:
 `monomials` ritorna la lista dei monomi di `p`.
 
 Ad esempio:
+
 * `(monomials '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà `((M 1 12 ((V 1 Q) (V 10 X) (V 1 Y))) (M 1 12 ((V 1 X) (V 10 Y) (V 1 Z))))`
 * `(monomials '(* x (expt y 10) z))` ritornerà `((M 1 12 ((V 1 X) (V 10 Y) (V 1 Z))))`
 * `(monomials '(* 10 (expt y 10) z))` ritornerà `((M 10 11 ((V 10 Y) (V 1 Z))))`
@@ -366,6 +367,7 @@ Ad esempio:
 Alias di: `monomial-varpowers`
 
 Ad esempio:
+
 * `(varpowers '(* x (expt y 10) z))` ritornerà `((V 1 X) (V 10 Y) (V 1 Z))`
 * `(varpowers '(* (expt x 4) (expt y 10) z))` ritornerà `((V 4 X) (V 10 Y) (V 1 Z))`
 * `(varpowers '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà `((V 4 X) (V 10 Y) (V 3 Z))`
@@ -379,6 +381,7 @@ Ad esempio:
 Alias di: `monomial-variables`
 
 Ad esempio:
+
 * `(vars-of '(* x (expt y 10) z))` ritornerà `(X Y Z)`
 * `(vars-of '(* (expt x 4) (expt y 10) z))` ritornerà `(X Y Z)`
 * `(vars-of '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà `(X Y Z)`
@@ -390,6 +393,7 @@ Ad esempio:
 `monomial-degree` ritorna il grado del monomio `m`.
 
 Ad esempio:
+
 * `(monomial-degree '(* x (expt y 10) z))` ritornerà ` 12`
 * `(monomial-degree '(* (expt x 4) (expt y 10) z))` ritornerà ` 15`
 * `(monomial-degree '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà ` 17`
@@ -401,6 +405,7 @@ Ad esempio:
 `monomial-coefficient` ritorna il coefficiente del monomio `m`.
 
 Ad esempio:
+
 * `(monomial-coefficient '(* x (expt y 10) z))` ritornerà ` 1`
 * `(monomial-coefficient '(* (expt x 4) (expt y 10) z))` ritornerà ` 1`
 * `(monomial-coefficient '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà ` 1`
