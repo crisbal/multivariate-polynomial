@@ -130,6 +130,10 @@ La funzione `as-polynomial` ritorna il `Polynomial m` che rappresenta il polinom
 
 Un `SIMPLE-ERROR` è generato se l'espressione passata non è conforme alla struttura `PolynomialExpression`
 
+Ad esempio:
+* `(as-polynomial '(* x f a))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(as-polynomial '(* x (expt f 3) a))` ritornerà `(POLY ((M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
+* `(as-polynomial '(+ (* -1 x) (* x w)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
 
 ### is-monomial
 
