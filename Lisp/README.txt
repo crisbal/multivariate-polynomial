@@ -118,6 +118,10 @@ La funzione `as-monomial` ritorna il `Monomial m` che rappresenta il monomio ris
 
 Un `SIMPLE-ERROR` è generato se l'espressione passata non è conforme alla struttura `MonomialExpression`
 
+Ad esempio:
+* `(as-monomial '(* x f a))` ritornerà `(M 1 3 ((V 1 A) (V 1 F) (V 1 X)))`
+* `(as-monomial '(* x (expt f 3) a))` ritornerà `(M 1 5 ((V 1 A) (V 3 F) (V 1 X)))`
+
 ### as-polynomial
 
 `(as-polynomial PolynomialExpression pe) -> Polynomial m`
