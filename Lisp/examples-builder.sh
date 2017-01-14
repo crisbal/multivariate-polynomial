@@ -33,15 +33,24 @@ c=$(($c+1))
 fns[$c]="(to-monomial (to-monomial '(* x (expt f 3) a)))"
 c=$(($c+1))
 
+fns[$c]="(to-polynomial '(* x f a))"
+c=$(($c+1))
+fns[$c]="(to-polynomial '(* x (expt f 3) a))"
+c=$(($c+1))
+fns[$c]="(to-polynomial '(+ (* -1 x) (* x w)))"
+c=$(($c+1))
+fns[$c]="(to-polynomial (to-polynomial '(+ (* -1 x) (* x w))))"
+c=$(($c+1))
+
+for f in polyplus polyminus polytimes
+do
+  fns[$c]="($f (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))"
+  c=$(($c+1))
+  fns[$c]="($f (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))"
+  c=$(($c+1))
+done
+
 if false ; then
-fns[$c]="(to-polynomial )"
-c=$(($c+1))
-fns[$c]="(polyplus )"
-c=$(($c+1))
-fns[$c]="(polyminus )"
-c=$(($c+1))
-fns[$c]="(polytimes )"
-c=$(($c+1))
 fns[$c]="(monotimes )"
 c=$(($c+1))
 fns[$c]="(polyval )"
@@ -80,7 +89,7 @@ while [[ $i -lt $c ]]
 do
   fn_name=$(echo ${fns[$i]} | awk '{ print $1 }' | cut -d "(" -f 2)
   echo "Running "${fns[$i]}
-  echo \`${fns[$i]}\` ritornerà \`$(echo "${fns[$i]}" | make | tail -2 | head -1)\` >> $tmp_dir$fn_name
+  echo \`${fns[$i]}\` ritornerà \`$(sbcl --noinform --load mvpoli.lisp --eval "(pprint ${fns[$i]})" --eval "(quit)")\` >> $tmp_dir$fn_name
   i=$(($i+1))
 done
 
