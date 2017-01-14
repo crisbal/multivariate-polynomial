@@ -274,6 +274,7 @@ Ad esempio:
 * `(maxdegree '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà ` 12`
 * `(maxdegree '(* x (expt y 10) z))` ritornerà ` 12`
 * `(maxdegree '(* 10 (expt y 10) z))` ritornerà ` 11`
+* `(maxdegree (as-polynomial '(+ (* x) (* -1 x))))` ritornerà `0`
 
 ### mindegree
 
@@ -285,6 +286,7 @@ Ad esempio:
 * `(mindegree '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà ` 12`
 * `(mindegree '(* x (expt y 10) z))` ritornerà ` 12`
 * `(mindegree '(* 10 (expt y 10) z))` ritornerà ` 11`
+* `(mindegree (as-polynomial '(+ (* x) (* -1 x))))` ritornerà `0`
 
 ### coefficients
 
@@ -293,9 +295,12 @@ Ad esempio:
 `coefficients` ritorna la lista dei coefficienti dei `Monomial` di `p`.
 
 Ad esempio:
-* `(coefficients '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà `(1 1)`
+* `(coefficients '(+ (* x (expt y 10) z) (* 42 y (expt x 10) q)))` ritornerà `(42 1)`
 * `(coefficients '(* x (expt y 10) z))` ritornerà `(1)`
 * `(coefficients '(* 10 (expt y 10) z))` ritornerà `(10)`
+* `(coefficients (as-polynomial '(+ (* 30 s q r) (* r (cos 30)))))` ritornerà `(0.15425146 30)`
+* `(coefficients '(+ (* x (expt y 10) z) (* (min 2 -19) y (expt x 10) q)))` ritornerà `(-19 1)`
+* `(coefficients (as-polynomial '(+ (* x) (* -1 x))))` ritornerà `(0)`
 
 ### variables
 
