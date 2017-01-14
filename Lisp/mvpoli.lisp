@@ -255,18 +255,16 @@ It takes care of compressing and sorting"
 EXPRESSION is either a number or something validated by monomial-expression-p
 NIL is also a valid expression treated as the null monomial 0
 An error is thrown if the monomial expression is malformed in any way"
-  (cond ((null expression)
+  (cond ((null expression) ;; null monomial = 0
          (build-monomial-object 0 0 NIL))
-        ((monomial-expression-p
-          expression)
-         (parse-monomial-expression
-          (rest expression)))
-        ((and (symbolp expression) ;; last second add
+        ((monomial-expression-p expression)
+         (parse-monomial-expression (rest expression)))
+        ((and (symbolp expression) ;; a symbol is a valid monomial
               (not (null expression)))
-         (build-monomial-object 1
+         (build-monomial-object 1 
                                 1
                                 (list (build-varpower-object expression 1))))
-        ((numberp expression)
+        ((numberp expression) ;; a number is a valid monomial expression
          (build-monomial-object expression
                                 0
                                 NIL))
@@ -388,9 +386,12 @@ EXPRESSION is a list validated by polynomial-expression-p or
 EXPRESSION could also be a number or a valid monomial expression"
   (cond ((polynomial-expression-p expression)
          (parse-polynomial-expression (rest expression)))
-        ((monomial-expression-p expression)
+        ((monomial-expression-p expression) ;; maybe it is a monomial, accept it
          (build-polynomial-object (list (as-monomial expression))))
-        ((numberp expression)
+        ((numberp expression) ;; maybe it si a number, accept it
+         (build-polynomial-object (list (as-monomial expression))))
+        ((and (symbolp expression) ;; maybe it is a symbol, accept it
+              (not (null expression)))
          (build-polynomial-object (list (as-monomial expression))))
         (T (error "Invalid polynomial expression ~A"
                   expression))))
@@ -422,8 +423,10 @@ The reduce is needed as a kind of list flattern"
                                                (polynomial-monomials polynomial)
                                                :initial-value NIL
                                                :key #'monomial-variables
+                                               ;; call monomial-variables
+                                               ; on each item
                                                )))
-          #'string<)))
+          #'string<))) ;; sort ascending
 
 (defun monomials(generic)
   "Get the monomials of polynomial object GENERIC
