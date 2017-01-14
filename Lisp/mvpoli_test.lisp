@@ -147,12 +147,14 @@
 (clunit:deftest test-compare-varpowers-2 (compare-varpowers)
   (clunit:assert-false (compare-varpowers '(V 2 Y) '(V 3 X))))
 
-"Tests for lesser-varpower"
-(clunit:defsuite lesser-varpower (varpower))
+"Tests for polyval"
+(clunit:defsuite polyval (varpower))
 
-(clunit:deftest test-lesser-varpower-1 (lesser-varpower)
-  (warn "IMPLEMENT TEST FOR LESSER-VARPOWER OR DELETE IT")
-  (clunit:assert-true T))
+(clunit:deftest test-polyval-1 (polyval)
+  (clunit:assert-equal (polyval '(* x y z) '(1 2 3)) 6))
+
+(clunit:deftest test-polyval-2 (polyval)
+  (clunit:assert-equal (polyval '(* x y z) '(4 2 3)) 24))
 
 "Tests for compare-monomials"
 (clunit:defsuite compare-monomials (monomial))
@@ -208,72 +210,6 @@
 
 (clunit:deftest test-varpowers-from-expression-1 (varpowers-from-expression)
   (clunit:assert-equal (varpowers-from-expression '(* r 3 s k 2 o 4 k 9 o f)) '((V 1 *) (V 1 R) (V 1 S) (V 1 K) (V 1 O) (V 1 K) (V 1 O) (V 1 F))))
-
-"Tests for sort-varpowers"
-(clunit:defsuite sort-varpowers (mvpoli))
-
-(clunit:deftest test-sort-varpowers-1 (sort-varpowers)
-  (clunit:assert-true T))
-
-"Tests for total-degree-varpowers"
-(clunit:defsuite total-degree-varpowers (mvpoli))
-
-(clunit:deftest test-total-degree-varpowers-1 (total-degree-varpowers)
-  (clunit:assert-true T))
-
-"Tests for build-monomial-object"
-(clunit:defsuite build-monomial-object (mvpoli))
-
-(clunit:deftest test-build-monomial-object-1 (build-monomial-object)
-  (clunit:assert-true T))
-
-"Tests for compress-varpowers-reducer"
-(clunit:defsuite compress-varpowers-reducer (mvpoli))
-
-(clunit:deftest test-compress-varpowers-reducer-1 (compress-varpowers-reducer)
-  (clunit:assert-true T))
-
-"Tests for compress-varpowers"
-(clunit:defsuite compress-varpowers (mvpoli))
-
-(clunit:deftest test-compress-varpowers-1 (compress-varpowers)
-  (clunit:assert-true T))
-
-"Tests for parse-monomial-expression"
-(clunit:defsuite parse-monomial-expression (mvpoli))
-
-(clunit:deftest test-parse-monomial-expression-1 (parse-monomial-expression)
-  (clunit:assert-true T))
-
-"Tests for as-monomial"
-(clunit:defsuite as-monomial (mvpoli))
-
-(clunit:deftest test-as-monomial-1 (as-monomial)
-  (clunit:assert-true T))
-
-"Tests for polynomial-expression-p"
-(clunit:defsuite polynomial-expression-p (mvpoli))
-
-(clunit:deftest test-polynomial-expression-p-1 (polynomial-expression-p)
-  (clunit:assert-true T))
-
-"Tests for sort-monomials"
-(clunit:defsuite sort-monomials (mvpoli))
-
-(clunit:deftest test-sort-monomials-1 (sort-monomials)
-  (clunit:assert-true T))
-
-"Tests for compress-monomials-reducer"
-(clunit:defsuite compress-monomials-reducer (mvpoli))
-
-(clunit:deftest test-compress-monomials-reducer-1 (compress-monomials-reducer)
-  (clunit:assert-true T))
-
-"Tests for compress-monomials"
-(clunit:defsuite compress-monomials (mvpoli))
-
-(clunit:deftest test-compress-monomials-1 (compress-monomials)
-  (clunit:assert-true T))
 
 "Tests for parse-polynomial-expression"
 (clunit:defsuite parse-polynomial-expression (mvpoli))
