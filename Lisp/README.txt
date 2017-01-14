@@ -143,6 +143,10 @@ La funzione`is-monomial` ritorna `T` quando `m` passato è effettivamente un `Mo
 Ritorna `NIL` se `m` non è un `Monomial`.
 Genera un `SIMPLE-ERROR` (con descrizione associata) se `m` è un `Monomial` ma è malformato/matematicamente errato (ad esempio se il `TotalDegree` non è conforme alle `VarsPowers`, o se il `Coefficient` non è numerico).
 
+Ad esempio:
+* `(is-monomial '(+ (* x f) (* f f)))` ritornerà ` NIL`
+* `(is-monomial '(M 1 2 ((V 1 F) (V 1 X))))` ritornerà ` T`
+
 ### is-polynomial
 
 `(is-polynomial Polynomial p)`
@@ -150,6 +154,11 @@ Genera un `SIMPLE-ERROR` (con descrizione associata) se `m` è un `Monomial` ma 
 La funzione`is-polynomial` ritorna `T` quando `p` passato è effettivamente un `Polynomial` ben formato e matematicamente corretto.
 Ritorna `NIL` se `p` non è un `Polynomial`.
 Genera un `SIMPLE-ERROR` (con descrizione associata) se `p` è un `Polynomial` ma è malformato/matematicamente errato (ad esempio se la lista che rappresenta `p` non è della lunghezza giusta).
+
+Ad esempio:
+* `(is-polynomial '(* f r))` ritornerà ` NIL`
+* `(is-polynomial (as-polynomial '(* f r)))` ritornerà ` T`
+* `(is-polynomial '(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))))))` ritornerà ` T`
 
 ### to-monomial
 
@@ -159,6 +168,11 @@ La funzione `to-monomial` viene usata per fare il "casting" da `GenericMonomial`
 
 La funzione, usata praticamente in ogni funzione che accetta `GenericMonomial`, si assicura che, in caso `GenericMonomial` sia un `Monomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Monomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-monomial`.
 
+Ad esempio:
+* `(to-monomial '(* x f a))` ritornerà `(M 1 3 ((V 1 A) (V 1 F) (V 1 X)))`
+* `(to-monomial '(* x (expt f 3) a))` ritornerà `(M 1 5 ((V 1 A) (V 3 F) (V 1 X)))`
+* `(to-monomial (to-monomial '(* x (expt f 3) a)))` ritornerà `(M 1 5 ((V 1 A) (V 3 F) (V 1 X)))`
+
 ### to-polynomial
 
 `(to-polynomial GenericPolynomial g) -> Polynomial p`
@@ -167,11 +181,22 @@ La funzione `to-polynomial` viene usata per fare il "casting" da `GenericPolynom
 
 La funzione, usata praticamente in ogni funzione che accetta `GenericPolynomial`, si assicura che, in caso `GenericPolynomial` sia un `Polynomial`, questo sia ben formato, applicando prima anche un riodinamento. In caso di `Polynomial` malformato verranno generati (SIMPLE-ERROR), gli stessi di `is-polynomial`.
 
+Ad esempio:
+* `(to-polynomial '(* x f a))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(to-polynomial '(* x (expt f 3) a))` ritornerà `(POLY ((M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
+* `(to-polynomial '(+ (* -1 x) (* x w)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
+* `(to-polynomial (to-polynomial '(+ (* -1 x) (* x w))))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X)))))`
+
 ### pprint-polynomial
 
 `(pprint-polynomial GenericPolynomial g) -> NIL`
 
 La funzione `pprint-polynomial` stampa su Standard Output la rappresentazione "grafica" del `GenericPolynomial g`.
+
+Ad esempio:
+* `(pprint-polynomial '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` stamperà `Q*X^10*Y + X*Y^10*Z` e ritornerà `NIL`
+* `(pprint-polynomial '(* x (expt y 10) z))` stamperà `X*Y^10*Z` e ritornerà `NIL`
+* `(pprint-polynomial '(* 10 (expt y 10) z))` stamperà `10*Y^10*Z` e ritornerà `NIL`
 
 ### pprint-monomial
 
@@ -179,11 +204,22 @@ La funzione `pprint-polynomial` stampa su Standard Output la rappresentazione "g
 
 La funzione `pprint-monomial` stampa su Standard Output la rappresentazione "grafica" del `Monomial m`.
 
+Ad esempio:
+* `(pprint-monomial (as-monomial '(* x (expt y 10) z)))` stamperà `+ X*Y^10*Z` e ritornerà `NIL`
+* `(pprint-monomial (as-monomial '(* (expt x 4) (expt y 10) z)))` stamperà `+ X^4*Y^10*Z` e ritornerà `NIL`
+* `(pprint-monomial (as-monomial '(* (expt x 4) (expt y 10) (expt z 3))))` stamperà `+ X^4*Y^10*Z^3` e ritornerà `NIL`
+
+
+
 ### polyplus
 
 `(polyplus GenericPolynomial g1, GenericPolynomial g2) -> Polynomial r`
 
 La funzione `polyplus` ritorna la somma dei `GenericPolynomial` `g1` e `g2`.
+
+Ad esempio:
+* `(polyplus (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M 1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(polyplus (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M 1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
 
 ### polyminus
 
@@ -191,17 +227,29 @@ La funzione `polyplus` ritorna la somma dei `GenericPolynomial` `g1` e `g2`.
 
 La funzione `polyminus` ritorna la differenza dei `GenericPolynomial` `g1` e `g2`.
 
+Ad esempio:
+* `(polyminus (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 1 ((V 1 X))) (M 1 2 ((V 1 W) (V 1 X))) (M -1 3 ((V 1 A) (V 1 F) (V 1 X)))))`
+* `(polyminus (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 3 ((V 1 A) (V 1 F) (V 1 X))) (M 1 5 ((V 1 A) (V 3 F) (V 1 X)))))`
+
 ### polytimes
 
 `(polytimes GenericPolynomial g1, GenericPolynomial g2) -> Polynomial r`
 
 La funzione `polytimes` ritorna la moltiplicazione dei `GenericPolynomial` `g1` e `g2`.
 
+Ad esempio:
+* `(polytimes (to-polynomial '(+ (* -1 x) (* x w))) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M -1 4 ((V 1 A) (V 1 F) (V 2 X))) (M 1 5 ((V 1 A) (V 1 F) (V 1 W) (V 2 X)))))`
+* `(polytimes (to-polynomial '(* x (expt f 3) a)) (to-polynomial '(* x f a)))` ritornerà `(POLY ((M 1 8 ((V 2 A) (V 4 F) (V 2 X)))))`
+
 ### monotimes
 
 `(monotimes Monomial g1, Monomial g2) -> Polynomial r`
 
 La funzione `monotimes` ritorna la moltiplicazione dei `Monomial` `g1` e `g2`.
+
+Ad esempio:
+* `(monotimes (to-monomial '(* x f a)) (to-monomial '(* x w)))` ritornerà `(M 1 5 ((V 1 A) (V 1 F) (V 1 W) (V 2 X)))`
+* `(monotimes (to-monomial '(* x f a)) (to-monomial '(* x (expt f 3) a)))` ritornerà `(M 1 8 ((V 2 A) (V 4 F) (V 2 X)))`
 
 ### polyval
 
@@ -211,11 +259,21 @@ La funzione `polyval` effettua la valutazione del polinomio `p` nei punti espres
 
 Viene generato un `SIMPLE-ERROR` in caso il numero di valori forniti sia minore dal numero di variabili ottenute con `variables`.
 
+Ad esempio:
+* `(polyval '(* x y z) '(1 2 3))` ritornerà ` 6`
+* `(polyval '(* x y z) '(4 2 3))` ritornerà ` 24`
+* `(polyval '(* x (expt y 10) z) '(1 2 3))` ritornerà ` 3072`
+
 ### maxdegree
 
 `(maxdegree GenericPolynomial p) -> Number md`
 
 La funzione `maxdegree` ritorna il grado più alto tra quello di tutti i `Monomial` di `p`.
+
+Ad esempio:
+* `(maxdegree '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà ` 12`
+* `(maxdegree '(* x (expt y 10) z))` ritornerà ` 12`
+* `(maxdegree '(* 10 (expt y 10) z))` ritornerà ` 11`
 
 ### mindegree
 
@@ -223,11 +281,21 @@ La funzione `maxdegree` ritorna il grado più alto tra quello di tutti i `Monomi
 
 La funzione `mindegree` ritorna il grado più basso tra quello di tutti i `Monomial` di `p`.
 
+Ad esempio:
+* `(mindegree '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà ` 12`
+* `(mindegree '(* x (expt y 10) z))` ritornerà ` 12`
+* `(mindegree '(* 10 (expt y 10) z))` ritornerà ` 11`
+
 ### coefficients
 
 `(coefficients GenericPolynomial p) -> NumberList n`
 
 `coefficients` ritorna la lista dei coefficienti dei `Monomial` di `p`.
+
+Ad esempio:
+* `(coefficients '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà `(1 1)`
+* `(coefficients '(* x (expt y 10) z))` ritornerà `(1)`
+* `(coefficients '(* 10 (expt y 10) z))` ritornerà `(10)`
 
 ### variables
 
@@ -235,11 +303,21 @@ La funzione `mindegree` ritorna il grado più basso tra quello di tutti i `Monom
 
 `variables` ritorna la lista delle variabili di `p`.
 
+Ad esempio:
+* `(variables '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà `(Q X Y Z)`
+* `(variables '(* x (expt y 10) z))` ritornerà `(X Y Z)`
+* `(variables '(* 10 (expt y 10) z))` ritornerà `(Y Z)`
+
 ### monomials
 
 `(monomials GenericPolynomial p) -> MonomialList l`
 
 `monomials` ritorna la lista dei monomi di `p`.
+
+Ad esempio:
+* `(monomials '(+ (* x (expt y 10) z) (* y (expt x 10) q)))` ritornerà `((M 1 12 ((V 1 Q) (V 10 X) (V 1 Y))) (M 1 12 ((V 1 X) (V 10 Y) (V 1 Z))))`
+* `(monomials '(* x (expt y 10) z))` ritornerà `((M 1 12 ((V 1 X) (V 10 Y) (V 1 Z))))`
+* `(monomials '(* 10 (expt y 10) z))` ritornerà `((M 10 11 ((V 10 Y) (V 1 Z))))`
 
 ### varpowers
 
@@ -249,6 +327,11 @@ La funzione `mindegree` ritorna il grado più basso tra quello di tutti i `Monom
 
 Alias di: `monomial-varpowers`
 
+Ad esempio:
+* `(varpowers '(* x (expt y 10) z))` ritornerà `((V 1 X) (V 10 Y) (V 1 Z))`
+* `(varpowers '(* (expt x 4) (expt y 10) z))` ritornerà `((V 4 X) (V 10 Y) (V 1 Z))`
+* `(varpowers '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà `((V 4 X) (V 10 Y) (V 3 Z))`
+
 ### vars-of
 
 `(vars-of GenericMonomial m) -> SymbolList l`
@@ -257,17 +340,32 @@ Alias di: `monomial-varpowers`
 
 Alias di: `monomial-variables`
 
+Ad esempio:
+* `(vars-of '(* x (expt y 10) z))` ritornerà `(X Y Z)`
+* `(vars-of '(* (expt x 4) (expt y 10) z))` ritornerà `(X Y Z)`
+* `(vars-of '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà `(X Y Z)`
+
 ### monomial-degree
 
 `(monomial-degree GenericMonomial m) -> Number d`
 
 `monomial-degree` ritorna il grado del monomio `m`.
 
+Ad esempio:
+* `(monomial-degree '(* x (expt y 10) z))` ritornerà ` 12`
+* `(monomial-degree '(* (expt x 4) (expt y 10) z))` ritornerà ` 15`
+* `(monomial-degree '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà ` 17`
+
 ### monomial-coefficient
 
 `(monomial-coefficient GenericMonomial m) -> Number d`
 
 `monomial-coefficient` ritorna il coefficiente del monomio `m`.
+
+Ad esempio:
+* `(monomial-coefficient '(* x (expt y 10) z))` ritornerà ` 1`
+* `(monomial-coefficient '(* (expt x 4) (expt y 10) z))` ritornerà ` 1`
+* `(monomial-coefficient '(* (expt x 4) (expt y 10) (expt z 3)))` ritornerà ` 1`
 
 ## Altro
 
