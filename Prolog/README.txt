@@ -3,6 +3,16 @@
 XXXNAME XXXSURNAME - XXXNUMBER
 XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
 
+## Come caricare la libreria
+
+Direttamente al lancio di SWI-PL:
+
+* `swipl mvpoli.pl`
+ 
+Una volta avviato SWI-PL:
+
+* `consult("mvpoli.pl").`
+
 ## Scopo della libreria
 
 Questa libreria Prolog espone vari predicati che permettono di lavorare con polinomi e monomi.

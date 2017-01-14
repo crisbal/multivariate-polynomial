@@ -3,6 +3,17 @@
 XXXNAME XXXSURNAME - XXXNUMBER
 XXXCO_NAME XXXCO_SURNAME - XXXCO_NUMBER
 
+## Come caricare la libreria
+
+Direttamente al lancio dell'interprete Common Lisp:
+
+* `sbcl --load mvpoli.lisp`
+    * Cercare altrove istruzioni specifiche per caricare il file su altri interpreti (non dovrebbe essere troppo diverso)
+
+Dentro l'interprete CL:
+
+* `(load "mvpoli")`
+
 ## Scopo della libreria
 
 Questa libreria Lisp espone varie funzioni che permettono di lavorare con polinomi e monomi.
