@@ -390,6 +390,8 @@ EXPRESSION could also be a number or a valid monomial expression"
          (build-polynomial-object (list (as-monomial expression))))
         ((numberp expression) ;; maybe it si a number, accept it
          (build-polynomial-object (list (as-monomial expression))))
+        ((null expression)
+         (build-polynomial-object NIL))
         ((and (symbolp expression) ;; maybe it is a symbol, accept it
               (not (null expression)))
          (build-polynomial-object (list (as-monomial expression))))
